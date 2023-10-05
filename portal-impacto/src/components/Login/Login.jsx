@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { loginEmail } from "../../firebase/firebase";
 import { auth } from "../../firebase/firebase-config";
+import Navbar from "../Navbar/Navbar";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -22,7 +23,6 @@ function Login() {
   return (
     <div>
       {!isLoggedIn ? (
-
         <>
           <label htmlFor="email">email</label>
           <input
@@ -42,7 +42,7 @@ function Login() {
         </>
       ) : (
         <>
-          <button onClick={() => setIsLoggedIn(false)}>Cerrar Sesión</button>
+          <Navbar setIsLoggedIn={setIsLoggedIn} />
         </>
       )}
     </div>
