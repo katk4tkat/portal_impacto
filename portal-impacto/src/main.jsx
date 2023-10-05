@@ -1,9 +1,38 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import Login from "./components/Login/Login";
+import Home from "./components/Home/Home";
+import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
+import { isUserAuthenticated } from "./firebase/firebase";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+function PrivateRoute({ element }) {
+  const isAuthenticated = isUserAuthenticated();
+  return isAuthenticated ? element : <Navigate to="/login" replace />;
+}
+
+const root = createRoot(document.getElementById("root"));
+root.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isUserAuthenticated() ? (
+              <Navigate to="/home" replace />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route path="/home" element={<PrivateRoute element={<Home />} />} />
+        <Route
+          path="/upload-priorization"
+          element={<PrivateRoute element={<UploadPriorization />} />}
+        />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
+);
