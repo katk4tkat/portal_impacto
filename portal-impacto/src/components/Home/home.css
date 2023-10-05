@@ -1,0 +1,7 @@
+.home h1 {
+    display: flex;
+    justify-content: center;
+    color: black;
+    margin: 20px;
+    font-size: 40px;
+}

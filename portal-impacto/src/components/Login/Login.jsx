@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { loginEmail } from "../../firebase/firebase";
 import { auth } from "../../firebase/firebase-config";
 import Navbar from "../Navbar/Navbar";
+import Home from "../Home/Home"
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -43,6 +44,7 @@ function Login() {
       ) : (
         <>
           <Navbar setIsLoggedIn={setIsLoggedIn} />
+          <Home/>
         </>
       )}
     </div>
