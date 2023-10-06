@@ -6,7 +6,8 @@ function UploadPriorization() {
   return (
     <>
     <Navbar/>
-    <form className="divlogin">
+    <div className="uploadmaindiv">
+    <div className="uploadpriorizationdiv">
       <h2>CARGAR PRIORIZACIÓN</h2>
         <input
           type="week"
@@ -18,9 +19,9 @@ function UploadPriorization() {
         <option value="impacto-acido">Impacto Acido</option>
       </select>
       <input type="file" required/>
-      <button>Seleccionar Archivo</button>
         <button>CARGAR PRIOPRIZACIÓN</button>
-        </form>
+        </div>
+        </div>
     </>
   );
 }

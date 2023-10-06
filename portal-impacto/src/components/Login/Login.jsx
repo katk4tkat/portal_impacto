@@ -21,7 +21,7 @@ function Login() {
   return (
     <div className="maindiv">
       <>
-      <form className="divlogin">
+      <div className="divlogin">
       <h2>PORTAL IMPACTO</h2>
         <input
           type="email"
@@ -38,7 +38,7 @@ function Login() {
           placeholder="******"
         />
         <button onClick={onSubmit} className="loginbtn">ENTRAR</button>
-        </form>
+        </div>
       </>
     </div>
   );

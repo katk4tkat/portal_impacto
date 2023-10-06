@@ -1,3 +1,23 @@
-h2 {
-  color: black;
+.uploadmaindiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.uploadpriorizationdiv {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
+  background-color: #EBEBEB;
+  height: 400px;
+  margin: 50px;
+}
+
+
+.uploadpriorizationdiv button {
+  background-color: black;
+  color: white;
+  border-radius: 5px;
 }
