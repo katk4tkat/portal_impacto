@@ -1,0 +1,29 @@
+.maindiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px;
+}
+
+.divlogin {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+    background-color: #EBEBEB;
+    height: 400px;
+}
+
+.divlogin input {
+    text-align: center;
+    border-radius: 5px;
+    width: auto;
+    height: 40px;
+    border: none;
+}
+
+.loginbtn {
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+}

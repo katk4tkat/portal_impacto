@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { loginEmail } from "../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
+import "./login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -18,23 +19,26 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className="maindiv">
       <>
-        <label htmlFor="email">email</label>
+      <form className="divlogin">
+      <h2>PORTAL IMPACTO</h2>
         <input
           type="email"
           id="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          placeholder="E-mail"
         />
-        <label htmlFor="password">password</label>
         <input
           type="password"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          placeholder="******"
         />
-        <button onClick={onSubmit}>submit</button>
+        <button onClick={onSubmit} className="loginbtn">ENTRAR</button>
+        </form>
       </>
     </div>
   );
