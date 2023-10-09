@@ -16,15 +16,24 @@ function Navbar() {
   };
 
   return (
-    <div className="navbar">
-      <h1>PORTAL IMPACTO</h1>
-      <div className="logoutbtn">
-        <h3> Cerrar Sesión</h3>
-        <button onClick={handleLogout}>
-          <img src="/Assets/logout.png" />
-        </button>
-      </div>
-    </div>
+    <>
+      <nav className="navbar bg-body-tertiary">
+        <div className="container-fluid">
+          <a className="navbar-brand text-white">PORTAL IMPACTO</a>
+          <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button
+              type="button"
+              className="btn text-white"
+              data-bs-toggle="button"
+              onClick={handleLogout}
+            >
+              Cerrar Sesión
+              <i className="bi bi-box-arrow-right custom-icon"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </>
   );
 }
 
