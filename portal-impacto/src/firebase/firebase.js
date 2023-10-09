@@ -8,12 +8,11 @@ export const isUserAuthenticated = () => {
   return auth.currentUser !== null;
 };
 
-export const logout = () => {
-  signOut(auth)
-    .then(() => {
-      console.log("logout!");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+export const logout = async () => {
+  try {
+    await signOut(auth);
+    console.log("logout succesful");
+  } catch (error) {
+    console.error("logout", error);
+  }
 };
