@@ -1,16 +1,15 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
-import UploadButton from "../UploadButton/UploadButton";
+import Priorization from "../Priorization/Priorization";
 import "./home.css";
 
 function Home() {
   return (
     <>
       <Navbar />
-      <div className="home">
-        <h1>PRIORIZACIÓN</h1>
+      <div className="container">
+        <Priorization />
       </div>
-      <UploadButton />
     </>
   );
 }
