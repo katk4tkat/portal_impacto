@@ -1,27 +1,31 @@
 import React from "react";
-import "./upload-priorization.css";
-import Navbar from "../Navbar/Navbar"
+import Navbar from "../Navbar/Navbar";
+import UploadPriorizationForm from "../UploadPriorization/UploadPiorizationForm";
+import ButtonUI from "../UI/ButtonUI";
+import { useNavigate } from "react-router-dom";
 
 function UploadPriorization() {
+  const navigate = useNavigate();
+
+  const handleReturnClick = () => {
+    navigate("/home");
+  };
+
   return (
     <>
-    <Navbar/>
-    <div className="uploadmaindiv">
-    <div className="uploadpriorizationdiv">
-      <h2>CARGAR PRIORIZACIÓN</h2>
-        <input
-          type="week"
-          id="week"
-          placeholder="Semana"
-        />
-        <select id="team" name="Equipo">
-        <option value="impacto">Impacto</option>
-        <option value="impacto-acido">Impacto Acido</option>
-      </select>
-      <input type="file" required/>
-        <button>CARGAR PRIOPRIZACIÓN</button>
+      <Navbar />
+      <div className="container">
+        <div className="row justify-content-end">
+          <div className="col-auto">
+            <ButtonUI
+              text="Volver a Priorización"
+              icon="bi bi-arrow-return-left"
+              onClick={handleReturnClick}
+            />
+          </div>
         </div>
-        </div>
+      </div>
+      <UploadPriorizationForm />
     </>
   );
 }

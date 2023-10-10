@@ -12,6 +12,7 @@ function Login() {
     try {
       await loginEmail(email, password);
       console.log(email, password);
+      localStorage.setItem("userEmail", email);
       navigate("/home");
     } catch (error) {
       console.log(error);
