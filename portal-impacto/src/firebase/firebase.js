@@ -20,13 +20,12 @@ export const logout = async () => {
 
 export const priorizationData = async (uploadPriorizationObject) => {
   try {
-    // Agrega el objeto UploadPriorizationObject a la colección
     const docRef = await addDoc(collection(db, "PriorizationObject"), {
       ...uploadPriorizationObject,
-      userId: auth.currentUser.uid, // Agrega el ID de usuario si es necesario
+      userId: auth.currentUser.uid,
     });
 
-    console.log("Document written with ID: ", docRef.id);
+    console.log("Document written with ID: ", docRef);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
