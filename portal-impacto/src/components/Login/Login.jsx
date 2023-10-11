@@ -42,7 +42,7 @@ function Login() {
             <Controller
               name="email"
               control={control}
-              rules={{ required: "Email is required" }}
+              rules={{ required: "Ingrese su correo electrónico" }}
               render={({ field }) => (
                 <input
                   type="email"
@@ -62,14 +62,14 @@ function Login() {
             <Controller
               name="password"
               control={control}
-              rules={{ required: "Password is required" }}
+              rules={{ required: "Ingrese su contraseña" }}
               render={({ field }) => (
                 <input
                   type="password"
                   {...field}
                   className="form-control mb-5 col-8"
                   style={{ backgroundColor: "white" }}
-                  placeholder="******"
+                  placeholder="Contraseña"
                 />
               )}
             />
