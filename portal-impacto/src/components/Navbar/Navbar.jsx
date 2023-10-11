@@ -27,7 +27,7 @@ function Navbar() {
               data-bs-toggle="button"
               onClick={handleLogout}
             >
-              Cerrar Sesión
+              CERRAR SESIÓN
               <i className="bi bi-box-arrow-right custom-icon"></i>
             </button>
           </div>

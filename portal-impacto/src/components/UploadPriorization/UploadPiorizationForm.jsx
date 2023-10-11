@@ -1,21 +1,43 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { priorizationData } from "../../firebase/firebase";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function UploadPriorizationForm() {
-    const { control, handleSubmit } = useForm();
+    const { control, handleSubmit, reset, setValue, getValues } = useForm({
+        defaultValues: {
+            week: "",
+            team: "",
+            file: null,
+        },
+    });
 
-    const onSubmit = (data) => {
-        const user = localStorage.getItem("userEmail");
-        const date = new Date().toISOString();
-        const UploadPriorizationObject = {
-            ...data,
-            user,
-            date,
-        };
+    const fileInputRef = useRef(null);
 
-        priorizationData(UploadPriorizationObject); // Llama a priorizationData con el objeto
-        console.log(UploadPriorizationObject);
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setValue("file", file);
+    };
+
+    const onSubmit = async (data) => {
+        try {
+            const user = localStorage.getItem("userEmail");
+            const date = new Date().toISOString();
+            const UploadPriorizationObject = {
+                ...data,
+                user,
+                date,
+            };
+            await priorizationData(UploadPriorizationObject);
+            console.log(UploadPriorizationObject);
+            toast.success("Priorización importada correctamente");
+            reset();
+        } catch (error) {
+            console.log(error)
+            toast.error(`There has been an error: ${error.message}`);
+        }
     };
 
     return (
@@ -24,7 +46,7 @@ function UploadPriorizationForm() {
                 <div className="col-md-6">
                     <div className="card">
                         <div className="card-body">
-                            <h2 className="mb-4">CARGAR PRIORIZACIÓN</h2>
+                            <h2 className="text-center mb-4">CARGAR PRIORIZACIÓN</h2>
                             <div className="form-group">
                                 <label htmlFor="semana">Semana:</label>
                                 <Controller
@@ -50,7 +72,6 @@ function UploadPriorizationForm() {
                                         <select {...field} className="form-control">
                                             <option value="impacto">Impacto</option>
                                             <option value="impacto-acido">Impacto Acido</option>
-                                            required
                                         </select>
                                     )}
                                 />
@@ -62,18 +83,24 @@ function UploadPriorizationForm() {
                                     control={control}
                                     render={({ field }) => (
                                         <input
-                                            {...field}
                                             type="file"
                                             className="form-control"
-                                            required
+                                            ref={fileInputRef}
+                                            onChange={handleFileChange}
                                         />
                                     )}
                                 />
                             </div>
-                            <div className="form-group">
-                                <button type="submit" className="btn btn-dark">
+                            <div className="form-group d-flex text-center justify-content-center">
+                                <button type="submit" className="btn btn-dark btn-block text-center mt-3">
                                     CARGAR PRIORIZACIÓN
                                 </button>
+                                <ToastContainer
+                                    class="custom-toast"
+                                    position="top-right"
+                                    autoClose={3000}
+                                    hideProgressBar
+                                />
                             </div>
                         </div>
                     </div>
@@ -84,5 +111,3 @@ function UploadPriorizationForm() {
 }
 
 export default UploadPriorizationForm;
-
-

@@ -70,29 +70,6 @@ function PriorizationFilters() {
             placeholder="Estado Final"
           />
         </div>
-        {/* <div className="col-sm-3">
-          <label className="visually-hidden" htmlFor="specificSizeSelect">
-            Estado Impacto
-          </label>
-          <select className="form-select" id="specificSizeSelect">
-            <option selected>Choose...</option>
-            <option value="1">One</option>
-            <option value="1">Two</option>
-            <option value="3">Three</option>
-          </select>
-        </div> */}
-        {/* <div className="col-auto">
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="autoSizingCheck1"
-            />
-            <label className="form-check-label" htmlFor="autoSizingCheck1">
-              Remember me
-            </label>
-          </div>
-        </div> */}
         <div className="col-auto">
           <button type="submit" className="btn btn-secondary">
             Buscar

@@ -14,18 +14,19 @@ function UploadPriorization() {
   return (
     <>
       <Navbar />
+      <UploadPriorizationForm />
       <div className="container">
-        <div className="row justify-content-end">
-          <div className="col-auto">
+        <div className="row justify-content-center">
+          <div className="col-auto mt-5">
             <ButtonUI
-              text="Volver a Priorización"
+              text="VOLVER A PRIORIZACIÓN"
               icon="bi bi-arrow-return-left"
               onClick={handleReturnClick}
             />
           </div>
         </div>
       </div>
-      <UploadPriorizationForm />
+
     </>
   );
 }

@@ -17,7 +17,7 @@ function Priorization() {
       <div className="row">
         <div className="col text-start mb-3">
           <ButtonUI
-            text="Cargar Priorización"
+            text="CARGAR PRIORIZACIÓN"
             icon="bi bi-plus-lg"
             onClick={handleUploadClick}
           />
