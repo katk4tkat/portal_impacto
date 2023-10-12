@@ -1,6 +1,7 @@
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth, db } from "./firebase-config.js";
+import { auth, db, storage } from "./firebase-config.js";
 import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 export const loginEmail = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
@@ -30,3 +31,12 @@ export const priorizationData = async (uploadPriorizationObject) => {
     console.error("Error adding document: ", e);
   }
 };
+
+
+export function uploadFile(file, week) {
+  const storageRef = ref(storage, `${week}.xlsx`);
+  return uploadBytes(storageRef, file).then(snapshot => {
+    console.log(snapshot);
+  }
+  )
+}
