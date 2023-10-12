@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import { useForm, Controller } from "react-hook-form";
-import { priorizationData } from "../../firebase/firebase";
+import { priorizationData, uploadFile } from "../../firebase/firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -36,6 +36,7 @@ function UploadPriorizationForm() {
         user,
         data: data,
       };
+
       await priorizationData(uploadPriorizationObject);
 
       console.log("Datos a enviar a Firestore:", uploadPriorizationObject);
@@ -94,7 +95,11 @@ function UploadPriorizationForm() {
                       {...field}
                       type="file"
                       className="form-control"
-                      onChange={handleFileUpload}
+                      onChange={(e) => {
+                        handleFileUpload(e);
+                        const selectedWeek = e.target.form.elements.week.value;
+                        uploadFile(e.target.files[0], selectedWeek);
+                      }}
                     />
                   )}
                 />
