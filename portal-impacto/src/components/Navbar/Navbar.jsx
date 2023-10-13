@@ -2,7 +2,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../firebase/firebase";
-import "./navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -10,6 +9,7 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await logout();
+      localStorage.removeItem("userEmail");
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -18,7 +18,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="navbar bg-body-tertiary">
+      <nav className="navbar" style={{ backgroundColor: "#4b4a4a" }}>
         <div className="container-fluid">
           <a className="navbar-brand text-white">PORTAL IMPACTO</a>
           <div className="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -29,7 +29,10 @@ function Navbar() {
               onClick={handleLogout}
             >
               CERRAR SESIÓN
-              <i className="bi bi-box-arrow-right custom-icon"></i>
+              <i
+                className="bi bi-box-arrow-right"
+                style={{ fontSize: "24px", marginLeft: "8px" }}
+              ></i>
             </button>
           </div>
         </div>
