@@ -4,8 +4,10 @@ import PriorizationTable from "./PriorizationTable";
 import ButtonUI from "../UI/ButtonUI";
 import { useNavigate } from "react-router-dom";
 import PriorizationFilters from "./PriorizationFilters";
+import { getDocuments } from "../../firebase/firebase";
 
 function Priorization() {
+  getDocuments();
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
