@@ -29,20 +29,26 @@ function UploadPriorizationForm() {
       const user = localStorage.getItem("userEmail");
       const date = new Date().toISOString();
       const { team, week } = formData;
-      const uploadPriorizationObject = {
-        date,
-        week,
-        team,
-        user,
-        data: data,
-      };
+      if (team !== undefined && week !== undefined) {
+        const uploadPriorizationObject = {
+          date,
+          week,
+          team,
+          user,
+          data: data,
+        };
 
-      await priorizationData(uploadPriorizationObject);
+        await priorizationData(uploadPriorizationObject);
 
-      console.log("Datos a enviar a Firestore:", uploadPriorizationObject);
+        console.log("Datos a enviar a Firestore:", uploadPriorizationObject);
 
-      toast.success("Priorización importada correctamente");
-      reset();
+        toast.success("Priorización importada correctamente");
+        reset();
+      } else {
+        toast.error(
+          "Ha ocurrido un error: Debe completar campos de team & week."
+        );
+      }
     } catch (error) {
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
@@ -57,7 +63,7 @@ function UploadPriorizationForm() {
             <div className="card-body">
               <h2 className="text-center mb-4">CARGAR PRIORIZACIÓN</h2>
               <div className="form-group">
-                <label htmlFor="semana">Semana:</label>
+                <label htmlFor="week">Semana:</label>
                 <Controller
                   name="week"
                   control={control}
@@ -73,12 +79,15 @@ function UploadPriorizationForm() {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="equipo">Equipo:</label>
+                <label htmlFor="team">Equipo:</label>
                 <Controller
                   name="team"
                   control={control}
                   render={({ field }) => (
                     <select {...field} className="form-control">
+                      <option value="" disabled selected>
+                        Selecciona un equipo
+                      </option>
                       <option value="impacto">Impacto</option>
                       <option value="impacto-acido">Impacto Acido</option>
                     </select>
