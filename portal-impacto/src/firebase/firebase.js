@@ -32,9 +32,8 @@ export const priorizationData = async (uploadPriorizationObject) => {
   }
 };
 
-export function uploadFile(file, week) {
+export async function uploadFile(file, week) {
   const storageRef = ref(storage, `${week}.xlsx`);
-  return uploadBytes(storageRef, file).then((snapshot) => {
-    console.log(snapshot);
-  });
+  const snapshot = await uploadBytes(storageRef, file);
+  console.log(snapshot);
 }
