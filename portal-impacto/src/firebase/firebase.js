@@ -41,14 +41,20 @@ export async function uploadFile(file, week) {
 export const getDocuments = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "PriorizationObject"));
+    const documents = [];
+
     querySnapshot.forEach((doc) => {
-      const data = doc.data(); // Obtén los datos del documento
-      console.log("ID del documento: ", doc.id);
-      console.log("Datos del documento: ", data);
-      console.log("Semana: ", data.week);
-      console.log("data: ", data.data);
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: data,
+      });
     });
+
+    console.log(documents)
+    return documents;
   } catch (error) {
     console.error("Error al obtener documentos: ", error);
+    throw error; // Optionally re-throw the error for handling in the caller.
   }
 };

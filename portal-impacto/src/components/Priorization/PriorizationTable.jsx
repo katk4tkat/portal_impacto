@@ -1,7 +1,23 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getDocuments } from "../../firebase/firebase";
 
 function PriorizationTable() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const documents = await getDocuments();
+        setData(documents);
+      } catch (error) {
+        console.error("Error al obtener documentos: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <div className="table-responsive-xxl">
@@ -21,114 +37,22 @@ function PriorizationTable() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">07/06/2023</th>
-              <td>34</td>
-              <td>Cuadrilla 1</td>
-              <td>COXI-PSX-EBS-B07</td>
-              <td>MOTOBOMBA n°7</td>
-              <td>*documento*</td>
-              <td>*documento*</td>
-              <td>
-                <a href="#">Ver Dossier</a>
-              </td>
-              <td>
-                <a href="#">Estado Impacto</a>
-              </td>
-              <td>
-                <a href="#">Ingreso de Registro</a>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">-</th>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>
-                <a href="#">Ver Dossier</a>
-              </td>
-              <td>
-                <a href="#">Estado Impacto</a>
-              </td>
-              <td>
-                <a href="#">Ingreso de Registro</a>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">-</th>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>
-                <a href="#">Ver Dossier</a>
-              </td>
-              <td>
-                <a href="#">Estado Impacto</a>
-              </td>
-              <td>
-                <a href="#">Ingreso de Registro</a>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">-</th>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>
-                <a href="#">Ver Dossier</a>
-              </td>
-              <td>
-                <a href="#">Estado Impacto</a>
-              </td>
-              <td>
-                <a href="#">Ingreso de Registro</a>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">-</th>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>
-                <a href="#">Ver Dossier</a>
-              </td>
-              <td>
-                <a href="#">Estado Impacto</a>
-              </td>
-              <td>
-                <a href="#">Ingreso de Registro</a>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">-</th>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>
-                <a href="#">Ver Dossier</a>
-              </td>
-              <td>
-                <a href="#">Estado Impacto</a>
-              </td>
-              <td>
-                <a href="#">Ingreso de Registro</a>
-              </td>
-            </tr>
+            {data.map((item, index) => (
+              <tr key={index}>
+                <th scope="row">{item.data.date}</th>
+                <td>{item.data.week}</td>
+                <td>{item.data.data.Impacto[0].Impacto || "N/A"}</td>
+                <td>
+                  <a href="#">Ver Dossier</a>
+                </td>
+                <td>
+                  <a href="#">Estado Impacto</a>
+                </td>
+                <td>
+                  <a href="#">Ingreso de Registro</a>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

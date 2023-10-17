@@ -7,7 +7,6 @@ import PriorizationFilters from "./PriorizationFilters";
 import { getDocuments } from "../../firebase/firebase";
 
 function Priorization() {
-  getDocuments();
   const navigate = useNavigate();
 
   const handleUploadClick = () => {
