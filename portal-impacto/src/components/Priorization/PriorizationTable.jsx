@@ -41,7 +41,11 @@ function PriorizationTable() {
               <tr key={index}>
                 <th scope="row">{item.data.date}</th>
                 <td>{item.data.week}</td>
-                <td>{item.data.data.Impacto[0].Impacto || "N/A"}</td>
+                <td>{item.data.data.Impacto[1].__EMPTY_4 || "N/A"}</td>
+                <td>{item.data.data.Impacto[1].__EMPTY_1 || "N/A"}</td>
+                <td>{item.data.data.Impacto[1].__EMPTY || "N/A"}</td>
+                <td>*documento*</td>
+                <td>*documento*</td>
                 <td>
                   <a href="#">Ver Dossier</a>
                 </td>
