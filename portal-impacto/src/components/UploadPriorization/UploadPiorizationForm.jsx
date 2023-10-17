@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function UploadPriorizationForm() {
   const [data, setData] = useState([]);
+  const { control, handleSubmit, reset } = useForm({});
 
   const handleFileUpload = (e) => {
     const reader = new FileReader();
@@ -15,14 +16,16 @@ function UploadPriorizationForm() {
     reader.onload = (e) => {
       const data = e.target.result;
       const workbook = XLSX.read(data, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const parsedData = XLSX.utils.sheet_to_json(sheet);
+      const sheetNames = ["Impacto", "Impacto ácido"];
+      const parsedData = {};
+      sheetNames.forEach((sheetName) => {
+        const sheet = workbook.Sheets[sheetName];
+        parsedData[sheetName] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      });
       setData(parsedData);
+      console.log(parsedData);
     };
   };
-
-  const { control, handleSubmit, reset } = useForm({});
 
   const onSubmit = async (formData) => {
     console.log(data);
@@ -36,7 +39,7 @@ function UploadPriorizationForm() {
           week,
           team,
           user,
-          data: data,
+          data,
         };
 
         await priorizationData(uploadPriorizationObject);
