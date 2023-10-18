@@ -6,68 +6,68 @@ function PriorizationFilters() {
     <>
       <form className="row gx-3 gy-1 align-items-center">
         <div className="col-sm-1">
-          <label className="visually-hidden" htmlFor="specificSizeInputName">
+          <label className="visually-hidden" htmlFor="week-input">
             Semana
           </label>
           <input
             type="text"
             className="form-control"
-            id="specificSizeInputName"
+            id="week-input"
             placeholder="Semana"
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="specificSizeInputName">
+          <label className="visually-hidden" htmlFor="vulnerability-input">
             Vulnerabilidad
           </label>
           <input
             type="text"
             className="form-control"
-            id="specificSizeInputName"
+            id="vulnerability-input"
             placeholder="Vulnerabilidad"
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="specificSizeInputName">
+          <label className="visually-hidden" htmlFor="technical-unit-input">
             Unidad Técnica
           </label>
           <input
             type="text"
             className="form-control"
-            id="specificSizeInputName"
+            id="technical-unit-input"
             placeholder="Unidad Técnica"
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="specificSizeInputName">
+          <label className="visually-hidden" htmlFor="equipment-system-input">
             Equipo Sistema
           </label>
           <input
             type="text"
             className="form-control"
-            id="specificSizeInputName"
+            id="equipment-system-input"
             placeholder="Equipo Sistema"
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="specificSizeInputName">
+          <label className="visually-hidden" htmlFor="impacto-status">
             Estado Impacto
           </label>
           <input
             type="text"
             className="form-control"
-            id="specificSizeInputName"
+            id="impacto-status"
             placeholder="Estado Impacto"
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="specificSizeInputName">
+          <label className="visually-hidden" htmlFor="final-status">
             Estado Final
           </label>
           <input
             type="text"
             className="form-control"
-            id="specificSizeInputName"
+            id="final-status"
             placeholder="Estado Final"
           />
         </div>
