@@ -42,6 +42,7 @@ function Login() {
             <Controller
               name="email"
               control={control}
+              defaultValue=""
               rules={{ required: "Ingrese su correo electrónico" }}
               render={({ field }) => (
                 <input
@@ -50,6 +51,7 @@ function Login() {
                   className="form-control mt-5 mb-5"
                   style={{ backgroundColor: "white" }}
                   placeholder="E-mail"
+                  autoComplete="email"
                 />
               )}
             />
@@ -62,6 +64,7 @@ function Login() {
             <Controller
               name="password"
               control={control}
+              defaultValue=""
               rules={{ required: "Ingrese su contraseña" }}
               render={({ field }) => (
                 <input
@@ -70,6 +73,7 @@ function Login() {
                   className="form-control mb-5 col-8"
                   style={{ backgroundColor: "white" }}
                   placeholder="Contraseña"
+                  autoComplete="current-password"
                 />
               )}
             />
