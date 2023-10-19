@@ -7,13 +7,13 @@ function PriorizationFilters() {
       <form className="row gx-3 gy-1 align-items-center">
         <div className="col-sm-1">
           <label className="visually-hidden" htmlFor="week-input">
-            Semana
+            Sem
           </label>
           <input
             type="text"
             className="form-control"
             id="week-input"
-            placeholder="Semana"
+            placeholder="Sem"
           />
         </div>
         <div className="col-sm-2">
@@ -50,25 +50,25 @@ function PriorizationFilters() {
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="impacto-status">
-            Estado Impacto
+          <label className="visually-hidden" htmlFor="description">
+            Descripción
           </label>
           <input
             type="text"
             className="form-control"
-            id="impacto-status"
-            placeholder="Estado Impacto"
+            id="description"
+            placeholder="Descripción"
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="final-status">
-            Estado Final
+          <label className="visually-hidden" htmlFor="status">
+            Estado
           </label>
           <input
             type="text"
             className="form-control"
-            id="final-status"
-            placeholder="Estado Final"
+            id="status"
+            placeholder="Estado"
           />
         </div>
         <div className="col-auto">

@@ -4,7 +4,7 @@ import { getDocuments } from "../../firebase/firebase";
 
 function PriorizationTable() {
   const [data, setData] = useState([]);
-
+  const [impactoTotal, setImpactoTotal] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +14,7 @@ function PriorizationTable() {
         documents.forEach(document => {
           document.data.data.Impacto.shift()
           document.data.data.Impacto.map(thisRow => {
-            thisRow.week = document.data.week
+            thisRow.week = document.data.week.slice(-2)
           })
           impactoData.push(...document.data.data.Impacto)
         })
@@ -22,12 +22,19 @@ function PriorizationTable() {
         documents.forEach(document => {
           document.data.data["Impacto ácido"].shift()
           document.data.data["Impacto ácido"].map(thisRow => {
-            thisRow.week = document.data.week
+            thisRow.week = document.data.week.slice(-2)
           })
           impactoAcidoData.push(...document.data.data["Impacto ácido"])
         })
+        const impactoTotalData = []
+        impactoTotalData.push(...impactoData)
+        impactoTotalData.push(...impactoAcidoData)
+        setImpactoTotal(impactoTotalData.length);
 
-        setData([...impactoData, ...impactoAcidoData]);
+        const sortedData = [...impactoData, ...impactoAcidoData].sort((a, b) => b.week - a.week);
+
+        setData(sortedData);
+
       } catch (error) {
         console.error("Error al obtener documentos: ", error);
       }
@@ -42,7 +49,8 @@ function PriorizationTable() {
         <table className="table table-hover">
           <thead className="table-secondary">
             <tr>
-              <th scope="col">Semana</th>
+              <th scope="col">N°</th>
+              <th scope="col">Sem</th>
               <th scope="col">Vulnerabilidad</th>
               <th scope="col">Unidad Técnica</th>
               <th scope="col">Equipo Sistema</th>
@@ -55,23 +63,26 @@ function PriorizationTable() {
           </thead>
           <tbody>
             {data.map((item, index) => {
-              return <tr key={index}>
-                <td>{item.week}</td>
-                <td>{item.__EMPTY_4 || "N/A"}</td>
-                <td>{item.__EMPTY_1 || "N/A"}</td>
-                <td>{item.__EMPTY || "N/A"}</td>
-                <td>*documento*</td>
-                <td>*documento*</td>
-                <td>
-                  <a href="#">Ver Dossier</a>
-                </td>
-                <td>
-                  <a href="#">Estado Impacto</a>
-                </td>
-                <td>
-                  <a href="#">Ingreso de Registro</a>
-                </td>
-              </tr>
+              return (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{item.week}</td>
+                  <td>{item.__EMPTY_4 || "N/A"}</td>
+                  <td>{item.__EMPTY_1 || "N/A"}</td>
+                  <td>{item.__EMPTY || "N/A"}</td>
+                  <td>*documento*</td>
+                  <td>*documento*</td>
+                  <td>
+                    <a href="#">V.D.</a>
+                  </td>
+                  <td>
+                    <a href="#">E.I.</a>
+                  </td>
+                  <td>
+                    <a href="#">I.R.</a>
+                  </td>
+                </tr>
+              );
             })}
           </tbody>
         </table>
