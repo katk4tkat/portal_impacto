@@ -5,11 +5,29 @@ import { getDocuments } from "../../firebase/firebase";
 function PriorizationTable() {
   const [data, setData] = useState([]);
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const documents = await getDocuments();
-        setData(documents);
+        const impactoData = [];
+        documents.forEach(document => {
+          document.data.data.Impacto.shift()
+          document.data.data.Impacto.map(thisRow => {
+            thisRow.week = document.data.week
+          })
+          impactoData.push(...document.data.data.Impacto)
+        })
+        const impactoAcidoData = []
+        documents.forEach(document => {
+          document.data.data["Impacto ácido"].shift()
+          document.data.data["Impacto ácido"].map(thisRow => {
+            thisRow.week = document.data.week
+          })
+          impactoAcidoData.push(...document.data.data["Impacto ácido"])
+        })
+
+        setData([...impactoData, ...impactoAcidoData]);
       } catch (error) {
         console.error("Error al obtener documentos: ", error);
       }
@@ -24,7 +42,6 @@ function PriorizationTable() {
         <table className="table table-hover">
           <thead className="table-secondary">
             <tr>
-              <th scope="col">Fecha</th>
               <th scope="col">Semana</th>
               <th scope="col">Vulnerabilidad</th>
               <th scope="col">Unidad Técnica</th>
@@ -37,13 +54,12 @@ function PriorizationTable() {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <th scope="row">{item.data.date}</th>
-                <td>{item.data.week}</td>
-                <td>{item.data.data.Impacto[1].__EMPTY_4 || "N/A"}</td>
-                <td>{item.data.data.Impacto[1].__EMPTY_1 || "N/A"}</td>
-                <td>{item.data.data.Impacto[1].__EMPTY || "N/A"}</td>
+            {data.map((item, index) => {
+              return <tr key={index}>
+                <td>{item.week}</td>
+                <td>{item.__EMPTY_4 || "N/A"}</td>
+                <td>{item.__EMPTY_1 || "N/A"}</td>
+                <td>{item.__EMPTY || "N/A"}</td>
                 <td>*documento*</td>
                 <td>*documento*</td>
                 <td>
@@ -56,7 +72,7 @@ function PriorizationTable() {
                   <a href="#">Ingreso de Registro</a>
                 </td>
               </tr>
-            ))}
+            })}
           </tbody>
         </table>
       </div>

@@ -1,16 +1,20 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import { useForm, Controller } from "react-hook-form";
 import { priorizationData, uploadFile } from "../../firebase/firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "./upload-priorization-form.css";
+import { isWeekValid } from "./handleFormErrors";
 
 function UploadPriorizationForm() {
   const [data, setData] = useState([]);
+  const [file, setFile] = useState(null);
+  // const [weekValue, setWeekValue] = useState("");
+
   const { control, handleSubmit, reset } = useForm({});
 
-  const handleFileUpload = (e) => {
+  const handleExcelFileUploadAndParse = (e) => {
     const reader = new FileReader();
     reader.readAsBinaryString(e.target.files[0]);
     reader.onload = (e) => {
@@ -20,7 +24,7 @@ function UploadPriorizationForm() {
       const parsedData = {};
       sheetNames.forEach((sheetName) => {
         const sheet = workbook.Sheets[sheetName];
-        parsedData[sheetName] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        parsedData[sheetName] = XLSX.utils.sheet_to_json(sheet);
       });
       setData(parsedData);
       console.log(parsedData);
@@ -28,20 +32,24 @@ function UploadPriorizationForm() {
   };
 
   const onSubmit = async (formData) => {
-    console.log(data);
     try {
       const user = localStorage.getItem("userEmail");
       const date = new Date().toISOString();
-      const { team, week } = formData;
-      if (team !== undefined && week !== undefined) {
+      const { week, team } = formData;
+
+      if (team !== undefined && isWeekValid(week)) {
+        const fileName = `${week}`;
+
         const uploadPriorizationObject = {
           date,
           week,
           team,
           user,
           data,
+          fileName,
         };
 
+        uploadFile(file, week);
         await priorizationData(uploadPriorizationObject);
 
         console.log("Datos a enviar a Firestore:", uploadPriorizationObject);
@@ -50,7 +58,7 @@ function UploadPriorizationForm() {
         reset();
       } else {
         toast.error(
-          "Ha ocurrido un error: Debe completar campos de team & week."
+          "Ha ocurrido un error: Debe completar campos de team, week (en formato 'YYYY-WWW'), year y seleccionar un archivo."
         );
       }
     } catch (error) {
@@ -74,8 +82,11 @@ function UploadPriorizationForm() {
                   render={({ field }) => (
                     <input
                       {...field}
-                      type="week"
-                      placeholder="Semana"
+                      type="text"
+                      // value={weekValue}
+                      // onChange={(e) => setWeekValue(e.target.value)}
+                      id="week"
+                      placeholder="Ejemplo: 2023-W37"
                       className="form-control"
                       required
                     />
@@ -88,8 +99,8 @@ function UploadPriorizationForm() {
                   name="team"
                   control={control}
                   render={({ field }) => (
-                    <select {...field} className="form-control">
-                      <option value="" disabled selected>
+                    <select {...field} className="form-control" id="team">
+                      <option disabled selected>
                         Selecciona un equipo
                       </option>
                       <option value="impacto">Impacto</option>
@@ -107,11 +118,11 @@ function UploadPriorizationForm() {
                     <input
                       {...field}
                       type="file"
+                      id="file"
                       className="form-control"
                       onChange={(e) => {
-                        handleFileUpload(e);
-                        const selectedWeek = e.target.form.elements.week.value;
-                        uploadFile(e.target.files[0], selectedWeek);
+                        setFile(e.target.files[0]);
+                        handleExcelFileUploadAndParse(e);
                       }}
                     />
                   )}
