@@ -1,13 +1,28 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useState } from "react";
 import PriorizationTable from "./PriorizationTable";
+import PriorizationFilters from "./PriorizationFilters";
 import ButtonUI from "../UI/ButtonUI";
 import { useNavigate } from "react-router-dom";
-import PriorizationFilters from "./PriorizationFilters";
-import { getDocuments } from "../../firebase/firebase";
 
 function Priorization() {
   const navigate = useNavigate();
+
+  const [filters, setFilters] = useState({
+    week: "",
+    vulnerability: "",
+    technicalUnit: "",
+    equipmentSystem: "",
+    description: "",
+    status: "",
+  });
+
+  const handleFilterChange = (fieldName, value) => {
+    setFilters({
+      ...filters,
+      [fieldName]: value,
+    });
+  };
 
   const handleUploadClick = () => {
     navigate("/upload-priorization");
@@ -27,10 +42,13 @@ function Priorization() {
       </div>
       <div className="row mb-3">
         <div className="col">
-          <PriorizationFilters />
+          <PriorizationFilters
+            filters={filters}
+            handleFilterChange={handleFilterChange}
+          />
         </div>
       </div>
-      <PriorizationTable />
+      <PriorizationTable filters={filters} />
     </>
   );
 }
