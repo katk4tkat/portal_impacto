@@ -2,9 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { getDocuments } from "../../firebase/firebase";
 import PropTypes from "prop-types";
+import Pagination from "../UI/Pagination";
 
 function PriorizationTable({ filters }) {
   const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +43,16 @@ function PriorizationTable({ filters }) {
     fetchData();
   }, []);
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div className="table-responsive-xxl">
@@ -61,7 +74,7 @@ function PriorizationTable({ filters }) {
             </tr>
           </thead>
           <tbody>
-            {data
+            {currentData
               .filter((item) => {
                 return Object.keys(filters).every((field) => {
                   const filterValue = filters[field].toLowerCase();
@@ -85,7 +98,8 @@ function PriorizationTable({ filters }) {
               .map((item, index) => {
                 return (
                   <tr key={index}>
-                    <td>{index + 1}</td>
+                    {/* Ajusta la enumeración para que continúe desde donde lo dejó la página anterior */}
+                    <td>{index + indexOfFirstItem + 1}</td>
                     <td>{item.week}</td>
                     <td>{item.__EMPTY_4 || "N/A"}</td>
                     <td>{item.__EMPTY_1 || "N/A"}</td>
@@ -109,6 +123,11 @@ function PriorizationTable({ filters }) {
           </tbody>
         </table>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={handlePageChange}
+      />
     </>
   );
 }
