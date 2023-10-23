@@ -10,7 +10,6 @@ import { isWeekValid } from "./handleFormErrors";
 function UploadPriorizationForm() {
   const [data, setData] = useState([]);
   const [file, setFile] = useState(null);
-  // const [weekValue, setWeekValue] = useState("");
 
   const { control, handleSubmit, reset } = useForm({});
 
@@ -21,13 +20,38 @@ function UploadPriorizationForm() {
       const data = e.target.result;
       const workbook = XLSX.read(data, { type: "binary" });
       const sheetNames = ["Impacto", "Impacto ácido"];
-      const parsedData = {};
+      const rawData = {};
       sheetNames.forEach((sheetName) => {
         const sheet = workbook.Sheets[sheetName];
-        parsedData[sheetName] = XLSX.utils.sheet_to_json(sheet);
+        rawData[sheetName] = XLSX.utils.sheet_to_json(sheet);
       });
-      setData(parsedData);
+      const preProcessedData = Object.values(rawData).map((thisTeam) => {
+        const values = Object.values(thisTeam).map((thisValue) =>
+          Object.values(thisValue)
+        );
+        return values;
+      });
+      const parsedData = [];
+      const headers = preProcessedData[0][0];
+      const dataByTeam = preProcessedData;
+      dataByTeam.forEach((sheetData) => {
+        sheetData.forEach((thisRow) => {
+          const currentObject = {};
+          thisRow.forEach((thisValue, index) => {
+            const currentHeader = headers[index];
+            currentObject[currentHeader] = thisValue;
+          });
+          parsedData.push(currentObject);
+        });
+      });
       console.log(parsedData);
+
+      //TODO
+      // Pasar todos los headers a minuscula, sin caracteres especiales, sin espacios
+      // la tabla debe renderear directamente los datos de la base de datos, sin tener que parsear nada
+      // Antes de subir los datos a firebase, hay que verificar que el formulario haya pasado ANTES, sino rebotar si o si el archivo
+
+      setData(parsedData);
     };
   };
 
@@ -64,6 +88,7 @@ function UploadPriorizationForm() {
     } catch (error) {
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
+      // Este catch deberia eliminar el archivo excel si es que lo guardo
     }
   };
 
@@ -83,8 +108,6 @@ function UploadPriorizationForm() {
                     <input
                       {...field}
                       type="text"
-                      // value={weekValue}
-                      // onChange={(e) => setWeekValue(e.target.value)}
                       id="week"
                       placeholder="Ejemplo: 2023-W37"
                       className="form-control"
