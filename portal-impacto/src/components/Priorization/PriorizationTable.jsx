@@ -15,19 +15,19 @@ function PriorizationTable({ filters }) {
         const documents = await getDocuments();
         const impactoData = [];
         documents.forEach((document) => {
-          document.data.data.Impacto.shift();
-          document.data.data.Impacto.map((thisRow) => {
+          document.data.data.shift();
+          document.data.data.map((thisRow) => {
             thisRow.week = document.data.week.slice(-2);
           });
-          impactoData.push(...document.data.data.Impacto);
+          impactoData.push(document.data.data);
         });
         const impactoAcidoData = [];
         documents.forEach((document) => {
-          document.data.data["Impacto ácido"].shift();
-          document.data.data["Impacto ácido"].map((thisRow) => {
+          document.data.data.shift();
+          document.data.data.map((thisRow) => {
             thisRow.week = document.data.week.slice(-2);
           });
-          impactoAcidoData.push(...document.data.data["Impacto ácido"]);
+          impactoAcidoData.push(...document.data.data);
         });
 
         const sortedData = [...impactoData, ...impactoAcidoData].sort(
@@ -80,8 +80,8 @@ function PriorizationTable({ filters }) {
                   const filterValue = filters[field].toLowerCase();
                   if (field === "description" && filterValue) {
                     const combinedDescription =
-                      (item.__EMPTY_2 || "N/A").toLowerCase() +
-                      (item.__EMPTY_3 || "N/A").toLowerCase();
+                      (item.descripcion_del_trabajo || "N/A").toLowerCase() +
+                      (item.descripcion_del_aviso || "N/A").toLowerCase();
                     if (!combinedDescription.includes(filterValue)) {
                       return false;
                     }
@@ -101,11 +101,11 @@ function PriorizationTable({ filters }) {
                     {/* Ajusta la enumeración para que continúe desde donde lo dejó la página anterior */}
                     <td>{index + indexOfFirstItem + 1}</td>
                     <td>{item.week}</td>
-                    <td>{item.__EMPTY_4 || "N/A"}</td>
-                    <td>{item.__EMPTY_1 || "N/A"}</td>
-                    <td>{item.__EMPTY || "N/A"}</td>
-                    <td>{item.__EMPTY_2 || "N/A"}</td>
-                    <td>{item.__EMPTY_3 || "N/A"}</td>
+                    <td>{item.vulnerabilidad_1 || "N/A"}</td>
+                    <td>{item.u_tecnica || "N/A"}</td>
+                    <td>{item.equipo_o_sistema || "N/A"}</td>
+                    <td>{item.descripcion_del_trabajo || "N/A"}</td>
+                    <td>{item.descripcion_del_aviso || "N/A"}</td>
                     <td>*documento*</td>
                     <td>*documento*</td>
                     <td>

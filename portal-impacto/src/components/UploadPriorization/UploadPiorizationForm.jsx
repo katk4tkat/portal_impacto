@@ -13,47 +13,73 @@ function UploadPriorizationForm() {
 
   const { control, handleSubmit, reset } = useForm({});
 
+  // ... (importaciones y código anterior)
+
+  function formatHeader(header) {
+    // Convierte a minúsculas
+    let formattedHeader = header.toLowerCase();
+
+    // Reemplaza vocales con tilde por vocales sin tilde
+    formattedHeader = formattedHeader
+      .replace(/[áäâà]/g, 'a')
+      .replace(/[éëêè]/g, 'e')
+      .replace(/[íïîì]/g, 'i')
+      .replace(/[óöôò]/g, 'o')
+      .replace(/[úüûù]/g, 'u');
+
+    // Reemplaza otros caracteres especiales y espacios según tus necesidades
+    formattedHeader = formattedHeader.replace(/[^\w\s]/g, '');
+    formattedHeader = formattedHeader.replace(/\s+/g, '_');
+
+    return formattedHeader;
+  }
+
+
   const handleExcelFileUploadAndParse = (e) => {
     const reader = new FileReader();
     reader.readAsBinaryString(e.target.files[0]);
     reader.onload = (e) => {
       const data = e.target.result;
       const workbook = XLSX.read(data, { type: "binary" });
-      const sheetNames = ["Impacto", "Impacto ácido"];
-      const rawData = {};
-      sheetNames.forEach((sheetName) => {
-        const sheet = workbook.Sheets[sheetName];
-        rawData[sheetName] = XLSX.utils.sheet_to_json(sheet);
-      });
-      const preProcessedData = Object.values(rawData).map((thisTeam) => {
-        const values = Object.values(thisTeam).map((thisValue) =>
-          Object.values(thisValue)
-        );
-        return values;
-      });
-      const parsedData = [];
-      const headers = preProcessedData[0][0];
-      const dataByTeam = preProcessedData;
-      dataByTeam.forEach((sheetData) => {
-        sheetData.forEach((thisRow) => {
-          const currentObject = {};
-          thisRow.forEach((thisValue, index) => {
-            const currentHeader = headers[index];
-            currentObject[currentHeader] = thisValue;
-          });
-          parsedData.push(currentObject);
-        });
-      });
-      console.log(parsedData);
 
-      //TODO
-      // Pasar todos los headers a minuscula, sin caracteres especiales, sin espacios
-      // la tabla debe renderear directamente los datos de la base de datos, sin tener que parsear nada
-      // Antes de subir los datos a firebase, hay que verificar que el formulario haya pasado ANTES, sino rebotar si o si el archivo
+      const parsedData = [];
+
+      // Filtrar solo las hojas "Impacto" e "Impacto ácido"
+      const relevantSheets = ["Impacto", "Impacto ácido"];
+
+      relevantSheets.forEach((sheetName) => {
+        if (workbook.SheetNames.includes(sheetName)) {
+          const sheet = workbook.Sheets[sheetName];
+          const data = XLSX.utils.sheet_to_json(sheet);
+          const headers = data.length > 0 ? Object.keys(data[0]) : [];
+
+          const formattedData = data.map((row) => {
+            const newRow = {};
+            headers.forEach((header) => {
+              newRow[formatHeader(header)] = row[header];
+            });
+            return newRow;
+          });
+
+          parsedData.push({
+            sheetName,
+            data: formattedData,
+          });
+        }
+      });
+
+      console.log(parsedData); // Mantendrá los nombres de las hojas "Impacto" e "Impacto ácido"
 
       setData(parsedData);
     };
   };
+
+
+  //TODO
+  // Pasar todos los headers a minuscula, sin caracteres especiales, sin espacios
+  // la tabla debe renderear directamente los datos de la base de datos, sin tener que parsear nada
+  // Antes de subir los datos a firebase, hay que verificar que el formulario haya pasado ANTES, sino rebotar si o si el archivo
+
 
   const onSubmit = async (formData) => {
     try {

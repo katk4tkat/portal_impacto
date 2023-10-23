@@ -27,7 +27,7 @@ function PriorizationFilters({ handleFilterChange }) {
             className="form-control"
             id="vulnerability-input"
             placeholder="Vulnerabilidad"
-            onChange={(e) => handleFilterChange("__EMPTY_4", e.target.value)}
+            onChange={(e) => handleFilterChange("vulnerabilidad_1", e.target.value)}
           />
         </div>
         <div className="col-sm-2">
@@ -39,7 +39,7 @@ function PriorizationFilters({ handleFilterChange }) {
             className="form-control"
             id="technical-unit-input"
             placeholder="Unidad Técnica"
-            onChange={(e) => handleFilterChange("__EMPTY_1", e.target.value)}
+            onChange={(e) => handleFilterChange("u_tecnica", e.target.value)}
           />
         </div>
         <div className="col-sm-2">
@@ -51,7 +51,7 @@ function PriorizationFilters({ handleFilterChange }) {
             className="form-control"
             id="equipment-system-input"
             placeholder="Equipo Sistema"
-            onChange={(e) => handleFilterChange("__EMPTY", e.target.value)}
+            onChange={(e) => handleFilterChange("equipo_o_sistema", e.target.value)}
           />
         </div>
         <div className="col-sm-2">
