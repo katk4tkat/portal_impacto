@@ -2,37 +2,29 @@
 import React, { useEffect, useState } from "react";
 import { getDocuments } from "../../firebase/firebase";
 import PropTypes from "prop-types";
-import Pagination from "../UI/Pagination";
 
 function PriorizationTable({ filters }) {
   const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const documentContent = [];
         const documents = await getDocuments();
-        const impactoData = [];
+
         documents.forEach((document) => {
-          document.data.data.shift();
-          document.data.data.map((thisRow) => {
-            thisRow.week = document.data.week.slice(-2);
+          Object.values(document.data).forEach((thisRow) => {
+            if (thisRow && thisRow.weekName) {
+              documentContent.push(thisRow);
+            }
           });
-          impactoData.push(document.data.data);
-        });
-        const impactoAcidoData = [];
-        documents.forEach((document) => {
-          document.data.data.shift();
-          document.data.data.map((thisRow) => {
-            thisRow.week = document.data.week.slice(-2);
-          });
-          impactoAcidoData.push(...document.data.data);
         });
 
-        const sortedData = [...impactoData, ...impactoAcidoData].sort(
-          (a, b) => b.week - a.week
-        );
+        const sortedData = documentContent.sort((a, b) => {
+          if (a.weekName > b.weekName) return -1;
+          if (a.weekName < b.weekName) return 1;
+          return 0;
+        });
 
         setData(sortedData);
       } catch (error) {
@@ -42,16 +34,6 @@ function PriorizationTable({ filters }) {
 
     fetchData();
   }, []);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
 
   return (
     <>
@@ -74,60 +56,34 @@ function PriorizationTable({ filters }) {
             </tr>
           </thead>
           <tbody>
-            {currentData
-              .filter((item) => {
-                return Object.keys(filters).every((field) => {
-                  const filterValue = filters[field].toLowerCase();
-                  if (field === "description" && filterValue) {
-                    const combinedDescription =
-                      (item.descripcion_del_trabajo || "N/A").toLowerCase() +
-                      (item.descripcion_del_aviso || "N/A").toLowerCase();
-                    if (!combinedDescription.includes(filterValue)) {
-                      return false;
-                    }
-                  } else if (
-                    filterValue &&
-                    item[field] &&
-                    !item[field].toLowerCase().includes(filterValue)
-                  ) {
-                    return false;
-                  }
-                  return true;
-                });
-              })
-              .map((item, index) => {
-                return (
-                  <tr key={index}>
-                    {/* Ajusta la enumeración para que continúe desde donde lo dejó la página anterior */}
-                    <td>{index + indexOfFirstItem + 1}</td>
-                    <td>{item.week}</td>
-                    <td>{item.vulnerabilidad_1 || "N/A"}</td>
-                    <td>{item.u_tecnica || "N/A"}</td>
-                    <td>{item.equipo_o_sistema || "N/A"}</td>
-                    <td>{item.descripcion_del_trabajo || "N/A"}</td>
-                    <td>{item.descripcion_del_aviso || "N/A"}</td>
-                    <td>*documento*</td>
-                    <td>*documento*</td>
-                    <td>
-                      <a href="#">V.D.</a>
-                    </td>
-                    <td>
-                      <a href="#">E.I.</a>
-                    </td>
-                    <td>
-                      <a href="#">I.R.</a>
-                    </td>
-                  </tr>
-                );
-              })}
+            {data.map((item, index) => {
+              console.log(data.length)
+              return (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{item.weekName ? item.weekName.slice(-2) : "N/A"}</td>
+                  <td>{item.vulnerabilidad_1 || "N/A"}</td>
+                  <td>{item.u_tecnica || "N/A"}</td>
+                  <td>{item.equipo_o_sistema || "N/A"}</td>
+                  <td>{item.descripcion_del_trabajo || "N/A"}</td>
+                  <td>{item.descripcion_del_aviso || "N/A"}</td>
+                  <td>*documento*</td>
+                  <td>*documento*</td>
+                  <td>
+                    <a href="#">V.D.</a>
+                  </td>
+                  <td>
+                    <a href="#">E.I.</a>
+                  </td>
+                  <td>
+                    <a href="#">I.R.</a>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        handlePageChange={handlePageChange}
-      />
     </>
   );
 }

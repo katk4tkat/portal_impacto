@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { useForm, Controller } from 'react-hook-form';
@@ -6,33 +7,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './upload-priorization-form.css';
 import { isWeekValid } from './handleFormErrors';
+import { formatHeader } from '../../utils/formatHeader';
 
 function UploadPriorizationForm() {
   const [dataContent, setDataContent] = useState([]);
   const [file, setFile] = useState(null);
 
   const { control, handleSubmit, reset } = useForm({});
-
-  // ... (importaciones y código anterior)
-
-  function formatHeader(header) {
-    // Convierte a minúsculas
-    let formattedHeader = header.toLowerCase();
-
-    // Reemplaza vocales con tilde por vocales sin tilde
-    formattedHeader = formattedHeader
-      .replace(/[áäâà]/g, 'a')
-      .replace(/[éëêè]/g, 'e')
-      .replace(/[íïîì]/g, 'i')
-      .replace(/[óöôò]/g, 'o')
-      .replace(/[úüûù]/g, 'u');
-
-    // Reemplaza otros caracteres especiales y espacios según tus necesidades
-    formattedHeader = formattedHeader.replace(/[^\w\s]/g, '');
-    formattedHeader = formattedHeader.replace(/\s+/g, '_');
-
-    return formattedHeader;
-  }
 
   const handleExcelFileUploadAndParse = (e) => {
     const reader = new FileReader();
@@ -107,6 +88,7 @@ function UploadPriorizationForm() {
         return parsedData
       });
       console.log(parsedData);
+      setDataContent(parsedData);
 
       uploadFile(file, week);
       await priorizationData(parsedData);
