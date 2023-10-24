@@ -8,12 +8,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import './upload-priorization-form.css';
 import { isWeekValid } from './handleFormErrors';
 import { formatHeader } from '../../utils/formatHeader';
+import { useNavigate } from 'react-router-dom';
+
 
 function UploadPriorizationForm() {
   const [dataContent, setDataContent] = useState([]);
   const [file, setFile] = useState(null);
 
-  const { control, handleSubmit, reset } = useForm({});
+  const { control, handleSubmit } = useForm({});
 
   const handleExcelFileUploadAndParse = (e) => {
     const reader = new FileReader();
@@ -24,7 +26,6 @@ function UploadPriorizationForm() {
 
       const parsedData = [];
 
-      // Filtrar solo las hojas "Impacto" e "Impacto ácido"
       const relevantSheets = ['Impacto', 'Impacto ácido'];
 
       relevantSheets.forEach((sheetName) => {
@@ -47,15 +48,15 @@ function UploadPriorizationForm() {
           });
         }
       });
-
-      console.log(parsedData); // Mantendrá los nombres de las hojas "Impacto" e "Impacto ácido"
-
       setDataContent(parsedData);
     };
   };
 
+  const navigate = useNavigate();
+
   const onSubmit = async (formData) => {
     try {
+
       const user = localStorage.getItem('userEmail');
       const { week, team } = formData;
       if (!team || !isWeekValid(week)) {
@@ -87,7 +88,6 @@ function UploadPriorizationForm() {
         parsedData.push(newRow);
         return parsedData
       });
-      console.log(parsedData);
       setDataContent(parsedData);
 
       uploadFile(file, week);
@@ -96,11 +96,11 @@ function UploadPriorizationForm() {
       console.log('Datos a enviar a Firestore:', parsedData);
 
       toast.success('Priorización importada correctamente');
-      reset();
+      navigate('/home');
+
     } catch (error) {
       console.error('Error:', error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
-      // Este catch deberia eliminar el archivo excel si es que lo guardo
     }
   };
 

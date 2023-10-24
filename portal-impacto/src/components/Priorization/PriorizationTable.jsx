@@ -19,11 +19,11 @@ function PriorizationTable({ filters }) {
             }
           });
         });
-
-        const sortedData = documentContent.sort((a, b) => {
-          if (a.weekName > b.weekName) return -1;
-          if (a.weekName < b.weekName) return 1;
-          return 0;
+        console.log(documentContent)
+        const sortedData = [...documentContent].sort((a, b) => {
+          const weekNameA = a.weekName ? a.weekName.toString() : '';
+          const weekNameB = b.weekName ? b.weekName.toString() : '';
+          return weekNameA.localeCompare(weekNameB);
         });
 
         setData(sortedData);
@@ -57,7 +57,6 @@ function PriorizationTable({ filters }) {
           </thead>
           <tbody>
             {data.map((item, index) => {
-              console.log(data.length)
               return (
                 <tr key={index}>
                   <td>{index + 1}</td>
