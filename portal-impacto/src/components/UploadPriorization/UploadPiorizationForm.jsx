@@ -1,32 +1,35 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
-import * as XLSX from 'xlsx';
-import { useForm, Controller } from 'react-hook-form';
-import { priorizationData, uploadFile } from '../../firebase/firebase';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './upload-priorization-form.css';
-import { isWeekValid } from './handleFormErrors';
-import { formatHeader } from '../../utils/formatHeader';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState } from "react";
+import * as XLSX from "xlsx";
+import { useForm, Controller } from "react-hook-form";
+import { priorizationData, uploadFile } from "../../firebase/firebase";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./upload-priorization-form.css";
+import { isWeekValid } from "./handleFormErrors";
+import { formatHeader } from "../../utils/formatHeader";
+import { useNavigate } from "react-router-dom";
 
 function UploadPriorizationForm() {
   const [dataContent, setDataContent] = useState([]);
   const [file, setFile] = useState(null);
 
-  const { control, handleSubmit } = useForm({});
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      week: "",
+    },
+  });
 
   const handleExcelFileUploadAndParse = (e) => {
     const reader = new FileReader();
     reader.readAsBinaryString(e.target.files[0]);
     reader.onload = (e) => {
       const data = e.target.result;
-      const workbook = XLSX.read(data, { type: 'binary' });
+      const workbook = XLSX.read(data, { type: "binary" });
 
       const parsedData = [];
 
-      const relevantSheets = ['Impacto', 'Impacto ácido'];
+      const relevantSheets = ["Impacto", "Impacto ácido"];
 
       relevantSheets.forEach((sheetName) => {
         if (workbook.SheetNames.includes(sheetName)) {
@@ -56,13 +59,14 @@ function UploadPriorizationForm() {
 
   const onSubmit = async (formData) => {
     try {
-
-      const user = localStorage.getItem('userEmail');
+      const user = localStorage.getItem("userEmail");
       const { week, team } = formData;
+
       if (!team || !isWeekValid(week)) {
         toast.error(
           "Ha ocurrido un error: Debe completar campos de equipo, semana y seleccionar un archivo."
         );
+        return;
       }
 
       const activities = dataContent.filter((thisTeam) => {
@@ -86,20 +90,20 @@ function UploadPriorizationForm() {
         newRow.createdAt = new Date();
         newRow.team = team;
         parsedData.push(newRow);
-        return parsedData
       });
       setDataContent(parsedData);
 
       uploadFile(file, week);
       await priorizationData(parsedData);
 
-      console.log('Datos a enviar a Firestore:', parsedData);
+      console.log("Datos a enviar a Firestore:", parsedData);
 
-      toast.success('Priorización importada correctamente');
-      navigate('/home');
-
+      toast.success("Priorización importada correctamente");
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
     }
   };
@@ -135,8 +139,8 @@ function UploadPriorizationForm() {
                   control={control}
                   render={({ field }) => (
                     <select {...field} className="form-control" id="team">
-                      <option disabled selected>
-                        Selecciona un equipo
+                      <option value="" defaultValue>
+                        Seleccione un equipo
                       </option>
                       <option value="impacto">Impacto</option>
                       <option value="impacto_acido">Impacto Acido</option>
