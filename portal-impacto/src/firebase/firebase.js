@@ -13,7 +13,6 @@ export const isUserAuthenticated = () => {
 export const logout = async () => {
   try {
     await signOut(auth);
-    console.log("logout succesful");
   } catch (error) {
     console.error("logout", error);
   }
@@ -25,8 +24,6 @@ export const priorizationData = async (uploadPriorizationObject) => {
       ...uploadPriorizationObject,
       userId: auth.currentUser.uid,
     });
-
-    console.log("Document written with ID: ", docRef);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
@@ -35,7 +32,6 @@ export const priorizationData = async (uploadPriorizationObject) => {
 export async function uploadFile(file, week) {
   const storageRef = ref(storage, `${week}.xlsx`);
   const snapshot = await uploadBytes(storageRef, file);
-  console.log(snapshot);
 }
 
 export const getDocuments = async () => {
@@ -51,7 +47,6 @@ export const getDocuments = async () => {
       });
     });
 
-    console.log(documents)
     return documents;
   } catch (error) {
     console.error("Error al obtener documentos: ", error);
