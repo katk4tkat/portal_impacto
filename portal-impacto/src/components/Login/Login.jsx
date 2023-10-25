@@ -1,10 +1,13 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { loginEmail } from "../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
+import { loginErrorHandler } from "./login-error-handler";
 
 function Login() {
+  const [errorMessage, setErrorMessage] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -18,7 +21,9 @@ function Login() {
       localStorage.setItem("userEmail", data.email);
       navigate("/home");
     } catch (error) {
-      console.log(error);
+      const errorText = loginErrorHandler(error);
+
+      setErrorMessage(errorText);
     }
   };
 
@@ -34,7 +39,6 @@ function Login() {
           padding: "20px",
           borderRadius: "10px",
           width: "500px",
-          minHeight: "60vh",
         }}
       >
         <h2 className="mt-5">PORTAL IMPACTO</h2>
@@ -60,7 +64,6 @@ function Login() {
               <span className="text-danger">{errors.email.message}</span>
             )}
           </div>
-
           <div className="form-group">
             <Controller
               name="password"
@@ -82,7 +85,7 @@ function Login() {
               <span className="text-danger">{errors.password.message}</span>
             )}
           </div>
-
+          {errorMessage && <span className="text-danger">{errorMessage}</span>}
           <div className="form-group">
             <button
               type="submit"
