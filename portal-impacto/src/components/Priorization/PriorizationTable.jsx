@@ -19,12 +19,10 @@ function PriorizationTable({ filters }) {
             }
           });
         });
-        console.log(documentContent)
-        const sortedData = [...documentContent].sort((a, b) => {
-          const weekNameA = a.weekName ? a.weekName.toString() : '';
-          const weekNameB = b.weekName ? b.weekName.toString() : '';
-          return weekNameA.localeCompare(weekNameB);
-        });
+
+        const sortedData = [...documentContent].sort(
+          (a, b) => b.weekName - a.weekName
+        );
 
         setData(sortedData);
       } catch (error) {
@@ -56,30 +54,51 @@ function PriorizationTable({ filters }) {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{item.weekName ? item.weekName.slice(-2) : "N/A"}</td>
-                  <td>{item.vulnerabilidad_1 || "N/A"}</td>
-                  <td>{item.u_tecnica || "N/A"}</td>
-                  <td>{item.equipo_o_sistema || "N/A"}</td>
-                  <td>{item.descripcion_del_trabajo || "N/A"}</td>
-                  <td>{item.descripcion_del_aviso || "N/A"}</td>
-                  <td>*documento*</td>
-                  <td>*documento*</td>
-                  <td>
-                    <a href="#">V.D.</a>
-                  </td>
-                  <td>
-                    <a href="#">E.I.</a>
-                  </td>
-                  <td>
-                    <a href="#">I.R.</a>
-                  </td>
-                </tr>
-              );
-            })}
+            {data
+              .filter((item) => {
+                return Object.keys(filters).every((field) => {
+                  const filterValue = filters[field].toLowerCase();
+                  if (field === "description" && filterValue) {
+                    const combinedDescription =
+                      (item.descripcion_del_trabajo || "N/A").toLowerCase() +
+                      (item.descripcion_del_aviso || "N/A").toLowerCase();
+                    if (!combinedDescription.includes(filterValue)) {
+                      return false;
+                    }
+                  } else if (
+                    filterValue &&
+                    item[field] &&
+                    !item[field].toLowerCase().includes(filterValue)
+                  ) {
+                    return false;
+                  }
+                  return true;
+                });
+              })
+              .map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item.weekName.slice(-2) || "N/A"}</td>
+                    <td>{item.vulnerabilidad_1 || "N/A"}</td>
+                    <td>{item.u_tecnica || "N/A"}</td>
+                    <td>{item.equipo_o_sistema || "N/A"}</td>
+                    <td>{item.descripcion_del_trabajo || "N/A"}</td>
+                    <td>{item.descripcion_del_aviso || "N/A"}</td>
+                    <td>*documento*</td>
+                    <td>*documento*</td>
+                    <td>
+                      <a href="#">V.D.</a>
+                    </td>
+                    <td>
+                      <a href="#">E.I.</a>
+                    </td>
+                    <td>
+                      <a href="#">I.R.</a>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

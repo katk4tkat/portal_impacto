@@ -15,7 +15,7 @@ function PriorizationFilters({ handleFilterChange }) {
             className="form-control"
             id="week-input"
             placeholder="Sem"
-            onChange={(e) => handleFilterChange("week", e.target.value)}
+            onChange={(e) => handleFilterChange("weekName", e.target.value)}
           />
         </div>
         <div className="col-sm-2">
@@ -27,7 +27,9 @@ function PriorizationFilters({ handleFilterChange }) {
             className="form-control"
             id="vulnerability-input"
             placeholder="Vulnerabilidad"
-            onChange={(e) => handleFilterChange("vulnerabilidad_1", e.target.value)}
+            onChange={(e) =>
+              handleFilterChange("vulnerabilidad_1", e.target.value)
+            }
           />
         </div>
         <div className="col-sm-2">
@@ -51,7 +53,9 @@ function PriorizationFilters({ handleFilterChange }) {
             className="form-control"
             id="equipment-system-input"
             placeholder="Equipo Sistema"
-            onChange={(e) => handleFilterChange("equipo_o_sistema", e.target.value)}
+            onChange={(e) =>
+              handleFilterChange("equipo_o_sistema", e.target.value)
+            }
           />
         </div>
         <div className="col-sm-2">
