@@ -20,9 +20,11 @@ function PriorizationTable({ filters }) {
           });
         });
 
-        const sortedData = [...documentContent].sort(
-          (a, b) => b.weekName - a.weekName
-        );
+        const sortedData = [...documentContent].sort((a, b) => {
+          const weekA = parseInt(a.weekName.slice(-2)) || 0;
+          const weekB = parseInt(b.weekName.slice(-2)) || 0;
+          return weekB - weekA;
+        });
 
         setData(sortedData);
       } catch (error) {
@@ -58,7 +60,11 @@ function PriorizationTable({ filters }) {
               .filter((item) => {
                 return Object.keys(filters).every((field) => {
                   const filterValue = filters[field].toLowerCase();
-                  if (field === "description" && filterValue) {
+                  if (field === "weekName" && filterValue) {
+                    if (item.weekName.slice(-2) !== filterValue) {
+                      return false;
+                    }
+                  } else if (field === "description" && filterValue) {
                     const combinedDescription =
                       (item.descripcion_del_trabajo || "N/A").toLowerCase() +
                       (item.descripcion_del_aviso || "N/A").toLowerCase();
