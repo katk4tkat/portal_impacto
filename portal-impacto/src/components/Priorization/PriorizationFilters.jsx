@@ -82,11 +82,6 @@ function PriorizationFilters({ handleFilterChange }) {
             onChange={(e) => handleFilterChange("status", e.target.value)}
           />
         </div>
-        <div className="col-auto">
-          <button type="submit" className="btn btn-secondary">
-            Buscar
-          </button>
-        </div>
       </form>
     </>
   );

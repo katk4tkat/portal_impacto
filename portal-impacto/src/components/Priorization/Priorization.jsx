@@ -4,7 +4,6 @@ import PriorizationTable from "./PriorizationTable";
 import PriorizationFilters from "./PriorizationFilters";
 import ButtonUI from "../UI/ButtonUI";
 import { useNavigate } from "react-router-dom";
-// import Table from "../UI/Table";
 
 function Priorization() {
   const navigate = useNavigate();
@@ -50,7 +49,6 @@ function Priorization() {
         </div>
       </div>
       <PriorizationTable filters={filters} />
-      {/* <Table /> */}
     </>
   );
 }
