@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
 import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
+import AddStatus from "./components/AddStatus/AddStatusForm";
 import { isUserAuthenticated } from "./firebase/firebase";
 
 function PrivateRoute({ element }) {
@@ -32,6 +33,11 @@ root.render(
           path="/upload-priorization"
           element={<PrivateRoute element={<UploadPriorization />} />}
         />
+        <Route
+          path="/add-status/:documentId"
+          element={<PrivateRoute element={<AddStatus />} />}
+        />
+
         <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
