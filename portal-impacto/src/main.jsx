@@ -5,8 +5,8 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
 import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
-import AddStatus from "./components/AddStatus/AddStatusForm";
 import { isUserAuthenticated } from "./firebase/firebase";
+import AddStatus from "./components/AddStatus/AddStatus";
 
 function PrivateRoute({ element }) {
   const isAuthenticated = isUserAuthenticated();
@@ -43,3 +43,5 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+

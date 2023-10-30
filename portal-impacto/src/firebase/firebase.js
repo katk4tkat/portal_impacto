@@ -18,7 +18,7 @@ export const logout = async () => {
   }
 };
 
-export const priorizationData = async (uploadPriorizationObject) => {
+export const addData = async (uploadPriorizationObject) => {
   try {
     const docRef = await addDoc(collection(db, "PriorizationObject"), {
       ...uploadPriorizationObject,
@@ -50,6 +50,6 @@ export const getDocuments = async () => {
     return documents;
   } catch (error) {
     console.error("Error al obtener documentos: ", error);
-    throw error; // Optionally re-throw the error for handling in the caller.
+    throw error;
   }
 };
