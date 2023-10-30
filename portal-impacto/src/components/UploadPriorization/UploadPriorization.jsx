@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import UploadPriorizationForm from "../UploadPriorization/UploadPiorizationForm";
 import ButtonUI from "../UI/ButtonUI";
-import { useNavigate } from "react-router-dom";
 
 function UploadPriorization() {
   const navigate = useNavigate();
@@ -27,7 +27,6 @@ function UploadPriorization() {
           </div>
         </div>
       </div>
-
     </>
   );
 }

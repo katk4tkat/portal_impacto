@@ -1,14 +1,14 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { useForm, Controller } from "react-hook-form";
-import { priorizationData, uploadFile } from "../../firebase/firebase";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "./upload-priorization-form.css";
+import { priorizationData, uploadFile } from "../../firebase/firebase";
 import { isWeekValid } from "./handleFormErrors";
 import { formatHeader } from "../../utils/formatHeader";
-import { useNavigate } from "react-router-dom";
+import "./upload-priorization-form.css";
+import "react-toastify/dist/ReactToastify.css";
 
 function UploadPriorizationForm() {
   const [dataContent, setDataContent] = useState([]);
@@ -60,6 +60,7 @@ function UploadPriorizationForm() {
   const onSubmit = async (formData) => {
     try {
       const user = localStorage.getItem("userEmail");
+      const status = "recibido-MSMIN";
       const { week, team } = formData;
 
       if (!team || !isWeekValid(week)) {
@@ -89,6 +90,7 @@ function UploadPriorizationForm() {
         newRow.uploadedBy = user;
         newRow.createdAt = new Date();
         newRow.team = team;
+        newRow.status = status;
         parsedData.push(newRow);
       });
       setDataContent(parsedData);
