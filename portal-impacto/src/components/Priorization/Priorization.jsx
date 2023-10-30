@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import PriorizationTable from "./PriorizationTable";
-import PriorizationFilters from "./PriorizationFilters";
-import ButtonUI from "../UI/ButtonUI";
 import { useNavigate } from "react-router-dom";
+import ButtonUI from "../UI/ButtonUI";
+import PriorizationFilters from "./PriorizationFilters";
+import PriorizationTable from "./PriorizationTable";
 
 function Priorization() {
   const navigate = useNavigate();
