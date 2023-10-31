@@ -12,21 +12,13 @@ function PriorizationTable({ filters }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const documentContent = [];
         const documents = await getDocuments();
+        const documentContent = documents.map((document) => ({
+          id: document.id,
+          ...document.data,
+        }));
 
-        documents.forEach((document, index) => {
-          Object.values(document.data).forEach((thisRow) => {
-            if (thisRow && thisRow.weekName) {
-              documentContent.push({
-                id: documents[index].id,
-                ...thisRow,
-              });
-            }
-          });
-        });
-
-        const sortedData = [...documentContent].sort((a, b) => {
+        const sortedData = documentContent.sort((a, b) => {
           const weekA = parseInt(a.weekName.slice(-2)) || 0;
           const weekB = parseInt(b.weekName.slice(-2)) || 0;
           return weekB - weekA;
@@ -92,7 +84,6 @@ function PriorizationTable({ filters }) {
                   });
                 })
                 .map((item, index) => {
-                  console.log(item.id);
                   return (
                     <tr key={index}>
                       <td>{index + 1}</td>
@@ -102,10 +93,10 @@ function PriorizationTable({ filters }) {
                       <td>{item.equipo_o_sistema || "N/A"}</td>
                       <td>{item.descripcion_del_trabajo || "N/A"}</td>
                       <td>{item.descripcion_del_aviso || "N/A"}</td>
-                      <td>{item.status}</td>
+                      <td>{item.impactoStatus}</td>
                       <td>documento</td>
                       <td>
-                        <Link to={`/add-status/${item.id}`}>E.I</Link>
+                        <Link to={`/update-status/${item.id}`}>E.I</Link>
                       </td>
                       <td>
                         <a href="#">I.R.</a>
