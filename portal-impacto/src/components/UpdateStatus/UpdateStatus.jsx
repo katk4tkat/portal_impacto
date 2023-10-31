@@ -3,10 +3,14 @@ import React from "react";
 import Navbar from "../Navbar/Navbar";
 import UpdateStatusForm from "./UpdateStatusForm.jsx";
 import ButtonUI from "../UI/ButtonUI";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import ShowStatus from "./ShowStatus/ShowStatus";
+
 
 function AddStatus() {
   const navigate = useNavigate();
+
+  const { documentId } = useParams();
 
   const handleReturnClick = () => {
     navigate("/home");
@@ -15,7 +19,17 @@ function AddStatus() {
   return (
     <>
       <Navbar />
-      <UpdateStatusForm />
+      <div className="container overflow-hidden text-center">
+        <div className="row gx-5">
+          <div className="col">
+            <div className="p-5"><ShowStatus documentId={documentId} /></div>
+          </div>
+          <div className="col">
+            <div className="p-3"><UpdateStatusForm documentId={documentId} /></div>
+          </div>
+        </div>
+      </div>
+
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-auto mt-5">
@@ -30,5 +44,6 @@ function AddStatus() {
     </>
   );
 }
+
 
 export default AddStatus;

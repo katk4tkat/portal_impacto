@@ -1,14 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
-import { useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { updateData } from "../../firebase/firebase";
+import PropTypes from "prop-types";
+import "react-toastify/dist/ReactToastify.css";
 
-function AddStatusForm() {
-  const { documentId } = useParams();
-  const navigate = useNavigate();
+
+function UpdateStatusForm({ documentId }) {
   const { control, handleSubmit } = useForm({
     defaultValues: {
       impactoStatus: "",
@@ -37,10 +36,7 @@ function AddStatusForm() {
 
       updateData(documentId, updatedStatus);
 
-      toast.success("Estado Impacto guardado exitosamente");
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
+      toast.success("Estado actualizado exitosamente");
     } catch (error) {
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
@@ -53,7 +49,7 @@ function AddStatusForm() {
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">
-              <h2 className="text-center mb-4">ESTADO IMPACTO</h2>
+              <h2 className="text-center mb-4"> ACTUALIZAR ESTADO IMPACTO</h2>
               <div className="form-group">
                 <label htmlFor="impactoStatus">Ingresar Estado:</label>
                 <Controller
@@ -68,13 +64,13 @@ function AddStatusForm() {
                       <option value="" defaultValue>
                         Seleccione un Estado
                       </option>
-                      <option value="accepted">Aceptado</option>
-                      <option value="rejected">Rechazado</option>
-                      <option value="pending">Pendiente</option>
-                      <option value="scheduled">Programado</option>
-                      <option value="executed">Ejecutado</option>
-                      <option value="repeated">Repetido</option>
-                      <option value="other">Otro</option>
+                      <option value="ACEPTADO">Aceptado</option>
+                      <option value="RECHAZADO">Rechazado</option>
+                      <option value="PENDIENTE">Pendiente</option>
+                      <option value="PROGRAMADO">Programado</option>
+                      <option value="EJECUTADO">Ejecutado</option>
+                      <option value="REPETIDO">Repetido</option>
+                      <option value="OTRO">Otro</option>
                     </select>
                   )}
                 />
@@ -118,4 +114,8 @@ function AddStatusForm() {
   );
 }
 
-export default AddStatusForm;
+UpdateStatusForm.propTypes = {
+  documentId: PropTypes.string.isRequired,
+};
+
+export default UpdateStatusForm;

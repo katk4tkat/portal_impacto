@@ -60,7 +60,7 @@ function UploadPriorizationForm() {
   const onSubmit = async (formData) => {
     try {
       const user = localStorage.getItem("userEmail");
-      const impactoStatus = "recibido-MSMIN";
+      const impactoStatus = "RECIBIDO-MSMIN";
       const { week, team } = formData;
 
       if (!team || !isWeekValid(week)) {
