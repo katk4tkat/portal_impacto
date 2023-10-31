@@ -6,7 +6,7 @@ import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
 import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
 import { isUserAuthenticated } from "./firebase/firebase";
-import AddStatus from "./components/AddStatus/AddStatus";
+import UpdateStatus from "./components/UpdateStatus/UpdateStatus";
 
 function PrivateRoute({ element }) {
   const isAuthenticated = isUserAuthenticated();
@@ -34,8 +34,8 @@ root.render(
           element={<PrivateRoute element={<UploadPriorization />} />}
         />
         <Route
-          path="/add-status/:documentId"
-          element={<PrivateRoute element={<AddStatus />} />}
+          path="/update-status/:documentId"
+          element={<PrivateRoute element={<UpdateStatus />} />}
         />
 
         <Route path="/login" element={<Login />} />
@@ -43,5 +43,3 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
-
-
