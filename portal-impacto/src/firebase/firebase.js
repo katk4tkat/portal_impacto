@@ -1,6 +1,12 @@
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db, storage } from "./firebase-config.js";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
 
 export const loginEmail = (email, password) =>
@@ -18,7 +24,7 @@ export const logout = async () => {
   }
 };
 
-export const addData = async (uploadPriorizationObject) => {
+export const addPriorization = async (uploadPriorizationObject) => {
   try {
     const docRef = await addDoc(collection(db, "PriorizationObject"), {
       ...uploadPriorizationObject,
@@ -52,4 +58,9 @@ export const getDocuments = async () => {
     console.error("Error al obtener documentos: ", error);
     throw error;
   }
+};
+
+export const updateData = async (documentId, updatedData) => {
+  const statusDocRef = doc(db, "PriorizationObject", documentId);
+  await updateDoc(statusDocRef, updatedData);
 };
