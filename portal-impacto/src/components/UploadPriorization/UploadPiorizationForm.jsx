@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { addData, uploadFile } from "../../firebase/firebase";
+import { addPriorization, uploadFile } from "../../firebase/firebase";
 import { isWeekValid } from "./handleFormErrors";
 import { formatHeader } from "../../utils/formatHeader";
 import "./upload-priorization-form.css";
@@ -60,7 +60,7 @@ function UploadPriorizationForm() {
   const onSubmit = async (formData) => {
     try {
       const user = localStorage.getItem("userEmail");
-      const status = "recibido-MSMIN";
+      const impactoStatus = "recibido-MSMIN";
       const { week, team } = formData;
 
       if (!team || !isWeekValid(week)) {
@@ -90,13 +90,17 @@ function UploadPriorizationForm() {
         newRow.uploadedBy = user;
         newRow.createdAt = new Date();
         newRow.team = team;
-        newRow.status = status;
+        newRow.impactoStatus = impactoStatus;
         parsedData.push(newRow);
       });
       setDataContent(parsedData);
 
+      const addPriorizationPromises = parsedData.map((data) =>
+        addPriorization(data)
+      );
+      await Promise.all(addPriorizationPromises);
+
       uploadFile(file, week);
-      await addData(parsedData);
 
       console.log("Datos a enviar a Firestore:", parsedData);
 
