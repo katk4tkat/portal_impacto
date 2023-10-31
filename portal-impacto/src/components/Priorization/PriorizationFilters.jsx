@@ -71,15 +71,17 @@ function PriorizationFilters({ handleFilterChange }) {
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="status">
+          <label className="visually-hidden" htmlFor="impactoStatus">
             Estado
           </label>
           <input
             type="text"
             className="form-control"
-            id="status"
+            id="impactoStatus"
             placeholder="Estado"
-            onChange={(e) => handleFilterChange("status", e.target.value)}
+            onChange={(e) =>
+              handleFilterChange("impactoStatus", e.target.value)
+            }
           />
         </div>
       </form>

@@ -14,7 +14,7 @@ function Priorization() {
     technicalUnit: "",
     equipmentSystem: "",
     description: "",
-    status: "",
+    impactoStatus: "",
   });
 
   const handleFilterChange = (fieldName, value) => {
