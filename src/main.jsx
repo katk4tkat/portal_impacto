@@ -1,12 +1,12 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { isUserAuthenticated } from "./utils/firebase.js";
 import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
 import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
-import { isUserAuthenticated } from "./firebase/firebase";
 import UpdateStatus from "./components/UpdateStatus/UpdateStatus";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function PrivateRoute({ element }) {
   const isAuthenticated = isUserAuthenticated();

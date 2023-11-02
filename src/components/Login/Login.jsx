@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { loginEmail } from "../../firebase/firebase";
+import { loginEmail } from "../../utils/firebase.js";
 import { useNavigate } from "react-router-dom";
 import { loginErrorHandler } from "./login-error-handler";
 

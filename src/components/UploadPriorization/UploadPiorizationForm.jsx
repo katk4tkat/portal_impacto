@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
+import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { addPriorization, uploadFile } from "../../firebase/firebase";
+import { addPriorization, uploadFile } from "../../utils/firebase.js";
 import { isWeekValid } from "./handleFormErrors";
 import { formatHeader } from "../../utils/formatHeader";
 import "./upload-priorization-form.css";
@@ -14,9 +14,10 @@ function UploadPriorizationForm() {
   const [dataContent, setDataContent] = useState([]);
   const [file, setFile] = useState(null);
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       week: "",
+      team: "",
     },
   });
 
@@ -102,9 +103,12 @@ function UploadPriorizationForm() {
 
       uploadFile(file, week);
 
-      console.log("Datos a enviar a Firestore:", parsedData);
-
       toast.success("Priorización importada correctamente");
+      reset({
+        week: "",
+        team: "",
+      });
+
       setTimeout(() => {
         navigate("/home");
       }, 2000);

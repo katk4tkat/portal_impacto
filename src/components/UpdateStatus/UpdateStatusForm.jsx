@@ -2,13 +2,12 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { updateData } from "../../firebase/firebase";
+import { updateData } from "../../utils/firebase.js";
 import PropTypes from "prop-types";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function UpdateStatusForm({ documentId }) {
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       impactoStatus: "",
       impactoStatusDescription: "",
@@ -37,6 +36,10 @@ function UpdateStatusForm({ documentId }) {
       updateData(documentId, updatedStatus);
 
       toast.success("Estado actualizado exitosamente");
+      reset({
+        impactoStatus: "",
+        impactoStatusDescription: "",
+      });
     } catch (error) {
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
@@ -46,7 +49,7 @@ function UpdateStatusForm({ documentId }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
       <div className="row justify-content-center">
-        <div className="col-md-6">
+        <div className="col-xl">
           <div className="card">
             <div className="card-body">
               <h2 className="text-center mb-4"> ACTUALIZAR ESTADO IMPACTO</h2>

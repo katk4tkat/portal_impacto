@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
-import UploadPriorizationForm from "../UploadPriorization/UploadPiorizationForm";
+import UploadPriorizationForm from "./UploadPiorizationForm";
 import ButtonUI from "../UI/ButtonUI";
 
 function UploadPriorization() {

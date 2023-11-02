@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { getDocuments } from "../../firebase/firebase";
+import { getDocuments } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner";
 
 function PriorizationTable({ filters }) {
