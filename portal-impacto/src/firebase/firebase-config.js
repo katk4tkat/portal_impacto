@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"
-import { getStorage } from "firebase/storage"
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 // import { getAnalytics } from "firebase/analytics";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -17,14 +17,16 @@ const firebaseConfig = {
   storageBucket: "portal-impacto.appspot.com",
   messagingSenderId: "198301037428",
   appId: "1:198301037428:web:af93b2a4520510c7c9f221",
-  measurementId: "G-W08BWTGTSF"
+  measurementId: "G-W08BWTGTSF",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app); 
+// const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app)
+const storage = getStorage(app);
 
 export { auth, db, app, storage };
+
+// hola
