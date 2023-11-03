@@ -7,8 +7,8 @@ import Spinner from "../../UI/Spinner";
 function ShowStatus({ documentId }) {
   const [document, setDocument] = useState({
     defaultValues: {
-      impactoStatus: "",
-      impactoStatusDescription: "Sin descripción",
+      impacto_status: "",
+      impacto_status_description: "Sin descripción",
     },
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -36,13 +36,13 @@ function ShowStatus({ documentId }) {
         <div className="card">
           <div className="card-body">
             <h2 className="text-center mb-4">ESTADO IMPACTO</h2>
-            <div>
-              <p>Estado: </p>
-              <p>{document.data?.impactoStatus}</p>
+            <div className="d-flex">
+              <p className="fw-bolder">Estado: </p>
+              <p>{document.data?.impacto_status}</p>
             </div>
             <div>
-              <p>Descripción:</p>
-              <p>{document.data?.impactoStatusDescription}</p>
+              <p className="fw-bolder">Descripción:</p>
+              <p>{document.data?.impacto_status_description}</p>
             </div>
           </div>
         </div>

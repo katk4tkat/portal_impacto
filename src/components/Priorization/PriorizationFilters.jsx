@@ -15,7 +15,7 @@ function PriorizationFilters({ handleFilterChange }) {
             className="form-control"
             id="week-input"
             placeholder="Sem"
-            onChange={(e) => handleFilterChange("weekName", e.target.value)}
+            onChange={(e) => handleFilterChange("week_name", e.target.value)}
           />
         </div>
         <div className="col-sm-2">
@@ -71,16 +71,16 @@ function PriorizationFilters({ handleFilterChange }) {
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="impactoStatus">
+          <label className="visually-hidden" htmlFor="impacto_status">
             Estado
           </label>
           <input
             type="text"
             className="form-control"
-            id="impactoStatus"
+            id="impacto_status"
             placeholder="Estado"
             onChange={(e) =>
-              handleFilterChange("impactoStatus", e.target.value)
+              handleFilterChange("impacto_status", e.target.value)
             }
           />
         </div>

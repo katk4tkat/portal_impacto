@@ -35,7 +35,7 @@ export const addPriorization = async (uploadPriorizationObject) => {
   }
 };
 
-export async function uploadFile(file, week) {
+export async function uploadPriorizationFile(file, week) {
   const storageRef = ref(storage, `${week}.xlsx`);
   const snapshot = await uploadBytes(storageRef, file);
 }
@@ -60,7 +60,17 @@ export const getDocuments = async () => {
   }
 };
 
-export const updateData = async (documentId, updatedData) => {
+export const updatePriorizationStatus = async (documentId, updatedStatus) => {
   const statusDocRef = doc(db, "PriorizationObject", documentId);
-  await updateDoc(statusDocRef, updatedData);
+  await updateDoc(statusDocRef, updatedStatus);
+};
+
+export async function uploadRecordFile(recordIMG) {
+  const storageRef = ref(storage, recordIMG[0].name);
+  await uploadBytes(storageRef, recordIMG[0]);
+}
+
+export const createNewRecord = async (documentId, newRecord) => {
+  const statusDocRef = doc(db, "PriorizationObject", documentId);
+  await updateDoc(statusDocRef, newRecord);
 };

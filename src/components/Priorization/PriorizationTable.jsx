@@ -19,8 +19,8 @@ function PriorizationTable({ filters }) {
         }));
 
         const sortedData = documentContent.sort((a, b) => {
-          const weekA = parseInt(a.weekName.slice(-2)) || 0;
-          const weekB = parseInt(b.weekName.slice(-2)) || 0;
+          const weekA = parseInt(a.week_name.slice(-2)) || 0;
+          const weekB = parseInt(b.week_name.slice(-2)) || 0;
           return weekB - weekA;
         });
 
@@ -62,8 +62,8 @@ function PriorizationTable({ filters }) {
                 .filter((item) => {
                   return Object.keys(filters).every((field) => {
                     const filterValue = filters[field].toLowerCase();
-                    if (field === "weekName" && filterValue) {
-                      if (item.weekName.slice(-2) !== filterValue) {
+                    if (field === "week_name" && filterValue) {
+                      if (item.week_name.slice(-2) !== filterValue) {
                         return false;
                       }
                     } else if (field === "description" && filterValue) {
@@ -87,19 +87,19 @@ function PriorizationTable({ filters }) {
                   return (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td>{item.weekName.slice(-2) || "N/A"}</td>
+                      <td>{item.week_name.slice(-2) || "N/A"}</td>
                       <td>{item.vulnerabilidad_1 || "N/A"}</td>
                       <td>{item.u_tecnica || "N/A"}</td>
                       <td>{item.equipo_o_sistema || "N/A"}</td>
                       <td>{item.descripcion_del_trabajo || "N/A"}</td>
                       <td>{item.descripcion_del_aviso || "N/A"}</td>
-                      <td>{item.impactoStatus}</td>
+                      <td>{item.impacto_status}</td>
                       <td>documento</td>
                       <td>
                         <Link to={`/update-status/${item.id}`}>E.I</Link>
                       </td>
                       <td>
-                        <a href="#">I.R.</a>
+                        <Link to={`/enter-record/${item.id}`}>I.R.</Link>
                       </td>
                       <td>
                         <a href="#">V.D.</a>

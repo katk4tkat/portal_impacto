@@ -2,24 +2,26 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { updateData } from "../../utils/firebase.js";
+import { updatePriorizationStatus } from "../../utils/firebase.js";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import "react-toastify/dist/ReactToastify.css";
 
 function UpdateStatusForm({ documentId }) {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      impactoStatus: "",
-      impactoStatusDescription: "",
+      impacto_status: "",
+      impacto_status_description: "",
     },
   });
+  const navigate = useNavigate();
 
   const onSubmit = async (formData) => {
     try {
       const user = localStorage.getItem("userEmail");
-      const { impactoStatus, impactoStatusDescription } = formData;
+      const { impacto_status, impacto_status_description } = formData;
 
-      if (!impactoStatus || !impactoStatusDescription) {
+      if (!impacto_status || !impacto_status_description) {
         toast.error(
           "Ha ocurrido un error: Debe completar el estado y la descripción."
         );
@@ -27,19 +29,23 @@ function UpdateStatusForm({ documentId }) {
       }
 
       const updatedStatus = {
-        updatedBy: user,
-        updatedDate: new Date(),
-        impactoStatus,
-        impactoStatusDescription,
+        status_updated_by: user,
+        status_updated_date: new Date(),
+        impacto_status,
+        impacto_status_description,
       };
 
-      updateData(documentId, updatedStatus);
+      updatePriorizationStatus(documentId, updatedStatus);
 
       toast.success("Estado actualizado exitosamente");
       reset({
-        impactoStatus: "",
-        impactoStatusDescription: "",
+        impacto_status: "",
+        impacto_status_description: "",
       });
+
+      setTimeout(() => {
+        navigate("/home");
+      }, 2000);
     } catch (error) {
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
@@ -54,15 +60,15 @@ function UpdateStatusForm({ documentId }) {
             <div className="card-body">
               <h2 className="text-center mb-4"> ACTUALIZAR ESTADO IMPACTO</h2>
               <div className="form-group">
-                <label htmlFor="impactoStatus">Ingresar Estado:</label>
+                <label htmlFor="impacto_status">Ingresar Estado:</label>
                 <Controller
-                  name="impactoStatus"
+                  name="impacto_status"
                   control={control}
                   render={({ field }) => (
                     <select
                       {...field}
                       className="form-control"
-                      id="impactoStatus"
+                      id="impacto_status"
                     >
                       <option value="" defaultValue>
                         Seleccione un Estado
@@ -79,16 +85,16 @@ function UpdateStatusForm({ documentId }) {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="impactoStatusDescription">
+                <label htmlFor="impacto_status_description">
                   Descripción u observación:
                 </label>
                 <Controller
-                  name="impactoStatusDescription"
+                  name="impacto_status_description"
                   control={control}
                   render={({ field }) => (
                     <textarea
                       {...field}
-                      id="impactoStatusDescription"
+                      id="impacto_status_description"
                       className="form-control"
                       placeholder="Escribe una descripción"
                     />
@@ -100,7 +106,7 @@ function UpdateStatusForm({ documentId }) {
                   type="submit"
                   className="btn btn-dark btn-block text-center mt-3"
                 >
-                  AGREGAR ESTADO IMPACTO
+                  ACTUALIZAR ESTADO IMPACTO
                 </button>
               </div>
               <ToastContainer

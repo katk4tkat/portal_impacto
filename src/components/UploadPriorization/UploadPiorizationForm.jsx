@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { addPriorization, uploadFile } from "../../utils/firebase.js";
+import { addPriorization, uploadPriorizationFile } from "../../utils/firebase.js";
 import { isWeekValid } from "./handleFormErrors";
 import { formatHeader } from "../../utils/formatHeader";
 import "./upload-priorization-form.css";
@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 function UploadPriorizationForm() {
   const [dataContent, setDataContent] = useState([]);
   const [file, setFile] = useState(null);
+  const navigate = useNavigate();
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -56,7 +57,6 @@ function UploadPriorizationForm() {
     };
   };
 
-  const navigate = useNavigate();
 
   const onSubmit = async (formData) => {
     try {
@@ -86,12 +86,12 @@ function UploadPriorizationForm() {
         headers.forEach((thisHeader, index) => {
           newRow[thisHeader] = Object.values(thisRow)[index] || null;
         });
-        newRow.fileName = `${week}.xlsx`;
-        newRow.weekName = week;
-        newRow.uploadedBy = user;
-        newRow.createdAt = new Date();
+        newRow.file_name = `${week}.xlsx`;
+        newRow.week_name = week;
+        newRow.uploaded_by = user;
+        newRow.created_at = new Date();
         newRow.team = team;
-        newRow.impactoStatus = impactoStatus;
+        newRow.impacto_status = impactoStatus;
         parsedData.push(newRow);
       });
       setDataContent(parsedData);
@@ -101,7 +101,7 @@ function UploadPriorizationForm() {
       );
       await Promise.all(addPriorizationPromises);
 
-      uploadFile(file, week);
+      uploadPriorizationFile(file, week);
 
       toast.success("Priorización importada correctamente");
       reset({
@@ -120,7 +120,7 @@ function UploadPriorizationForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
-      <div className="row justify-content-center">
+      <div className="d-flex justify-content-center">
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">

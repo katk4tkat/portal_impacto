@@ -6,6 +6,7 @@ import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
 import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
 import UpdateStatus from "./components/UpdateStatus/UpdateStatus";
+import EnterRecord from "./components/EnterRecord/EnterRecord.jsx"
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function PrivateRoute({ element }) {
@@ -36,6 +37,10 @@ root.render(
         <Route
           path="/update-status/:documentId"
           element={<PrivateRoute element={<UpdateStatus />} />}
+        />
+        <Route
+          path="/enter-record/:documentId"
+          element={<PrivateRoute element={<EnterRecord />} />}
         />
 
         <Route path="/login" element={<Login />} />
