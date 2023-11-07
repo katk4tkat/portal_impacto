@@ -6,6 +6,9 @@ import {
   getDocs,
   doc,
   updateDoc,
+  query,
+  orderBy,
+  limit,
 } from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
 
@@ -40,9 +43,10 @@ export async function uploadPriorizationFile(file, week) {
   const snapshot = await uploadBytes(storageRef, file);
 }
 
-export const getDocuments = async () => {
+export const getDocuments = async ({ itemsPerPage }) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "PriorizationObject"));
+    const q = query(collection(db, "PriorizationObject"), orderBy("week_name", "desc"), limit(itemsPerPage));
+    const querySnapshot = await getDocs(q);
     const documents = [];
 
     querySnapshot.forEach((doc) => {

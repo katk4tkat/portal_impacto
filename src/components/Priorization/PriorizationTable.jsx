@@ -4,36 +4,77 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { getDocuments } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner";
+import Pagination from "../UI/Pagination"
 
 function PriorizationTable({ filters }) {
   const [data, setData] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(20)
+  const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true);
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  }
+
+  useEffect(() => {
+    if (Object.values(filters).some((value) => value !== "")) {
+      setCurrentPage(1);
+    }
+  }, [filters]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const documents = await getDocuments();
+        const itemsToSkip = (currentPage - 1) * itemsPerPage;
+        const documents = await getDocuments({ limit: itemsPerPage, offset: itemsToSkip });
         const documentContent = documents.map((document) => ({
           id: document.id,
           ...document.data,
         }));
 
-        const sortedData = documentContent.sort((a, b) => {
-          const weekA = parseInt(a.week_name.slice(-2)) || 0;
-          const weekB = parseInt(b.week_name.slice(-2)) || 0;
-          return weekB - weekA;
-        });
-
-        setData(sortedData);
+        setData(documentContent);
         setIsLoading(false);
       } catch (error) {
         console.error("Error al obtener documentos: ", error);
       }
     };
-
     fetchData();
-  }, []);
+  }, [currentPage, itemsPerPage, filters]);
 
+  const filteredData = data
+    .filter((item) => {
+      return Object.keys(filters).every((field) => {
+        const filterValue = filters[field].toLowerCase();
+        if (field === "week_name" && filterValue) {
+          if (item.week_name.slice(-2) !== filterValue) {
+            return false;
+          }
+        } else if (field === "description" && filterValue) {
+          const combinedDescription =
+            (item.descripcion_del_trabajo || "N/A").toLowerCase() +
+            (item.descripcion_del_aviso || "N/A").toLowerCase();
+          if (!combinedDescription.includes(filterValue)) {
+            return false;
+          }
+        } else if (
+          filterValue &&
+          item[field] &&
+          !item[field].toLowerCase().includes(filterValue)
+        ) {
+          return false;
+        }
+        return true;
+      });
+    });
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
   return (
     <>
       {isLoading ? (
@@ -58,59 +99,40 @@ function PriorizationTable({ filters }) {
               </tr>
             </thead>
             <tbody>
-              {data
-                .filter((item) => {
-                  return Object.keys(filters).every((field) => {
-                    const filterValue = filters[field].toLowerCase();
-                    if (field === "week_name" && filterValue) {
-                      if (item.week_name.slice(-2) !== filterValue) {
-                        return false;
-                      }
-                    } else if (field === "description" && filterValue) {
-                      const combinedDescription =
-                        (item.descripcion_del_trabajo || "N/A").toLowerCase() +
-                        (item.descripcion_del_aviso || "N/A").toLowerCase();
-                      if (!combinedDescription.includes(filterValue)) {
-                        return false;
-                      }
-                    } else if (
-                      filterValue &&
-                      item[field] &&
-                      !item[field].toLowerCase().includes(filterValue)
-                    ) {
-                      return false;
-                    }
-                    return true;
-                  });
-                })
-                .map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{item.week_name.slice(-2) || "N/A"}</td>
-                      <td>{item.vulnerabilidad_1 || "N/A"}</td>
-                      <td>{item.u_tecnica || "N/A"}</td>
-                      <td>{item.equipo_o_sistema || "N/A"}</td>
-                      <td>{item.descripcion_del_trabajo || "N/A"}</td>
-                      <td>{item.descripcion_del_aviso || "N/A"}</td>
-                      <td>{item.impacto_status}</td>
-                      <td>documento</td>
-                      <td>
-                        <Link to={`/update-status/${item.id}`}>E.I</Link>
-                      </td>
-                      <td>
-                        <Link to={`/enter-record/${item.id}`}>I.R.</Link>
-                      </td>
-                      <td>
-                        <a href="#">V.D.</a>
-                      </td>
-                    </tr>
-                  );
-                })}
+              {paginatedData.map((item, index) => {
+                const itemNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                return (
+                  <tr key={index}>
+                    <td>{itemNumber}</td>
+                    <td>{item.week_name.slice(-2) || "N/A"}</td>
+                    <td>{item.vulnerabilidad_1 || "N/A"}</td>
+                    <td>{item.u_tecnica || "N/A"}</td>
+                    <td>{item.equipo_o_sistema || "N/A"}</td>
+                    <td>{item.descripcion_del_trabajo || "N/A"}</td>
+                    <td>{item.descripcion_del_aviso || "N/A"}</td>
+                    <td>{item.impacto_status}</td>
+                    <td>documento</td>
+                    <td>
+                      <Link to={`/update-status/${item.id}`}>E.I</Link>
+                    </td>
+                    <td>
+                      <Link to={`/enter-record/${item.id}`}>I.R.</Link>
+                    </td>
+                    <td>
+                      <a href="#">V.D.</a>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={handlePageChange}
+      />
     </>
   );
 }
