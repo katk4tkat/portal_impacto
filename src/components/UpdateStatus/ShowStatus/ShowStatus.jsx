@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { getDocuments } from "../../../utils/firebase.js";
+import { getCurrentPriorizationStatus } from "../../../utils/firebase.js";
 import Spinner from "../../UI/Spinner";
 
 function ShowStatus({ documentId }) {
@@ -16,7 +16,7 @@ function ShowStatus({ documentId }) {
   useEffect(() => {
     console.log(documentId);
     const fetchData = async () => {
-      const documents = await getDocuments();
+      const documents = await getCurrentPriorizationStatus();
       console.log(documents);
       const thisDocument = documents.find(
         (document) => document.id === documentId
@@ -37,8 +37,8 @@ function ShowStatus({ documentId }) {
           <div className="card-body">
             <h2 className="text-center mb-4">ESTADO IMPACTO</h2>
             <div className="d-flex">
-              <p className="fw-bolder">Estado: </p>
-              <p>{document.data?.impacto_status}</p>
+              <p className="fw-bolder">Estado:</p>
+              <p className="ms-2">{document.data?.impacto_status}</p>
             </div>
             <div>
               <p className="fw-bolder">Descripción:</p>

@@ -78,3 +78,21 @@ export const createNewRecord = async (documentId, newRecord) => {
   const statusDocRef = doc(db, "PriorizationObject", documentId);
   await updateDoc(statusDocRef, newRecord);
 };
+
+export const getCurrentPriorizationStatus = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "PriorizationObject"));
+    const documents = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: data,
+      });
+    });
+    return documents
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
