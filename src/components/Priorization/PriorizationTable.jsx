@@ -5,13 +5,14 @@ import { Link } from "react-router-dom";
 import { getDocuments } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner";
 import Pagination from "../UI/Pagination"
+import { removeSpecialCharacters } from "../../utils/removeSpecialCharacters.js";
 
 function PriorizationTable({ filters }) {
   const [data, setData] = useState([]);
-  const [itemsPerPage, setItemsPerPage] = useState(20)
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true);
 
+  const itemsPerPage = 20;
   const handlePageChange = (newPage) => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
@@ -43,25 +44,29 @@ function PriorizationTable({ filters }) {
     fetchData();
   }, [currentPage, itemsPerPage, filters]);
 
+
   const filteredData = data
     .filter((item) => {
       return Object.keys(filters).every((field) => {
-        const filterValue = filters[field].toLowerCase();
+        const filterValue = removeSpecialCharacters(filters[field]).toLowerCase();
+        const itemValue = removeSpecialCharacters(item[field]).toLowerCase();
+
         if (field === "week_name" && filterValue) {
-          if (item.week_name.slice(-2) !== filterValue) {
+          if (itemValue.slice(-2) !== filterValue) {
             return false;
           }
         } else if (field === "description" && filterValue) {
           const combinedDescription =
-            (item.descripcion_del_trabajo || "N/A").toLowerCase() +
-            (item.descripcion_del_aviso || "N/A").toLowerCase();
-          if (!combinedDescription.includes(filterValue)) {
+            (removeSpecialCharacters(item.descripcion_del_trabajo) || "N/A") +
+            (removeSpecialCharacters(item.descripcion_del_aviso) || "N/A");
+
+          if (!combinedDescription.toLowerCase().includes(filterValue)) {
             return false;
           }
         } else if (
           filterValue &&
-          item[field] &&
-          !item[field].toLowerCase().includes(filterValue)
+          itemValue &&
+          !itemValue.includes(filterValue)
         ) {
           return false;
         }
