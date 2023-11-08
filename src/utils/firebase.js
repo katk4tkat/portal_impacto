@@ -3,6 +3,7 @@ import { auth, db, storage } from "./firebase-config.js";
 import {
   collection,
   addDoc,
+  getDoc,
   getDocs,
   doc,
   updateDoc,
@@ -66,7 +67,27 @@ export const getDocuments = async ({ itemsPerPage }) => {
 
 export const updatePriorizationStatus = async (documentId, updatedStatus) => {
   const statusDocRef = doc(db, "PriorizationObject", documentId);
-  await updateDoc(statusDocRef, updatedStatus);
+
+  const docSnapshot = await getDoc(statusDocRef);
+  if (docSnapshot.exists()) {
+    const currentData = docSnapshot.data();
+
+    if (!currentData.status_history) {
+      currentData.status_history = [];
+    }
+
+    currentData.status_history.push({
+      impacto_status: currentData.impacto_status,
+      impacto_status_description: currentData.impacto_status_description,
+      status_updated_by: currentData.status_updated_by,
+      status_updated_date: currentData.status_updated_date,
+    });
+
+    await updateDoc(statusDocRef, {
+      ...updatedStatus,
+      status_history: currentData.status_history,
+    });
+  }
 };
 
 export async function uploadRecordFile(recordIMG) {
