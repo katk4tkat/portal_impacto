@@ -4,7 +4,10 @@ import * as XLSX from "xlsx";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { addPriorization, uploadPriorizationFile } from "../../utils/firebase.js";
+import {
+  addPriorization,
+  uploadPriorizationFile,
+} from "../../utils/firebase.js";
 import { isWeekValid } from "./handleFormErrors";
 import { formatHeader } from "../../utils/formatHeader";
 import "./upload-priorization-form.css";
@@ -56,7 +59,6 @@ function UploadPriorizationForm() {
       setDataContent(parsedData);
     };
   };
-
 
   const onSubmit = async (formData) => {
     try {
@@ -121,7 +123,7 @@ function UploadPriorizationForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
       <div className="d-flex justify-content-center">
-        <div className="col-md-6">
+        <div className="col-md-7">
           <div className="card">
             <div className="card-body">
               <h2 className="text-center mb-4">CARGAR PRIORIZACIÓN</h2>
@@ -136,7 +138,7 @@ function UploadPriorizationForm() {
                       type="text"
                       id="week"
                       placeholder="Ejemplo: 2023-W37"
-                      className="form-control"
+                      className="form-control mb-3"
                       required
                     />
                   )}
@@ -148,7 +150,7 @@ function UploadPriorizationForm() {
                   name="team"
                   control={control}
                   render={({ field }) => (
-                    <select {...field} className="form-control" id="team">
+                    <select {...field} className="form-control mb-3" id="team">
                       <option value="" defaultValue>
                         Seleccione un equipo
                       </option>
@@ -168,7 +170,7 @@ function UploadPriorizationForm() {
                       {...field}
                       type="file"
                       id="file"
-                      className="form-control"
+                      className="form-control mb-3"
                       onChange={(e) => {
                         setFile(e.target.files[0]);
                         handleExcelFileUploadAndParse(e);

@@ -22,6 +22,7 @@ function UploadPriorization() {
             <ButtonUI
               text="VOLVER A PRIORIZACIÓN"
               icon="bi bi-arrow-return-left"
+              marginClassName="mb-5"
               onClick={handleReturnClick}
             />
           </div>
