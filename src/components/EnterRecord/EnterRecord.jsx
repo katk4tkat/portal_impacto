@@ -17,17 +17,14 @@ function EnterRecord() {
     <>
       <Navbar />
       <EnterRecordForm documentId={documentId} />
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-auto mt-5">
-            <ButtonUI
-              text="VOLVER A PRIORIZACIÓN"
-              icon="bi bi-arrow-return-left"
-              marginClassName="mb-5"
-              onClick={handleReturnClick}
-            />
-          </div>
-        </div>
+      <div className="d-flex justify-content-center mt-5">
+        <ButtonUI
+          text="VOLVER A PRIORIZACIÓN"
+          icon="bi bi-arrow-return-left"
+          marginClassName="mb-5"
+          btnClassName="btn-link"
+          onClick={handleReturnClick}
+        />
       </div>
     </>
   );
