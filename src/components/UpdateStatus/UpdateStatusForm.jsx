@@ -67,7 +67,7 @@ function UpdateStatusForm({ documentId }) {
                   render={({ field }) => (
                     <select
                       {...field}
-                      className="form-control"
+                      className="form-control mb-3"
                       id="impacto_status"
                     >
                       <option value="" defaultValue>
@@ -95,7 +95,7 @@ function UpdateStatusForm({ documentId }) {
                     <textarea
                       {...field}
                       id="impacto_status_description"
-                      className="form-control"
+                      className="form-control mb-3"
                       placeholder="Escribe una descripción"
                     />
                   )}
@@ -104,7 +104,7 @@ function UpdateStatusForm({ documentId }) {
               <div className="form-group d-flex text-center justify-content-center">
                 <button
                   type="submit"
-                  className="btn btn-dark btn-block text-center mt-3"
+                  className="btn btn-dark btn-block text-center mt-2 mb-3"
                 >
                   ACTUALIZAR ESTADO IMPACTO
                 </button>
