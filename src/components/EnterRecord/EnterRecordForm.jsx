@@ -1,18 +1,20 @@
 // eslint-disable-next-line no-unused-vars
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import PropTypes from "prop-types";
-import "react-toastify/dist/ReactToastify.css";
 import { uploadRecordFile, createNewRecord } from "../../utils/firebase.js";
 import { getCurrentLocation } from "../../utils/getGPS.js";
+import Spinner from "../UI/Spinner.jsx";
+import "react-toastify/dist/ReactToastify.css";
 
 function EnterRecordForm({ documentId }) {
   const [currentGPS, setCurrentGPS] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -82,6 +84,10 @@ function EnterRecordForm({ documentId }) {
     }
   };
 
+  const stopListening = () => {
+    setIsListening(false);
+  };
+
   const renderButtonText = isListening ? (
     <>
       <i className="bi bi-mic-mute"></i> DETENER GRABACIÓN POR VOZ
@@ -91,10 +97,6 @@ function EnterRecordForm({ documentId }) {
       <i className="bi bi-mic"></i> INICIAR GRABACIÓN POR VOZ
     </>
   );
-
-  const stopListening = () => {
-    setIsListening(false);
-  };
 
   const onSubmit = async (data) => {
     try {
@@ -114,7 +116,7 @@ function EnterRecordForm({ documentId }) {
         record_description: descriptionInput,
         record_file_names: [],
       };
-
+      setIsLoading(true);
       if (data.record_files && data.record_files.length > 0) {
         for (let i = 0; i < data.record_files.length; i++) {
           const file = data.record_files[i];
@@ -122,6 +124,7 @@ function EnterRecordForm({ documentId }) {
           newRecord.record_file_names.push(file.name);
         }
       }
+      setIsLoading(false);
 
       createNewRecord(documentId, newRecord);
 
@@ -135,6 +138,7 @@ function EnterRecordForm({ documentId }) {
         navigate("/home");
       }, 2000);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
     }
@@ -167,7 +171,7 @@ function EnterRecordForm({ documentId }) {
                     type="button"
                     onClick={handleGetGPS}
                   >
-                    OBTENER GPS
+                    <i className="bi bi-geo-alt"></i> OBTENER GPS
                   </button>
                 </div>
               </div>
@@ -203,14 +207,12 @@ function EnterRecordForm({ documentId }) {
                   {renderButtonText}
                 </button>
               </div>
-
               <div className="form-group mt-2 mb-3 d-flex flex-column ">
                 <label>
-                  {" "}
                   Imagen/es <span className="text-muted">(opcional)</span>:
                 </label>
                 {fields.map((field, index) => (
-                  <div key={field.id}>
+                  <div key={field.id} className="d-flex mb-2">
                     <Controller
                       name={`record_files_${index}`}
                       control={control}
@@ -230,28 +232,37 @@ function EnterRecordForm({ documentId }) {
                     />
                     <button
                       type="button"
-                      className="btn btn-dark mt-2 mb-3 bg-danger"
+                      className="btn btn-danger ms-2"
                       onClick={() => remove(index)}
                     >
-                      ELIMINAR
+                      <i className="bi bi-x-circle"></i>
                     </button>
                   </div>
                 ))}
-                <button
-                  type="button"
-                  className="btn btn-dark col-4 mt-2 mb-3"
-                  onClick={() => append({})}
-                >
-                  AGREGAR
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-success mt-2"
+                    onClick={() => append({})}
+                  >
+                    <i className="bi bi-plus-circle"></i> AGREGAR
+                  </button>
+                </div>
               </div>
             </div>
             <div className="form-group d-flex text-center justify-content-center">
               <button
                 type="submit"
-                className="btn btn-dark btn-block text-center mt-3 mb-4"
+                className="btn btn-dark btn-block mb-4"
+                disabled={isLoading}
               >
-                INGRESAR REGISTRO
+                {isLoading ? (
+                  <>
+                    <Spinner />
+                  </>
+                ) : (
+                  "INGRESAR REGISTRO"
+                )}
               </button>
             </div>
             <ToastContainer
