@@ -30,12 +30,13 @@ function Priorization() {
 
   return (
     <>
-      <h1 className="my-2 text-center">PRIORIZACIÓN</h1>
+      <h1 className="my-2 text-center mt-3">PRIORIZACIÓN</h1>
       <div className="row">
         <div className="col text-start mb-3">
           <ButtonUI
             text="CARGAR PRIORIZACIÓN"
             icon="bi bi-plus-lg"
+            btnClassName="btn-dark"
             onClick={handleUploadClick}
           />
         </div>
