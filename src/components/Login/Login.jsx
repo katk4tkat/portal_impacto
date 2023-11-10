@@ -28,20 +28,21 @@ function Login() {
   };
 
   return (
-    <div
-      className="d-flex align-items-center justify-content-center"
+    <section
+      id="login"
+      className="d-flex align-items-center justify-content-center bg-white"
       style={{ height: "100vh" }}
     >
       <div
-        className="text-center"
+        className="container p-5 text-center bg-light shadow-sm rounded border"
         style={{
-          backgroundColor: "#EBEBEB",
-          padding: "20px",
-          borderRadius: "10px",
-          width: "500px",
+          maxWidth: "500px",
+          minHeightt: "500px",
         }}
       >
-        <h2 className="mt-5">PORTAL IMPACTO</h2>
+        <div className="text-center">
+          <h2 className="mt-5">PORTAL IMPACTO</h2>
+        </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group">
             <Controller
@@ -53,8 +54,7 @@ function Login() {
                 <input
                   type="email"
                   {...field}
-                  className="form-control mt-5 mb-5"
-                  style={{ backgroundColor: "white" }}
+                  className="form-control mt-5 mb-5 bg-white"
                   placeholder="E-mail"
                   autoComplete="email"
                 />
@@ -74,8 +74,7 @@ function Login() {
                 <input
                   type="password"
                   {...field}
-                  className="form-control mb-5 col-8"
-                  style={{ backgroundColor: "white" }}
+                  className="form-control mb-5 col-8 bg-white"
                   placeholder="Contraseña"
                   autoComplete="current-password"
                 />
@@ -89,7 +88,7 @@ function Login() {
           <div className="form-group">
             <button
               type="submit"
-              className="btn btn-dark btn-block mt-3 col-8"
+              className="btn btn-dark btn-block mt-3"
               style={{ width: "100%" }}
             >
               ENTRAR
@@ -97,7 +96,7 @@ function Login() {
           </div>
         </form>
       </div>
-    </div>
+    </section>
   );
 }
 
