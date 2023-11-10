@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function ButtonUI({ onClick, text, icon, marginClassName }) {
+function ButtonUI({ onClick, text, icon, marginClassName, btnClassName }) {
   return (
     <button
       type="button"
-      className={`btn btn-dark ${marginClassName}`}
+      className={`btn ${btnClassName} ${marginClassName}`}
       onClick={onClick}
     >
       {text}{" "}
@@ -15,9 +15,11 @@ function ButtonUI({ onClick, text, icon, marginClassName }) {
 }
 
 ButtonUI.propTypes = {
-  onClick: PropTypes.func.isRequired,
   text: PropTypes.string.isRequired,
   icon: PropTypes.string,
+  marginClassName: PropTypes.string,
+  btnClassName: PropTypes.btnClassName,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default ButtonUI;
