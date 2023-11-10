@@ -14,10 +14,8 @@ function ShowStatus({ documentId }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log(documentId);
     const fetchData = async () => {
       const documents = await getCurrentPriorizationStatus();
-      console.log(documents);
       const thisDocument = documents.find(
         (document) => document.id === documentId
       );
@@ -36,14 +34,13 @@ function ShowStatus({ documentId }) {
         <div className="card">
           <div className="card-body">
             <h2 className="text-center mb-4">ESTADO IMPACTO</h2>
-            <div className="d-flex">
-              <p className="fw-bolder">Estado:</p>
-              <p className="ms-2">{document.data?.impacto_status}</p>
-            </div>
-            <div>
-              <p className="fw-bolder">Descripción:</p>
-              <p>{document.data?.impacto_status_description}</p>
-            </div>
+            <dl className="dl-horizontal">
+              <dt>Estado:</dt>
+              <dd>{document.data?.impacto_status}</dd>
+            </dl>
+
+            <dt>Descripción:</dt>
+            <dd>{document.data?.impacto_status_description}</dd>
           </div>
         </div>
       </div>
