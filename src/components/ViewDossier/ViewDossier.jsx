@@ -8,7 +8,7 @@ import ButtonUI from "../UI/ButtonUI";
 
 function ViewDossier() {
   const { documentId } = useParams();
-  const [document, setDocument] = useState([]);
+  const [document, setDocument] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -19,7 +19,6 @@ function ViewDossier() {
         const thisDocument = documents.find(
           (document) => document.id === documentId
         );
-        console.log(thisDocument);
         setDocument(thisDocument);
         setIsLoading(false);
       } catch (error) {

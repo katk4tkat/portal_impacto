@@ -11,7 +11,7 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const loginEmail = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
@@ -138,6 +138,17 @@ export const getDossierDocuments = async () => {
     return documents;
   } catch (error) {
     console.error("Error al obtener documentos: ", error);
+    throw error;
+  }
+};
+
+export const getImageFromStorage = async (fileName) => {
+  try {
+    const imageRef = ref(storage, 'gs://portal-impacto-609ff.appspot.com/' + fileName);
+    const imageUrl = await getDownloadURL(imageRef);
+    return imageUrl;
+  } catch (error) {
+    console.error('Error al obtener la URL de descarga:', error);
     throw error;
   }
 };

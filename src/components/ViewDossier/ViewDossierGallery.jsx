@@ -1,40 +1,93 @@
-import React from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { useState, useEffect, useRef } from 'react';
+import { getImageFromStorage } from "../../utils/firebase.js";
 
-function ViewDossierGallery() {
-  return (
-    <div className="container">
-      <h1>Images</h1>
-      <div className="row row-cols-4">
-        <div className="col">
+function ViewDossierGallery({ document }) {
+  const [recordFileNames, setRecordFileNames] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
+  const [selectedImage, setSelectedImage] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const downloadLinkRef = useRef(null);
+
+  useEffect(() => {
+    if (document.data && document.data.record_file_names) {
+      setRecordFileNames(document.data.record_file_names);
+    }
+  }, [document]);
+
+  useEffect(() => {
+    const fetchImageUrls = async () => {
+      const urls = await Promise.all(
+        recordFileNames.map(async (fileName) => await getImageFromStorage(fileName))
+      );
+      setImageUrls(urls);
+    };
+
+    if (recordFileNames.length > 0) {
+      fetchImageUrls();
+    }
+  }, [recordFileNames]);
+
+  const handleImageClick = (url) => {
+    setSelectedImage(url);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage('');
+    setIsModalVisible(false);
+  };
+
+  const handleDownloadClick = () => {
+    downloadLinkRef.current.click();
+  }
+};
+
+return (
+  <div className="container">
+    <h1>Images</h1>
+    <div className="row row-cols-4">
+      {imageUrls.map((url, index) => (
+        <div key={index} className="col">
           <img
-            src="https://via.placeholder.com/300"
-            alt="Placeholder Image"
+            src={url}
+            alt={`Image ${index}`}
             className="img-fluid"
+            onClick={() => handleImageClick(url)}
           />
         </div>
-        <div className="col">
-          <img
-            src="https://via.placeholder.com/300"
-            alt="Placeholder Image"
-            className="img-fluid"
-          />
-        </div>
-        <div className="col">
-          <img
-            src="https://via.placeholder.com/300"
-            alt="Placeholder Image"
-            className="img-fluid"
-          />
-        </div>
-        <div className="col">
-          <video width="100%" height="auto" controls>
-            <source src="https://www.example.com/sample.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+      ))}
+    </div>
+
+    {isModalVisible && (
+      <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1">
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
+            </div>
+            <div className="modal-body">
+              <img src={selectedImage} alt="Selected Image" className="img-fluid" />
+
+              {/* Usar el ref para el enlace de descarga */}
+              <a
+                ref={downloadLinkRef}
+                href={selectedImage}
+                download={downloadLinkRef}
+                target="_blank"  // Configurar el target para abrir en una nueva pestaña
+                rel="noopener noreferrer" // Añadir noreferrer para mejorar la seguridad
+                style={{ display: 'none' }}
+              >
+                Descargar Imagen
+              </a>
+
+              <button type="button" className="btn btn-dark mt-2" onClick={handleDownloadClick}>DESCARGAR IMAGEN</button>              </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    )}
+  </div>
+);
 }
 
 export default ViewDossierGallery;
