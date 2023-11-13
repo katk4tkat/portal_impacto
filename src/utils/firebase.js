@@ -46,7 +46,11 @@ export async function uploadPriorizationFile(file, week) {
 
 export const getDocuments = async ({ itemsPerPage }) => {
   try {
-    const q = query(collection(db, "PriorizationObject"), orderBy("week_name", "desc"), limit(itemsPerPage));
+    const q = query(
+      collection(db, "PriorizationObject"),
+      orderBy("week_name", "desc"),
+      limit(itemsPerPage)
+    );
     const querySnapshot = await getDocs(q);
     const documents = [];
 
@@ -112,8 +116,28 @@ export const getCurrentPriorizationStatus = async () => {
         data: data,
       });
     });
-    return documents
+    return documents;
   } catch (error) {
     console.error("Error fetching data:", error);
+  }
+};
+
+export const getDossierDocuments = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "PriorizationObject"));
+    const documents = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: data,
+      });
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error al obtener documentos: ", error);
+    throw error;
   }
 };
