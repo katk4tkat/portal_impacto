@@ -18,7 +18,7 @@ ButtonUI.propTypes = {
   text: PropTypes.string.isRequired,
   icon: PropTypes.string,
   marginClassName: PropTypes.string,
-  btnClassName: PropTypes.btnClassName,
+  btnClassName: PropTypes.string,
   onClick: PropTypes.func.isRequired,
 };
 
