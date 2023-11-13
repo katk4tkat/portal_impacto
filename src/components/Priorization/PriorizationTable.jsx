@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { getDocuments } from "../../utils/firebase.js";
-import Spinner from "../UI/Spinner";
-import Pagination from "../UI/Pagination"
 import { removeSpecialCharacters } from "../../utils/removeSpecialCharacters.js";
+import Pagination from "../UI/Pagination";
+import Spinner from "../UI/Spinner";
 
 function PriorizationTable({ filters }) {
   const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
   const itemsPerPage = 20;
@@ -17,7 +17,7 @@ function PriorizationTable({ filters }) {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
-  }
+  };
 
   useEffect(() => {
     if (Object.values(filters).some((value) => value !== "")) {
@@ -29,7 +29,10 @@ function PriorizationTable({ filters }) {
     const fetchData = async () => {
       try {
         const itemsToSkip = (currentPage - 1) * itemsPerPage;
-        const documents = await getDocuments({ limit: itemsPerPage, offset: itemsToSkip });
+        const documents = await getDocuments({
+          limit: itemsPerPage,
+          offset: itemsToSkip,
+        });
         const documentContent = documents.map((document) => ({
           id: document.id,
           ...document.data,
@@ -44,35 +47,29 @@ function PriorizationTable({ filters }) {
     fetchData();
   }, [currentPage, itemsPerPage, filters]);
 
+  const filteredData = data.filter((item) => {
+    return Object.keys(filters).every((field) => {
+      const filterValue = removeSpecialCharacters(filters[field]).toLowerCase();
+      const itemValue = removeSpecialCharacters(item[field]).toLowerCase();
 
-  const filteredData = data
-    .filter((item) => {
-      return Object.keys(filters).every((field) => {
-        const filterValue = removeSpecialCharacters(filters[field]).toLowerCase();
-        const itemValue = removeSpecialCharacters(item[field]).toLowerCase();
-
-        if (field === "week_name" && filterValue) {
-          if (itemValue.slice(-2) !== filterValue) {
-            return false;
-          }
-        } else if (field === "description" && filterValue) {
-          const combinedDescription =
-            (removeSpecialCharacters(item.descripcion_del_trabajo) || "N/A") +
-            (removeSpecialCharacters(item.descripcion_del_aviso) || "N/A");
-
-          if (!combinedDescription.toLowerCase().includes(filterValue)) {
-            return false;
-          }
-        } else if (
-          filterValue &&
-          itemValue &&
-          !itemValue.includes(filterValue)
-        ) {
+      if (field === "week_name" && filterValue) {
+        if (itemValue.slice(-2) !== filterValue) {
           return false;
         }
-        return true;
-      });
+      } else if (field === "description" && filterValue) {
+        const combinedDescription =
+          (removeSpecialCharacters(item.descripcion_del_trabajo) || "N/A") +
+          (removeSpecialCharacters(item.descripcion_del_aviso) || "N/A");
+
+        if (!combinedDescription.toLowerCase().includes(filterValue)) {
+          return false;
+        }
+      } else if (filterValue && itemValue && !itemValue.includes(filterValue)) {
+        return false;
+      }
+      return true;
     });
+  });
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -88,7 +85,7 @@ function PriorizationTable({ filters }) {
         <div className="table-responsive-xxl">
           <table className="table table-hover">
             <thead className="table-secondary">
-              <tr>
+              <tr className="align-middle">
                 <th scope="col">N°</th>
                 <th scope="col">Sem</th>
                 <th scope="col">Vulnerabilidad</th>
@@ -124,7 +121,7 @@ function PriorizationTable({ filters }) {
                       <Link to={`/enter-record/${item.id}`}>I.R.</Link>
                     </td>
                     <td>
-                      <a href="#">V.D.</a>
+                      <Link to={`/view-dossier/${item.id}`}>V.D.</Link>
                     </td>
                   </tr>
                 );
