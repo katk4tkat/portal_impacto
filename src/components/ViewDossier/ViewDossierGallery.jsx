@@ -40,54 +40,54 @@ function ViewDossierGallery({ document }) {
 
   const handleDownloadClick = () => {
     downloadLinkRef.current.click();
-  }
-};
+  };
 
-return (
-  <div className="container">
-    <h1>Images</h1>
-    <div className="row row-cols-4">
-      {imageUrls.map((url, index) => (
-        <div key={index} className="col">
-          <img
-            src={url}
-            alt={`Image ${index}`}
-            className="img-fluid"
-            onClick={() => handleImageClick(url)}
-          />
-        </div>
-      ))}
-    </div>
+  return (
+    <div className="container">
+      <h1>Images</h1>
+      <div className="row row-cols-4">
+        {imageUrls.map((url, index) => (
+          <div key={index} className="col">
+            <img
+              src={url}
+              alt={`Image ${index}`}
+              className="img-fluid"
+              onClick={() => handleImageClick(url)}
+            />
+          </div>
+        ))}
+      </div>
 
-    {isModalVisible && (
-      <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1">
-        <div className="modal-dialog modal-lg">
-          <div className="modal-content">
-            <div className="modal-header">
-              <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
+      {isModalVisible && (
+        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1">
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCloseModal}></button>
+              </div>
+              <div className="modal-body">
+                <img src={selectedImage} alt="Selected Image" className="img-fluid" />
+
+                {/* Usar el ref para el enlace de descarga */}
+                <a
+                  ref={downloadLinkRef}
+                  href={selectedImage}
+                  download="nombre-de-la-imagen.jpg"
+                  target="_blank"  // Configurar el target para abrir en una nueva pestaña
+                  rel="noopener noreferrer" // Añadir noreferrer para mejorar la seguridad
+                  style={{ display: 'none' }}
+                >
+                  Descargar Imagen
+                </a>
+
+                <button type="button" className="btn btn-dark mt-2" onClick={handleDownloadClick}>DESCARGAR IMAGEN</button>
+              </div>
             </div>
-            <div className="modal-body">
-              <img src={selectedImage} alt="Selected Image" className="img-fluid" />
-
-              {/* Usar el ref para el enlace de descarga */}
-              <a
-                ref={downloadLinkRef}
-                href={selectedImage}
-                download={downloadLinkRef}
-                target="_blank"  // Configurar el target para abrir en una nueva pestaña
-                rel="noopener noreferrer" // Añadir noreferrer para mejorar la seguridad
-                style={{ display: 'none' }}
-              >
-                Descargar Imagen
-              </a>
-
-              <button type="button" className="btn btn-dark mt-2" onClick={handleDownloadClick}>DESCARGAR IMAGEN</button>              </div>
           </div>
         </div>
-      </div>
-    )}
-  </div>
-);
+      )}
+    </div>
+  );
 }
 
 export default ViewDossierGallery;
