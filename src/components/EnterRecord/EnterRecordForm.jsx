@@ -90,11 +90,13 @@ function EnterRecordForm({ documentId }) {
 
   const renderButtonText = isListening ? (
     <>
-      <i className="bi bi-mic-mute"></i> DETENER GRABACIÓN POR VOZ
+      <i className="bi bi-mic-mute align-middle"></i>
+      &nbsp;DETENER GRABACIÓN POR VOZ
     </>
   ) : (
     <>
-      <i className="bi bi-mic"></i> INICIAR GRABACIÓN POR VOZ
+      <i className="bi bi-mic align-middle"></i>
+      &nbsp;INICIAR GRABACIÓN POR VOZ
     </>
   );
 
@@ -144,137 +146,141 @@ function EnterRecordForm({ documentId }) {
     }
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-7">
-          <div className="card">
-            <div className="card-body">
-              <h2 className="text-center mb-4"> INGRESAR REGISTRO</h2>
-              <div className="form-group">
-                <label htmlFor="record_GPS">GPS:</label>
-                <Controller
-                  name="record_GPS"
-                  control={control}
-                  render={({ field }) => (
-                    <textarea
-                      {...field}
-                      id="record_GPS"
-                      className="form-control"
-                      placeholder="Ingrese las coordenadas GPS."
-                      value={currentGPS}
-                    />
-                  )}
-                />
-                <div className="input-group-append">
-                  <button
-                    className="btn btn-dark mt-2 mb-3"
-                    type="button"
-                    onClick={handleGetGPS}
-                  >
-                    <i className="bi bi-geo-alt"></i> OBTENER GPS
-                  </button>
-                </div>
-              </div>
-              <div className="form-group">
-                <label htmlFor="record_description">
-                  Descripción del registro:
-                </label>
-                <Controller
-                  name="record_description"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <textarea
-                      {...field}
-                      id="record_description"
-                      className="form-control"
-                      placeholder="Ingrese descripción del registro."
-                      value={descriptionInput}
-                      onChange={(e) => {
-                        setDescriptionInput(e.target.value);
-                        field.onChange(e);
-                      }}
-                    />
-                  )}
-                />
-              </div>
-              <div className="form-group">
-                <button
-                  type="button"
-                  className="btn btn-dark mt-2 mb-3"
-                  onClick={startListening}
-                >
-                  {renderButtonText}
-                </button>
-              </div>
-              <div className="form-group mt-2 mb-3 d-flex flex-column ">
-                <label>
-                  Imagen/es <span className="text-muted">(opcional)</span>:
-                </label>
-                {fields.map((field, index) => (
-                  <div key={field.id} className="d-flex mb-2">
-                    <Controller
-                      name={`record_files_${index}`}
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          {...field}
-                          type="file"
-                          className="form-control"
-                          onChange={(e) => {
-                            setValue(
-                              `record_files[${index}]`,
-                              e.target.files[0]
-                            );
-                          }}
-                        />
-                      )}
-                    />
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-7">
+            <div className="card">
+              <div className="card-body">
+                <h2 className="text-center mb-4"> INGRESAR REGISTRO</h2>
+                <div className="form-group">
+                  <label htmlFor="record_GPS">GPS:</label>
+                  <Controller
+                    name="record_GPS"
+                    control={control}
+                    render={({ field }) => (
+                      <textarea
+                        {...field}
+                        id="record_GPS"
+                        className="form-control"
+                        placeholder="Ingrese las coordenadas GPS."
+                        value={currentGPS}
+                      />
+                    )}
+                  />
+                  <div className="input-group-append">
                     <button
+                      className="btn btn-dark mt-2 mb-3"
                       type="button"
-                      className="btn btn-danger ms-2"
-                      onClick={() => remove(index)}
+                      onClick={handleGetGPS}
                     >
-                      <i className="bi bi-x-circle"></i>
+                      <i className="bi bi-geo-alt align-middle"></i>
+                      &nbsp;OBTENER GPS
                     </button>
                   </div>
-                ))}
-                <div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="record_description">
+                    Descripción del registro:
+                  </label>
+                  <Controller
+                    name="record_description"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <textarea
+                        {...field}
+                        id="record_description"
+                        className="form-control"
+                        placeholder="Ingrese descripción del registro."
+                        value={descriptionInput}
+                        onChange={(e) => {
+                          setDescriptionInput(e.target.value);
+                          field.onChange(e);
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="form-group">
                   <button
                     type="button"
-                    className="btn btn-success mt-2"
-                    onClick={() => append({})}
+                    className="btn btn-dark mt-2 mb-3"
+                    onClick={startListening}
                   >
-                    <i className="bi bi-plus-circle"></i> AGREGAR
+                    {renderButtonText}
                   </button>
                 </div>
+                <div className="form-group mt-2 mb-3 d-flex flex-column ">
+                  <label>
+                    Imagen/es <span className="text-muted">(opcional)</span>:
+                  </label>
+                  {fields.map((field, index) => (
+                    <div key={field.id} className="d-flex mb-2">
+                      <Controller
+                        name={`record_files_${index}`}
+                        control={control}
+                        render={({ field }) => (
+                          <input
+                            {...field}
+                            type="file"
+                            className="form-control"
+                            onChange={(e) => {
+                              setValue(
+                                `record_files[${index}]`,
+                                e.target.files[0]
+                              );
+                            }}
+                          />
+                        )}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-danger ms-2"
+                        onClick={() => remove(index)}
+                      >
+                        <i className="bi bi-x-circle align-middle"></i>
+                      </button>
+                    </div>
+                  ))}
+                  <div>
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={() => append({})}
+                    >
+                      <i className="bi bi-plus-circle align-middle"></i>
+                      &nbsp;AGREGAR
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="form-group d-flex text-center justify-content-center">
+                <button
+                  type="submit"
+                  className="btn btn-dark btn-block mb-4"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Spinner />
+                    </>
+                  ) : (
+                    "INGRESAR REGISTRO"
+                  )}
+                </button>
               </div>
             </div>
-            <div className="form-group d-flex text-center justify-content-center">
-              <button
-                type="submit"
-                className="btn btn-dark btn-block mb-4"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Spinner />
-                  </>
-                ) : (
-                  "INGRESAR REGISTRO"
-                )}
-              </button>
-            </div>
-            <ToastContainer
-              className="custom-toast"
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar
-            />
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+      <ToastContainer
+        className="custom-toast"
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+      />
+    </>
   );
 }
 
