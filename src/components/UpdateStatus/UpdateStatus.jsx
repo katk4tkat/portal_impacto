@@ -16,25 +16,27 @@ function AddStatus() {
   return (
     <>
       <Navbar />
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6 mt-5">
-            <ShowStatus documentId={documentId} />
-          </div>
-          <div className="col-md-6">
-            <UpdateStatusForm documentId={documentId} />
+      <section id="update-status">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6 mt-5">
+              <ShowStatus documentId={documentId} />
+            </div>
+            <div className="col-md-6">
+              <UpdateStatusForm documentId={documentId} />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="d-flex justify-content-center mt-5">
-        <ButtonUI
-          text="VOLVER A PRIORIZACIÓN"
-          icon="bi bi-arrow-return-left"
-          marginClassName="mb-5"
-          btnClassName="btn-link"
-          onClick={handleReturnClick}
-        />
-      </div>
+        <div className="d-flex justify-content-center mt-5">
+          <ButtonUI
+            text="VOLVER A PRIORIZACIÓN"
+            icon="bi bi-arrow-return-left"
+            marginClassName="mb-5"
+            btnClassName="btn-link"
+            onClick={handleReturnClick}
+          />
+        </div>
+      </section>
     </>
   );
 }
