@@ -35,14 +35,9 @@ function Login() {
     >
       <div
         className="container p-5 text-center bg-light shadow-sm rounded border"
-        style={{
-          maxWidth: "500px",
-          minHeightt: "500px",
-        }}
+        style={{ maxWidth: "500px" }}
       >
-        <div className="text-center">
-          <h2 className="mt-5">PORTAL IMPACTO</h2>
-        </div>
+        <h2>PORTAL IMPACTO</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group">
             <Controller
@@ -86,12 +81,8 @@ function Login() {
           </div>
           {errorMessage && <span className="text-danger">{errorMessage}</span>}
           <div className="form-group">
-            <button
-              type="submit"
-              className="btn btn-dark btn-block mt-3"
-              style={{ width: "100%" }}
-            >
-              ENTRAR
+            <button type="submit" className="btn btn-dark btn-block w-100">
+              INGRESAR
             </button>
           </div>
         </form>
