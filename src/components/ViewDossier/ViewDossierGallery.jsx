@@ -68,19 +68,17 @@ function ViewDossierGallery({ document }) {
               <div className="modal-body">
                 <img src={selectedImage} alt="Selected Image" className="img-fluid" />
 
-                {/* Usar el ref para el enlace de descarga */}
                 <a
                   ref={downloadLinkRef}
                   href={selectedImage}
                   download="nombre-de-la-imagen.jpg"
-                  target="_blank"  // Configurar el target para abrir en una nueva pestaña
-                  rel="noopener noreferrer" // Añadir noreferrer para mejorar la seguridad
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{ display: 'none' }}
                 >
-                  Descargar Imagen
                 </a>
 
-                <button type="button" className="btn btn-dark mt-2" onClick={handleDownloadClick}>DESCARGAR IMAGEN</button>
+                <button type="button" className="btn btn-dark mt-2" onClick={handleDownloadClick}>VER IMAGEN</button>
               </div>
             </div>
           </div>
