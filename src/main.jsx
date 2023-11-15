@@ -7,6 +7,7 @@ import Home from "./components/Home/Home";
 import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
 import UpdateStatus from "./components/UpdateStatus/UpdateStatus";
 import EnterRecord from "./components/EnterRecord/EnterRecord.jsx";
+import ViewDossier from "./components/ViewDossier/ViewDossier.jsx";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -42,6 +43,10 @@ root.render(
         <Route
           path="/enter-record/:documentId"
           element={<PrivateRoute element={<EnterRecord />} />}
+        />
+        <Route
+          path="/view-dossier/:documentId"
+          element={<PrivateRoute element={<ViewDossier />} />}
         />
         <Route path="/login" element={<Login />} />
       </Routes>
