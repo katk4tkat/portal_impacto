@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Spinner from "../UI/Spinner";
 
 function ViewDossierTable({ isLoading, document }) {
+
   return (
     <>
       {isLoading ? (
@@ -14,7 +15,13 @@ function ViewDossierTable({ isLoading, document }) {
             <tbody>
               <tr>
                 <th scope="row">Empresa</th>
-                <td>Data 1</td>
+                <td>
+                  {document.data?.team === "impacto_acido"
+                    ? "Impacto Ácido"
+                    : document.data?.team === "impacto"
+                      ? "Impacto"
+                      : document.data?.team}
+                </td>
                 <th scope="row">N° OT</th>
                 <td>Data 1</td>
               </tr>
@@ -80,8 +87,9 @@ function ViewDossierTable({ isLoading, document }) {
               </tr>
             </tbody>
           </table>
-        </div>
-      )}
+        </div >
+      )
+      }
     </>
   );
 }

@@ -44,7 +44,7 @@ function ViewDossierGallery({ document }) {
 
   return (
     <div className="container">
-      <h1>Images</h1>
+      <h1>Imágenes:|</h1>
       <div className="row row-cols-4">
         {imageUrls.map((url, index) => (
           <div key={index} className="col">

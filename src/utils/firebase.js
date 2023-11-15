@@ -70,29 +70,48 @@ export const getDocuments = async ({ itemsPerPage }) => {
 };
 
 export const updatePriorizationStatus = async (documentId, updatedStatus) => {
-  const statusDocRef = doc(db, "PriorizationObject", documentId);
+  try {
+    const statusDocRef = doc(db, "PriorizationObject", documentId);
 
-  const docSnapshot = await getDoc(statusDocRef);
-  if (docSnapshot.exists()) {
-    const currentData = docSnapshot.data();
+    const docSnapshot = await getDoc(statusDocRef);
+    if (docSnapshot.exists()) {
+      const currentData = docSnapshot.data();
 
-    if (!currentData.status_history) {
-      currentData.status_history = [];
+      if (!currentData.status_history) {
+        currentData.status_history = [];
+      }
+
+      currentData.status_history.push({
+        impacto_status: currentData.impacto_status || '',
+        impacto_status_description: currentData.impacto_status_description || '',
+        status_updated_by: currentData.status_updated_by || '',
+        status_updated_date: currentData.status_updated_date || '',
+      });
+
+      const isValidUpdate = Object.keys(updatedStatus).every(key => updatedStatus[key] !== undefined);
+
+      if (isValidUpdate) {
+        const payload = {
+          ...updatedStatus,
+          status_history: currentData.status_history,
+        };
+        console.log("Payload:", payload);
+
+        try {
+          const updatedDoc = await updateDoc(statusDocRef, payload);
+        } catch (error) {
+          console.error("Error al actualizar el documento:", error);
+        }
+      } else {
+        console.error('Error: Los datos de actualización contienen valores indefinidos.');
+      }
     }
-
-    currentData.status_history.push({
-      impacto_status: currentData.impacto_status,
-      impacto_status_description: currentData.impacto_status_description,
-      status_updated_by: currentData.status_updated_by,
-      status_updated_date: currentData.status_updated_date,
-    });
-
-    await updateDoc(statusDocRef, {
-      ...updatedStatus,
-      status_history: currentData.status_history,
-    });
+  } catch (error) {
+    console.error("Error:", error);
   }
 };
+
+
 
 export async function uploadRecordFile(recordIMG) {
   const storageRef = ref(storage, recordIMG[0].name);
