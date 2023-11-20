@@ -82,20 +82,22 @@ export const updatePriorizationStatus = async (documentId, updatedStatus) => {
       }
 
       currentData.status_history.push({
-        impacto_status: currentData.impacto_status || '',
-        impacto_status_description: currentData.impacto_status_description || '',
-        status_updated_by: currentData.status_updated_by || '',
-        status_updated_date: currentData.status_updated_date || '',
+        impacto_status: currentData.impacto_status || "",
+        impacto_status_description:
+          currentData.impacto_status_description || "",
+        status_updated_by: currentData.status_updated_by || "",
+        status_updated_date: currentData.status_updated_date || "",
       });
 
-      const isValidUpdate = Object.keys(updatedStatus).every(key => updatedStatus[key] !== undefined);
+      const isValidUpdate = Object.keys(updatedStatus).every(
+        (key) => updatedStatus[key] !== undefined
+      );
 
       if (isValidUpdate) {
         const payload = {
           ...updatedStatus,
           status_history: currentData.status_history,
         };
-        console.log("Payload:", payload);
 
         try {
           const updatedDoc = await updateDoc(statusDocRef, payload);
@@ -103,15 +105,15 @@ export const updatePriorizationStatus = async (documentId, updatedStatus) => {
           console.error("Error al actualizar el documento:", error);
         }
       } else {
-        console.error('Error: Los datos de actualización contienen valores indefinidos.');
+        console.error(
+          "Error: Los datos de actualización contienen valores indefinidos."
+        );
       }
     }
   } catch (error) {
     console.error("Error:", error);
   }
 };
-
-
 
 export async function uploadRecordFile(recordIMG) {
   const storageRef = ref(storage, recordIMG[0].name);
@@ -120,7 +122,43 @@ export async function uploadRecordFile(recordIMG) {
 
 export const createNewRecord = async (documentId, newRecord) => {
   const statusDocRef = doc(db, "PriorizationObject", documentId);
-  await updateDoc(statusDocRef, newRecord);
+  try {
+    const docSnapshot = await getDoc(statusDocRef);
+    if (docSnapshot.exists()) {
+      const currentData = docSnapshot.data();
+
+      if (!currentData.record_history) {
+        currentData.record_history = [];
+      }
+      currentData.record_history.push({
+        record_written_by: currentData.record_written_by || "",
+        record_creation_date: currentData.record_creation_date || "",
+        record_GPS: currentData.record_GPS || "",
+        record_description: currentData.record_description || "",
+        record_file_names: currentData.record_file_names || "",
+      });
+      const isValidUpdate = Object.keys(newRecord).every(
+        (key) => newRecord[key] !== undefined
+      );
+      if (isValidUpdate) {
+        const payload = {
+          ...newRecord,
+          record_history: currentData.record_history,
+        };
+        try {
+          const updatedDoc = await updateDoc(statusDocRef, payload);
+        } catch (error) {
+          console.error("Error al actualizar el documento:", error);
+        }
+      } else {
+        console.error(
+          "Error: Los datos de actualización contienen valores indefinidos."
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
 };
 
 export const getCurrentPriorizationStatus = async () => {
@@ -163,11 +201,14 @@ export const getDossierDocuments = async () => {
 
 export const getImageFromStorage = async (fileName) => {
   try {
-    const imageRef = ref(storage, 'gs://portal-impacto-609ff.appspot.com/' + fileName);
+    const imageRef = ref(
+      storage,
+      "gs://portal-impacto-609ff.appspot.com/" + fileName
+    );
     const imageUrl = await getDownloadURL(imageRef);
     return imageUrl;
   } catch (error) {
-    console.error('Error al obtener la URL de descarga:', error);
+    console.error("Error al obtener la URL de descarga:", error);
     throw error;
   }
 };
