@@ -14,10 +14,13 @@ import { isWeekValid } from "./handleFormErrors.js";
 import { formatHeader } from "../../utils/formatHeader.js";
 import "./upload-activities-form.css";
 import "react-toastify/dist/ReactToastify.css";
+import Spinner from "../UI/Spinner.jsx";
 
 function UploadActivitiesForm() {
   const [dataContent, setDataContent] = useState([]);
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const { control, handleSubmit, reset } = useForm({
@@ -74,7 +77,7 @@ function UploadActivitiesForm() {
         );
         return;
       }
-
+      setIsLoading(true);
       // Select the proper sheet by "team"
       const rawActivities = dataContent.filter((thisTeam) => {
         return formatHeader(thisTeam.sheetName) === team;
@@ -130,6 +133,7 @@ function UploadActivitiesForm() {
       // Save assets
       uploadPriorizationFile(file, week);
 
+      setIsLoading(false);
       // Set state data & done
       setDataContent(activities);
 
@@ -145,6 +149,7 @@ function UploadActivitiesForm() {
     } catch (error) {
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
+      setIsLoading(false);
     }
   };
 
@@ -211,8 +216,9 @@ function UploadActivitiesForm() {
                 <button
                   type="submit"
                   className="btn btn-dark btn-block text-center mt-3"
+                  disabled={isLoading}
                 >
-                  CARGAR PRIORIZACIÓN
+                  {isLoading ? <Spinner /> : "CARGAR PRIORIZACIÓN"}
                 </button>
               </div>
               <ToastContainer
