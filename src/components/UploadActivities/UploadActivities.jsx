@@ -2,10 +2,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
-import UploadPriorizationForm from "./UploadPiorizationForm";
+import UploadActivitiesForm from "./UploadActivitiesForm";
 import ButtonUI from "../UI/ButtonUI";
 
-function UploadPriorization() {
+function UploadActivities() {
   const navigate = useNavigate();
 
   const handleReturnClick = () => {
@@ -15,11 +15,11 @@ function UploadPriorization() {
   return (
     <>
       <Navbar />
-      <section id="upload-priorization">
-        <UploadPriorizationForm />
+      <section id="upload-activities">
+        <UploadActivitiesForm />
         <div className="d-flex justify-content-center mt-5">
           <ButtonUI
-            text="VOLVER A PRIORIZACIÓN"
+            text="VOLVER"
             icon="bi bi-arrow-return-left"
             marginClassName="mb-5"
             btnClassName="btn-link"
@@ -31,4 +31,4 @@ function UploadPriorization() {
   );
 }
 
-export default UploadPriorization;
+export default UploadActivities;

@@ -5,15 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import {
-  addPriorization,
+  createWeekDocument,
+  createActivityDocument,
+  createActivityStatusHistoryDocument,
   uploadPriorizationFile,
 } from "../../utils/firebase.js";
-import { isWeekValid } from "./handleFormErrors";
-import { formatHeader } from "../../utils/formatHeader";
-import "./upload-priorization-form.css";
+import { isWeekValid } from "./handleFormErrors.js";
+import { formatHeader } from "../../utils/formatHeader.js";
+import "./upload-activities-form.css";
 import "react-toastify/dist/ReactToastify.css";
 
-function UploadPriorizationForm() {
+function UploadActivitiesForm() {
   const [dataContent, setDataContent] = useState([]);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
@@ -63,7 +65,7 @@ function UploadPriorizationForm() {
   const onSubmit = async (formData) => {
     try {
       const user = localStorage.getItem("userEmail");
-      const impactoStatus = "RECIBIDO-MSMIN";
+      const impactoStatusDefault = "RECIBIDO-MSMIN";
       const { week, team } = formData;
 
       if (!team || !isWeekValid(week)) {
@@ -73,37 +75,63 @@ function UploadPriorizationForm() {
         return;
       }
 
-      const activities = dataContent.filter((thisTeam) => {
+      // Select the proper sheet by "team"
+      const rawActivities = dataContent.filter((thisTeam) => {
         return formatHeader(thisTeam.sheetName) === team;
       });
 
-      const parsedData = [];
-      const table = activities[0].data;
+      // Create a new Week document in firebase
+      const newWeek = {
+        created_at: new Date(),
+        created_by: user,
+        team: team,
+        week_name: week,
+        file_name: `${week}.xlsx`,
+      };
+      const weekRef = await createWeekDocument(newWeek);
+
+      // Parse data from sheet, and save documents
+      const table = rawActivities[0].data;
       const headers = Object.values(table[0]).map((header) =>
         formatHeader(header)
       );
       const rows = table.slice(1);
-      rows.forEach((thisRow) => {
-        const newRow = {};
+
+      // Generate activities from sheet data to an array of activity promises
+      const activityPromises = rows.map((thisRow) => {
+        const activity = {};
         headers.forEach((thisHeader, index) => {
-          newRow[thisHeader] = Object.values(thisRow)[index] || null;
+          activity[thisHeader] = Object.values(thisRow)[index] || null;
         });
-        newRow.file_name = `${week}.xlsx`;
-        newRow.week_name = week;
-        newRow.uploaded_by = user;
-        newRow.created_at = new Date();
-        newRow.team = team;
-        newRow.impacto_status = impactoStatus;
-        parsedData.push(newRow);
+        activity.week_id = weekRef.id;
+        activity.week_name = week;
+        activity.created_by = user;
+        activity.created_at = new Date();
+        activity.current_status = impactoStatusDefault;
+
+        return createActivityDocument(activity);
       });
-      setDataContent(parsedData);
+      const activities = await Promise.all(activityPromises);
 
-      const addPriorizationPromises = parsedData.map((data) =>
-        addPriorization(data)
-      );
-      await Promise.all(addPriorizationPromises);
+      // Create ActivityStatusHistoryPromises with newly created activities
+      // This return a promise of a createActivityStatusHistoryDocument in order to save every ActivityStatusHistory
+      const activityStatusHistoryPromises = activities.map((thisActivity) => {
+        const newHistoryRecord = {
+          created_at: new Date(),
+          created_by: user,
+          status: impactoStatusDefault,
+          description: "",
+          activity: thisActivity.id,
+        };
+        return createActivityStatusHistoryDocument(newHistoryRecord);
+      });
+      await Promise.all(activityStatusHistoryPromises);
 
+      // Save assets
       uploadPriorizationFile(file, week);
+
+      // Set state data & done
+      setDataContent(activities);
 
       toast.success("Priorización importada correctamente");
       reset({
@@ -201,4 +229,4 @@ function UploadPriorizationForm() {
   );
 }
 
-export default UploadPriorizationForm;
+export default UploadActivitiesForm;

@@ -4,10 +4,10 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { isUserAuthenticated } from "./utils/firebase.js";
 import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
-import UploadPriorization from "./components/UploadPriorization/UploadPriorization";
-import UpdateStatus from "./components/UpdateStatus/UpdateStatus";
-import EnterRecord from "./components/EnterRecord/EnterRecord.jsx";
-import ViewDossier from "./components/ViewDossier/ViewDossier.jsx";
+import UploadActivities from "./components/UploadActivities/UploadActivities";
+import UpdateActivityStatus from "./components/ActivityStatus/UpdateStatus";
+import UploadActivityLog from "./components/UploadActivityLog/UploadActivityLog";
+import ViewDossier from "./components/ViewDossier/ViewDossier";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -33,16 +33,16 @@ root.render(
         />
         <Route path="/home" element={<PrivateRoute element={<Home />} />} />
         <Route
-          path="/upload-priorization"
-          element={<PrivateRoute element={<UploadPriorization />} />}
+          path="/upload-activities"
+          element={<PrivateRoute element={<UploadActivities />} />}
         />
         <Route
-          path="/update-status/:documentId"
-          element={<PrivateRoute element={<UpdateStatus />} />}
+          path="/update-activity-status/:documentId"
+          element={<PrivateRoute element={<UpdateActivityStatus />} />}
         />
         <Route
-          path="/enter-record/:documentId"
-          element={<PrivateRoute element={<EnterRecord />} />}
+          path="/upload-activity-log/:documentId"
+          element={<PrivateRoute element={<UploadActivityLog />} />}
         />
         <Route
           path="/view-dossier/:documentId"
