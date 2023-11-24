@@ -16,7 +16,6 @@ function ShowStatus({ documentId }) {
         const thisDocument = documents.find(
           (doc) => doc?.data.activity === documentId
         );
-        console.log(thisDocument);
         setDocument(thisDocument);
         setIsLoading(false);
       } catch (error) {
@@ -37,11 +36,11 @@ function ShowStatus({ documentId }) {
             <h2 className="text-center mb-4">ESTADO IMPACTO</h2>
             <dl className="dl-horizontal">
               <dt>Estado:</dt>
-              <dd>{document?.status}</dd>
+              <dd>{document?.data?.status}</dd>
             </dl>
 
             <dt>Descripción:</dt>
-            <dd>{document?.description}</dd>
+            <dd>{document?.data?.description}</dd>
           </div>
         </div>
       </div>
