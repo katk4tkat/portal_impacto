@@ -1,11 +1,15 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { updateActivityStatusHistory } from "../../utils/firebase.js";
+import {
+  updateActivityStatusHistory,
+  updateCurrentStatusInActivity,
+} from "../../utils/firebase.js";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import "react-toastify/dist/ReactToastify.css";
+import Spinner from "../UI/Spinner.jsx";
 
 function UpdateStatusForm({ documentId }) {
   const { control, handleSubmit, reset } = useForm({
@@ -14,6 +18,7 @@ function UpdateStatusForm({ documentId }) {
       description: "",
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (formData) => {
@@ -34,8 +39,12 @@ function UpdateStatusForm({ documentId }) {
         status,
         description,
       };
+      setIsLoading(true);
 
       await updateActivityStatusHistory(documentId, updatedStatus);
+      await updateCurrentStatusInActivity(documentId, formData.status);
+
+      setIsLoading(false);
 
       toast.success("Estado actualizado exitosamente");
       reset({
@@ -49,6 +58,7 @@ function UpdateStatusForm({ documentId }) {
     } catch (error) {
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
+      setIsLoading(false);
     }
   };
 
@@ -102,9 +112,10 @@ function UpdateStatusForm({ documentId }) {
               <div className="form-group d-flex text-center justify-content-center">
                 <button
                   type="submit"
-                  className="btn btn-dark btn-block text-center mt-2 mb-3"
+                  className="btn btn-dark btn-block text-center mt-3"
+                  disabled={isLoading}
                 >
-                  ACTUALIZAR ESTADO IMPACTO
+                  {isLoading ? <Spinner /> : "ACTUALIZAR ESTADO IMPACTO"}
                 </button>
               </div>
               <ToastContainer
