@@ -189,6 +189,34 @@ export const updateActivityStatusHistory = async (
   }
 };
 
+export const updateCurrentStatusInActivity = async (documentId, newStatus) => {
+  try {
+    const activityDocRef = doc(db, "Activity", documentId);
+    const activityDocSnapshot = await getDoc(activityDocRef);
+
+    if (activityDocSnapshot.exists()) {
+      const currentData = activityDocSnapshot.data();
+
+      const updatedActivity = {
+        ...currentData,
+        current_status: newStatus,
+      };
+
+      await updateDoc(activityDocRef, updatedActivity);
+
+      console.log(
+        "Campo 'current_status' actualizado en la colección 'Activity'"
+      );
+    } else {
+      console.error(
+        "Error: Documento no encontrado en la colección 'Activity'"
+      );
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 // export const getActivityCurrentStatus = async () => {
 //   try {
 //     const querySnapshot = await getDocs(collection(db, "Activity"));

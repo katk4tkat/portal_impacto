@@ -11,12 +11,13 @@ import ViewDossier from "./components/ViewDossier/ViewDossier";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const root = createRoot(document.getElementById("root"));
+
 function PrivateRoute({ element }) {
   const isAuthenticated = isUserAuthenticated();
   return isAuthenticated ? element : <Navigate to="/login" replace />;
 }
 
-const root = createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
