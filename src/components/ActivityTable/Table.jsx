@@ -81,24 +81,6 @@ function Table({ filters }) {
     currentPage * itemsPerPage
   );
 
-  // const fetchStatusData = async () => {
-  //   try {
-  //     const statusData = await getStatus();
-
-  //     for (let i = 0; i < statusData.length; i++) {
-  //       const activityIdToUpdate = statusData[i].data.activity;
-  //       console.log(statusData[i].data);
-  //       const currentStatus = statusData[i].data.status;
-
-  //       updateActivityCurrentStatus(activityIdToUpdate, currentStatus);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error al obtener datos: ", error);
-  //   }
-  // };
-
-  // fetchStatusData();
-
   return (
     <>
       {isLoading ? (
