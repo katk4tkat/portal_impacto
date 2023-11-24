@@ -10,7 +10,7 @@ import { getCurrentLocation } from "../../utils/getGPS.js";
 import Spinner from "../UI/Spinner.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
-function EnterRecordForm({ documentId }) {
+function UploadActivityLog({ documentId }) {
   const [currentGPS, setCurrentGPS] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
   const [isListening, setIsListening] = useState(false);
@@ -284,8 +284,8 @@ function EnterRecordForm({ documentId }) {
   );
 }
 
-EnterRecordForm.propTypes = {
+UploadActivityLog.propTypes = {
   documentId: PropTypes.string.isRequired,
 };
 
-export default EnterRecordForm;
+export default UploadActivityLog;
