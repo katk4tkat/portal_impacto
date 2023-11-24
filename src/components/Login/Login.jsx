@@ -1,15 +1,13 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { loginEmail } from "../../utils/firebase.js";
 import { useNavigate } from "react-router-dom";
 import { loginErrorHandler } from "./login-error-handler";
 
 function Login() {
-  const [errorMessage, setErrorMessage] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState(null);
   const {
-    control,
+    register,
     handleSubmit,
     formState: { errors },
   } = useForm();
@@ -22,7 +20,6 @@ function Login() {
       navigate("/home");
     } catch (error) {
       const errorText = loginErrorHandler(error);
-
       setErrorMessage(errorText);
     }
   };
@@ -38,54 +35,54 @@ function Login() {
         style={{ maxWidth: "500px" }}
       >
         <h2>PORTAL IMPACTO</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group">
-            <Controller
-              name="email"
-              control={control}
-              defaultValue=""
-              rules={{ required: "Ingrese su correo electrónico" }}
-              render={({ field }) => (
-                <input
-                  type="email"
-                  {...field}
-                  className="form-control mt-5 mb-5 bg-white"
-                  placeholder="E-mail"
-                  autoComplete="email"
-                />
-              )}
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="needs-validation"
+          noValidate
+        >
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Correo electrónico
+            </label>
+            <input
+              type="email"
+              className={`form-control ${errors.email ? "is-invalid" : ""}`}
+              id="email"
+              placeholder="ejemplo@mail.com"
+              {...register("email", {
+                required: "Ingrese su correo electrónico",
+              })}
             />
             {errors.email && (
-              <span className="text-danger">{errors.email.message}</span>
+              <div className="invalid-feedback">{errors.email.message}</div>
             )}
           </div>
-          <div className="form-group">
-            <Controller
-              name="password"
-              control={control}
-              defaultValue=""
-              rules={{ required: "Ingrese su contraseña" }}
-              render={({ field }) => (
-                <input
-                  type="password"
-                  {...field}
-                  className="form-control mb-5 col-8 bg-white"
-                  placeholder="Contraseña"
-                  autoComplete="current-password"
-                />
-              )}
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              className={`form-control ${errors.password ? "is-invalid" : ""}`}
+              id="password"
+              placeholder="******"
+              {...register("password", { required: "Ingrese su contraseña" })}
             />
             {errors.password && (
-              <span className="text-danger">{errors.password.message}</span>
+              <div className="invalid-feedback">{errors.password.message}</div>
             )}
           </div>
-          {errorMessage && <span className="text-danger">{errorMessage}</span>}
           <div className="form-group">
             <button type="submit" className="btn btn-dark btn-block w-100">
               INGRESAR
             </button>
           </div>
         </form>
+        {errorMessage && (
+          <div className="alert alert-danger mt-3" role="alert">
+            {errorMessage}
+          </div>
+        )}
       </div>
     </section>
   );
