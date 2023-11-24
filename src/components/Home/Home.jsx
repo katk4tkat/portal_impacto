@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
-import Priorization from "../Priorization/Priorization";
+import ActivityTable from "../ActivityTable/ActivityTable";
 import "./home.css";
 
 function Home() {
@@ -8,7 +8,7 @@ function Home() {
     <>
       <Navbar />
       <div className="container">
-        <Priorization />
+        <ActivityTable />
       </div>
     </>
   );
