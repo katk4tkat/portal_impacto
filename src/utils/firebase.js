@@ -5,10 +5,12 @@ import {
   addDoc,
   getDoc,
   getDocs,
+  setDoc,
   doc,
   updateDoc,
   query,
   orderBy,
+  where,
   limit,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -28,26 +30,46 @@ export const logout = async () => {
   }
 };
 
-export const addPriorization = async (uploadPriorizationObject) => {
+// export const createUserDocument = async (userId, userEmail) => {
+//   try {
+//     const docRef = await addDoc(collection(db, "User"), {
+//       id: userId,
+//       username: userEmail,
+//     });
+//     console.log("Document written with ID: ", docRef.id);
+//   } catch (e) {
+//     console.error("Error adding document: ", e);
+//   }
+// };
+
+export const createWeekDocument = async (weekData) => {
   try {
-    const docRef = await addDoc(collection(db, "PriorizationObject"), {
-      ...uploadPriorizationObject,
+    const docRef = await addDoc(collection(db, "Week"), {
+      ...weekData,
       userId: auth.currentUser.uid,
     });
+    return docRef;
   } catch (e) {
     console.error("Error adding document: ", e);
   }
 };
 
-export async function uploadPriorizationFile(file, week) {
-  const storageRef = ref(storage, `${week}.xlsx`);
-  const snapshot = await uploadBytes(storageRef, file);
-}
+export const createActivityDocument = async (activityData) => {
+  try {
+    const docRef = await addDoc(collection(db, "Activity"), {
+      ...activityData,
+      userId: auth.currentUser.uid,
+    });
+    return docRef;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
 
-export const getDocuments = async ({ itemsPerPage }) => {
+export const getActivitiesPaginated = async ({ itemsPerPage }) => {
   try {
     const q = query(
-      collection(db, "PriorizationObject"),
+      collection(db, "Activity"),
       orderBy("week_name", "desc"),
       limit(itemsPerPage)
     );
@@ -64,29 +86,78 @@ export const getDocuments = async ({ itemsPerPage }) => {
 
     return documents;
   } catch (error) {
-    console.error("Error al obtener documentos: ", error);
+    console.error("Error al obtener actividades: ", error);
     throw error;
   }
 };
 
-export const updatePriorizationStatus = async (documentId, updatedStatus) => {
+export const createActivityStatusHistoryDocument = async (
+  uploadPriorizationObject
+) => {
   try {
-    const statusDocRef = doc(db, "PriorizationObject", documentId);
+    const docRef = await addDoc(collection(db, "ActivityStatusHistory"), {
+      ...uploadPriorizationObject,
+      userId: auth.currentUser.uid,
+    });
+    return docRef;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
 
-    const docSnapshot = await getDoc(statusDocRef);
-    if (docSnapshot.exists()) {
-      const currentData = docSnapshot.data();
+export const getActivityStatusHistory = async () => {
+  try {
+    const q = query(
+      collection(db, "ActivityStatusHistory")
+      // orderBy("created_at", "desc")
+    );
+    const querySnapshot = await getDocs(q);
+    const documents = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: {
+          ...data,
+          activity: data.activity,
+        },
+      });
+    });
+    return documents;
+  } catch (error) {
+    console.error("Error al obtener estados: ", error);
+    throw error;
+  }
+};
+
+export const updateActivityStatusHistory = async (
+  documentId,
+  updatedStatus
+) => {
+  try {
+    // Assuming 'activity' is the field you want to match with documentId
+    const q = query(
+      collection(db, "ActivityStatusHistory"),
+      where("activity", "==", documentId)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      // Assuming there is only one matching document; adjust if needed
+      const statusDocRef = querySnapshot.docs[0].ref;
+      const currentData = querySnapshot.docs[0].data();
 
       if (!currentData.status_history) {
         currentData.status_history = [];
       }
 
       currentData.status_history.push({
-        impacto_status: currentData.impacto_status || "",
-        impacto_status_description:
-          currentData.impacto_status_description || "",
-        status_updated_by: currentData.status_updated_by || "",
-        status_updated_date: currentData.status_updated_date || "",
+        previous_status: currentData.status || "",
+        previous_status_description: currentData.description || "",
+        previous_created_by: currentData.created_by || "",
+        previous_created_at: currentData.created_at || "",
       });
 
       const isValidUpdate = Object.keys(updatedStatus).every(
@@ -96,24 +167,70 @@ export const updatePriorizationStatus = async (documentId, updatedStatus) => {
       if (isValidUpdate) {
         const payload = {
           ...updatedStatus,
+          activity: currentData.activity,
           status_history: currentData.status_history,
         };
+        console.log(payload);
 
         try {
-          const updatedDoc = await updateDoc(statusDocRef, payload);
+          await setDoc(statusDocRef, payload);
+          console.log("Document updated successfully");
         } catch (error) {
-          console.error("Error al actualizar el documento:", error);
+          console.error("Error updating the document:", error);
         }
       } else {
-        console.error(
-          "Error: Los datos de actualización contienen valores indefinidos."
-        );
+        console.error("Error: Update data contains undefined values.");
       }
+    } else {
+      console.error("Error: Document not found.");
     }
   } catch (error) {
     console.error("Error:", error);
   }
 };
+
+// export const getActivityCurrentStatus = async () => {
+//   try {
+//     const querySnapshot = await getDocs(collection(db, "Activity"));
+//     const documents = [];
+
+//     querySnapshot.forEach((doc) => {
+//       const data = doc.data();
+//       documents.push({
+//         id: doc.id,
+//         data: data,
+//       });
+//     });
+//     return documents;
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
+// };
+
+// export const updateActivityStatusHistory = async (
+//   activityIdToUpdate,
+//   currentStatus
+// ) => {
+//   const activityDocRef = doc(db, "Activity", activityIdToUpdate);
+//   const activityDocSnapshot = await getDoc(activityDocRef);
+//   if (activityDocSnapshot.exists()) {
+//     const activityData = activityDocSnapshot.data();
+
+//     const updatedActivity = {
+//       ...activityData,
+//       current_status: currentStatus,
+//     };
+//     await updateDoc(activityDocRef, updatedActivity);
+//     console.log(`Estado actualizado para la actividad ${activityIdToUpdate}`);
+//   } else {
+//     console.error(`No se encontró la actividad con ID ${activityIdToUpdate}`);
+//   }
+// };
+
+export async function uploadPriorizationFile(file, week) {
+  const storageRef = ref(storage, `${week}.xlsx`);
+  const snapshot = await uploadBytes(storageRef, file);
+}
 
 export async function uploadRecordFile(recordIMG) {
   const storageRef = ref(storage, recordIMG[0].name);
@@ -158,24 +275,6 @@ export const createNewRecord = async (documentId, newRecord) => {
     }
   } catch (error) {
     console.error("Error:", error);
-  }
-};
-
-export const getCurrentPriorizationStatus = async () => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "PriorizationObject"));
-    const documents = [];
-
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      documents.push({
-        id: doc.id,
-        data: data,
-      });
-    });
-    return documents;
-  } catch (error) {
-    console.error("Error fetching data:", error);
   }
 };
 
