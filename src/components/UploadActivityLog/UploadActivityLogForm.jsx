@@ -118,7 +118,9 @@ function UploadActivityLog({ documentId }) {
         record_description: descriptionInput,
         record_file_names: [],
       };
+
       setIsLoading(true);
+
       if (data.record_files && data.record_files.length > 0) {
         for (let i = 0; i < data.record_files.length; i++) {
           const file = data.record_files[i];
@@ -140,9 +142,9 @@ function UploadActivityLog({ documentId }) {
         navigate("/home");
       }, 2000);
     } catch (error) {
-      setIsLoading(false);
       console.error("Error:", error);
       toast.error(`Ha ocurrido un error: ${error.message}`);
+      setIsLoading(false);
     }
   };
   return (
