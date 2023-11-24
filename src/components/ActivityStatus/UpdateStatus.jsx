@@ -1,11 +1,11 @@
 import React from "react";
-import Navbar from "../Navbar/Navbar";
-import UpdateStatusForm from "./UpdateStatusForm";
-import ButtonUI from "../UI/ButtonUI";
 import { useNavigate, useParams } from "react-router-dom";
-import ShowStatus from "./ShowStatus/ShowStatus";
+import ShowStatus from "./ShowStatus";
+import UpdateStatusForm from "./UpdateStatusForm";
+import Navbar from "../Navbar/Navbar";
+import ButtonUI from "../UI/ButtonUI";
 
-function AddStatus() {
+function UpdateActivityStatus() {
   const navigate = useNavigate();
   const { documentId } = useParams();
 
@@ -16,7 +16,7 @@ function AddStatus() {
   return (
     <>
       <Navbar />
-      <section id="update-status">
+      <section id="update-activity-status">
         <div className="container">
           <div className="row">
             <div className="col-md-6 mt-5">
@@ -29,7 +29,7 @@ function AddStatus() {
         </div>
         <div className="d-flex justify-content-center mt-5">
           <ButtonUI
-            text="VOLVER A PRIORIZACIÓN"
+            text="VOLVER"
             icon="bi bi-arrow-return-left"
             marginClassName="mb-5"
             btnClassName="btn-link"
@@ -41,4 +41,4 @@ function AddStatus() {
   );
 }
 
-export default AddStatus;
+export default UpdateActivityStatus;

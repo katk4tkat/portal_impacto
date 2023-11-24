@@ -2,7 +2,7 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import { updatePriorizationStatus } from "../../utils/firebase.js";
+import { updateActivityStatusHistory } from "../../utils/firebase.js";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,8 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 function UpdateStatusForm({ documentId }) {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      impacto_status: "",
-      impacto_status_description: "",
+      status: "",
+      description: "",
     },
   });
   const navigate = useNavigate();
@@ -19,9 +19,9 @@ function UpdateStatusForm({ documentId }) {
   const onSubmit = async (formData) => {
     try {
       const user = localStorage.getItem("userEmail");
-      const { impacto_status, impacto_status_description } = formData;
+      const { status, description } = formData;
 
-      if (!impacto_status || !impacto_status_description) {
+      if (!status || !description) {
         toast.error(
           "Ha ocurrido un error: Debe completar el estado y la descripción."
         );
@@ -29,18 +29,18 @@ function UpdateStatusForm({ documentId }) {
       }
 
       const updatedStatus = {
-        status_updated_by: user,
-        status_updated_date: new Date(),
-        impacto_status,
-        impacto_status_description,
+        created_by: user,
+        created_at: new Date(),
+        status,
+        description,
       };
 
-      updatePriorizationStatus(documentId, updatedStatus);
+      await updateActivityStatusHistory(documentId, updatedStatus);
 
       toast.success("Estado actualizado exitosamente");
       reset({
-        impacto_status: "",
-        impacto_status_description: "",
+        status: "",
+        description: "",
       });
 
       setTimeout(() => {
@@ -60,15 +60,15 @@ function UpdateStatusForm({ documentId }) {
             <div className="card-body">
               <h2 className="text-center mb-4"> ACTUALIZAR ESTADO IMPACTO</h2>
               <div className="form-group">
-                <label htmlFor="impacto_status">Ingresar Estado:</label>
+                <label htmlFor="status">Ingresar Estado:</label>
                 <Controller
-                  name="impacto_status"
+                  name="status"
                   control={control}
                   render={({ field }) => (
                     <select
                       {...field}
                       className="form-control mb-3"
-                      id="impacto_status"
+                      id="status"
                     >
                       <option value="" defaultValue>
                         Seleccione un Estado
@@ -85,16 +85,14 @@ function UpdateStatusForm({ documentId }) {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="impacto_status_description">
-                  Descripción u observación:
-                </label>
+                <label htmlFor="description">Descripción u observación:</label>
                 <Controller
-                  name="impacto_status_description"
+                  name="description"
                   control={control}
                   render={({ field }) => (
                     <textarea
                       {...field}
-                      id="impacto_status_description"
+                      id="description"
                       className="form-control mb-3"
                       placeholder="Escribe una descripción"
                     />
