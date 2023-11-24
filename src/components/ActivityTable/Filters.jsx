@@ -71,16 +71,16 @@ function Filters({ handleFilterChange }) {
           />
         </div>
         <div className="col-sm-2">
-          <label className="visually-hidden" htmlFor="impacto_status">
+          <label className="visually-hidden" htmlFor="current-status">
             Estado
           </label>
           <input
             type="text"
             className="form-control"
-            id="impacto_status"
+            id="current-status"
             placeholder="Estado"
             onChange={(e) =>
-              handleFilterChange("impacto_status", e.target.value)
+              handleFilterChange("current_status", e.target.value)
             }
           />
         </div>

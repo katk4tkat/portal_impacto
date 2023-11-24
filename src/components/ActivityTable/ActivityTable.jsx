@@ -14,7 +14,7 @@ function ActivityTable() {
     technicalUnit: "",
     equipmentSystem: "",
     description: "",
-    impactoStatus: "",
+    status: "",
   });
 
   const handleFilterChange = (fieldName, value) => {
