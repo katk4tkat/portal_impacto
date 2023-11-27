@@ -95,7 +95,7 @@ export const createActivityStatusHistoryDocument = async (
   uploadPriorizationObject
 ) => {
   try {
-    const docRef = await addDoc(collection(db, "ActivityStatusHistory"), {
+    const docRef = await addDoc(collection(db, "ActivityStatusHistory", documentId), {
       ...uploadPriorizationObject,
       userId: auth.currentUser.uid,
     });
@@ -136,7 +136,6 @@ export const updateActivityStatusHistory = async (
   updatedStatus
 ) => {
   try {
-    // Assuming 'activity' is the field you want to match with documentId
     const q = query(
       collection(db, "ActivityStatusHistory"),
       where("activity", "==", documentId)
@@ -145,7 +144,6 @@ export const updateActivityStatusHistory = async (
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-      // Assuming there is only one matching document; adjust if needed
       const statusDocRef = querySnapshot.docs[0].ref;
       const currentData = querySnapshot.docs[0].data();
 
@@ -217,94 +215,60 @@ export const updateCurrentStatusInActivity = async (documentId, newStatus) => {
   }
 };
 
-// export const getActivityCurrentStatus = async () => {
-//   try {
-//     const querySnapshot = await getDocs(collection(db, "Activity"));
-//     const documents = [];
-
-//     querySnapshot.forEach((doc) => {
-//       const data = doc.data();
-//       documents.push({
-//         id: doc.id,
-//         data: data,
-//       });
-//     });
-//     return documents;
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//   }
-// };
-
-// export const updateActivityStatusHistory = async (
-//   activityIdToUpdate,
-//   currentStatus
-// ) => {
-//   const activityDocRef = doc(db, "Activity", activityIdToUpdate);
-//   const activityDocSnapshot = await getDoc(activityDocRef);
-//   if (activityDocSnapshot.exists()) {
-//     const activityData = activityDocSnapshot.data();
-
-//     const updatedActivity = {
-//       ...activityData,
-//       current_status: currentStatus,
-//     };
-//     await updateDoc(activityDocRef, updatedActivity);
-//     console.log(`Estado actualizado para la actividad ${activityIdToUpdate}`);
-//   } else {
-//     console.error(`No se encontró la actividad con ID ${activityIdToUpdate}`);
-//   }
-// };
-
 export async function uploadPriorizationFile(file, week) {
   const storageRef = ref(storage, `${week}.xlsx`);
   const snapshot = await uploadBytes(storageRef, file);
 }
 
-export async function uploadRecordFile(recordIMG) {
-  const storageRef = ref(storage, recordIMG[0].name);
-  await uploadBytes(storageRef, recordIMG[0]);
-}
-
-export const createNewRecord = async (documentId, newRecord) => {
-  const statusDocRef = doc(db, "PriorizationObject", documentId);
+export const createActivityLogDocument = async (documentId, newActivityLog) => {
   try {
-    const docSnapshot = await getDoc(statusDocRef);
-    if (docSnapshot.exists()) {
-      const currentData = docSnapshot.data();
+    const activityLogRef = doc(db, "ActivityLog", documentId);
+    const docSnapshot = await getDoc(activityLogRef);
 
-      if (!currentData.record_history) {
-        currentData.record_history = [];
-      }
-      currentData.record_history.push({
-        record_written_by: currentData.record_written_by || "",
-        record_creation_date: currentData.record_creation_date || "",
-        record_GPS: currentData.record_GPS || "",
-        record_description: currentData.record_description || "",
-        record_file_names: currentData.record_file_names || "",
-      });
-      const isValidUpdate = Object.keys(newRecord).every(
-        (key) => newRecord[key] !== undefined
-      );
-      if (isValidUpdate) {
-        const payload = {
-          ...newRecord,
-          record_history: currentData.record_history,
-        };
-        try {
-          const updatedDoc = await updateDoc(statusDocRef, payload);
-        } catch (error) {
-          console.error("Error al actualizar el documento:", error);
-        }
+    if (docSnapshot.exists()) {
+      const existingData = docSnapshot.data();
+      const existingActivity = existingData.activity || '';
+
+      if (existingActivity === documentId) {
+        const history = existingData.history || [];
+        const updatedHistory = [
+          ...history,
+          {
+            activity_log_written_by: existingData.activity_log_written_by || "",
+            activity_log_creation_date: existingData.activity_log_creation_date || "",
+            activity_log_GPS: existingData.activity_log_GPS || "",
+            activity_log_description: existingData.activity_log_description || "",
+            activity_log_file_names: existingData.activity_log_file_names || "",
+          },
+        ];
+
+        await updateDoc(activityLogRef, {
+          ...newActivityLog,
+          userId: auth.currentUser.uid,
+          history: updatedHistory,
+        });
       } else {
-        console.error(
-          "Error: Los datos de actualización contienen valores indefinidos."
-        );
+        console.error("El documentId y la actividad existente no coinciden.");
       }
+    } else {
+
+      await setDoc(activityLogRef, {
+        ...newActivityLog,
+        userId: auth.currentUser.uid,
+        activity: documentId,
+        history: [],
+      });
     }
   } catch (error) {
-    console.error("Error:", error);
+    console.error('Error al agregar documento:', error);
+    throw error;
   }
 };
+
+export async function uploadActivityLogFile(recordIMG) {
+  const storageRef = ref(storage, `ActivityLogFile/${recordIMG[0].name}`);
+  await uploadBytes(storageRef, recordIMG[0]);
+}
 
 export const getDossierDocuments = async () => {
   try {

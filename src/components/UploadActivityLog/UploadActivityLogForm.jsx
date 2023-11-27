@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { uploadRecordFile, createNewRecord } from "../../utils/firebase.js";
+import { uploadActivityLogFile, createActivityLogDocument } from "../../utils/firebase.js";
 import { getCurrentLocation } from "../../utils/getGPS.js";
 import Spinner from "../UI/Spinner.jsx";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,13 +20,13 @@ function UploadActivityLog({ documentId }) {
 
   const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
-      record_description: "",
+      activity_log_description: "",
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "record_files",
+    name: "activity_log_files",
   });
 
   useEffect(() => {
@@ -111,32 +111,33 @@ function UploadActivityLog({ documentId }) {
         return;
       }
 
-      const newRecord = {
-        record_written_by: user,
-        record_creation_date: new Date(),
-        record_GPS: currentGPS,
-        record_description: descriptionInput,
-        record_file_names: [],
+      const newActivityLog = {
+        activity: documentId,
+        activity_log_written_by: user,
+        activity_log_creation_date: new Date(),
+        activity_log_GPS: currentGPS,
+        activity_log_description: descriptionInput,
+        activity_log_file_names: [],
       };
 
       setIsLoading(true);
 
-      if (data.record_files && data.record_files.length > 0) {
-        for (let i = 0; i < data.record_files.length; i++) {
-          const file = data.record_files[i];
-          await uploadRecordFile([file]);
-          newRecord.record_file_names.push(file.name);
+      if (data.activity_log_files && data.activity_log_files.length > 0) {
+        for (let i = 0; i < data.activity_log_files.length; i++) {
+          const file = data.activity_log_files[i];
+          await uploadActivityLogFile([file]);
+          newActivityLog.activity_log_file_names.push(file.name);
         }
       }
       setIsLoading(false);
 
-      createNewRecord(documentId, newRecord);
+      await createActivityLogDocument(documentId, newActivityLog);
 
       toast.success("Registro ingresado exitosamente");
       reset({
-        record_GPS: "",
-        record_description: "",
-        record_files: [],
+        activity_log_GPS: "",
+        activity_log_description: "",
+        activity_log_files: [],
       });
       setTimeout(() => {
         navigate("/home");
@@ -156,14 +157,14 @@ function UploadActivityLog({ documentId }) {
               <div className="card-body">
                 <h2 className="text-center mb-4"> INGRESAR REGISTRO</h2>
                 <div className="form-group">
-                  <label htmlFor="record_GPS">GPS:</label>
+                  <label htmlFor="activity_log_GPS">GPS:</label>
                   <Controller
-                    name="record_GPS"
+                    name="activity_log_GPS"
                     control={control}
                     render={({ field }) => (
                       <textarea
                         {...field}
-                        id="record_GPS"
+                        id="activity_log_GPS"
                         className="form-control"
                         placeholder="Ingrese las coordenadas GPS."
                         value={currentGPS}
@@ -182,17 +183,17 @@ function UploadActivityLog({ documentId }) {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="record_description">
+                  <label htmlFor="activity_log_description">
                     Descripción del registro:
                   </label>
                   <Controller
-                    name="record_description"
+                    name="activity_log_description"
                     control={control}
                     defaultValue=""
                     render={({ field }) => (
                       <textarea
                         {...field}
-                        id="record_description"
+                        id="activity_log_description"
                         className="form-control"
                         placeholder="Ingrese descripción del registro."
                         value={descriptionInput}
@@ -220,7 +221,7 @@ function UploadActivityLog({ documentId }) {
                   {fields.map((field, index) => (
                     <div key={field.id} className="d-flex mb-2">
                       <Controller
-                        name={`record_files_${index}`}
+                        name={`activity_log_files_${index}`}
                         control={control}
                         render={({ field }) => (
                           <input
@@ -229,7 +230,7 @@ function UploadActivityLog({ documentId }) {
                             className="form-control"
                             onChange={(e) => {
                               setValue(
-                                `record_files[${index}]`,
+                                `activity_log_files[${index}]`,
                                 e.target.files[0]
                               );
                             }}
