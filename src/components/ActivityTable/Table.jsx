@@ -125,7 +125,7 @@ function Table({ filters }) {
                       <Link to={`/upload-activity-log/${item.id}`}>I.R.</Link>
                     </td>
                     <td>
-                      <Link to={`/view-dossier/${item.id}`}>V.D.</Link>
+                      <Link to={`/view-activity-info/${item.id}`}>V.D.</Link>
                     </td>
                   </tr>
                 );

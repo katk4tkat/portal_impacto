@@ -12,6 +12,7 @@ import {
   orderBy,
   where,
   limit,
+  documentId,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -270,25 +271,36 @@ export async function uploadActivityLogFile(recordIMG) {
   await uploadBytes(storageRef, recordIMG[0]);
 }
 
-export const getDossierDocuments = async () => {
+export const getDocuments = async (collectionName) => {
   try {
-    const querySnapshot = await getDocs(collection(db, "PriorizationObject"));
-    const documents = [];
-
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      documents.push({
-        id: doc.id,
-        data: data,
-      });
-    });
-
+    const querySnapshot = await getDocs(collection(db, collectionName));
+    const documents = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
     return documents;
   } catch (error) {
     console.error("Error al obtener documentos: ", error);
     throw error;
   }
 };
+
+export const getWeekDocuments = async () => {
+  return getDocuments("Week");
+};
+
+export const getActivityInfoDocuments = async () => {
+  return getDocuments("Activity");
+};
+
+export const getActivityStatusDocuments = async () => {
+  return getDocuments("ActivityStatusHistory");
+};
+
+export const getActivityLogDocuments = async () => {
+  return getDocuments("ActivityLog");
+};
+
 
 export const getImageFromStorage = async (fileName) => {
   try {

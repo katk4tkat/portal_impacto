@@ -7,7 +7,7 @@ import Home from "./components/Home/Home";
 import UploadActivities from "./components/UploadActivities/UploadActivities";
 import UpdateActivityStatus from "./components/ActivityStatus/UpdateStatus";
 import UploadActivityLog from "./components/UploadActivityLog/UploadActivityLog";
-import ViewDossier from "./components/ViewDossier/ViewDossier";
+import ViewActivityInfo from "./components/ViewActivityInfo/ViewActivityInfo";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -46,8 +46,8 @@ root.render(
           element={<PrivateRoute element={<UploadActivityLog />} />}
         />
         <Route
-          path="/view-dossier/:documentId"
-          element={<PrivateRoute element={<ViewDossier />} />}
+          path="/view-activity-info/:documentId"
+          element={<PrivateRoute element={<ViewActivityInfo />} />}
         />
         <Route path="/login" element={<Login />} />
       </Routes>
