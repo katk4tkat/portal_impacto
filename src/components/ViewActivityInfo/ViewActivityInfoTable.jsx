@@ -11,6 +11,7 @@ function ViewActivityInfoTable({ isLoading, weekDocument, activityDocument }) {
         <Spinner />
       ) : (
         <div className="table-responsive">
+          <h1 className="my-2 text-center mt-3 mb-3">Información de Actividad</h1>
           <table className="table table-hover table-bordered">
             <tbody>
               <tr>

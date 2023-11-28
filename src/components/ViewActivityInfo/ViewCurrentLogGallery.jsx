@@ -2,18 +2,28 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect, useRef } from 'react';
 import { getImageFromStorage } from "../../utils/firebase.js";
+import PropTypes from "prop-types";
 
-function ViewDossierGallery({ document }) {
+function ViewCurrentLogGallery({ activityLogDocument }) {
+
     const [recordFileNames, setRecordFileNames] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
     const [selectedImage, setSelectedImage] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const downloadLinkRef = useRef(null);
+    const [document, setDocument] = useState({});
 
     useEffect(() => {
-        if (document.data && document.data.record_file_names) {
-            setRecordFileNames(document.data.record_file_names);
+        setDocument(activityLogDocument);
+
+    }, [activityLogDocument]);
+
+    useEffect(() => {
+
+        if (document.data && document.data.activity_log_file_names) {
+            setRecordFileNames(document.data.activity_log_file_names);
         }
+
     }, [document]);
 
     useEffect(() => {
@@ -45,20 +55,23 @@ function ViewDossierGallery({ document }) {
 
     return (
         <div className="container">
-            <h1>Imágenes:|</h1>
-            <div className="row row-cols-4">
-                {imageUrls.map((url, index) => (
-                    <div key={index} className="col">
-                        <img
-                            src={url}
-                            alt={`Image ${index}`}
-                            className="img-fluid"
-                            onClick={() => handleImageClick(url)}
-                        />
-                    </div>
-                ))}
-            </div>
-
+            <h1>Imágenes:</h1>
+            {imageUrls.length === 0 ? (
+                <p>Sin imágenes disponibles.</p>
+            ) : (
+                <div className="row row-cols-4">
+                    {imageUrls.map((url, index) => (
+                        <div key={index} className="col">
+                            <img
+                                src={url}
+                                alt={`Image ${index}`}
+                                className="img-thumbnail"
+                                onClick={() => handleImageClick(url)}
+                            />
+                        </div>
+                    ))}
+                </div>
+            )}
             {isModalVisible && (
                 <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1">
                     <div className="modal-dialog modal-lg">
@@ -89,4 +102,9 @@ function ViewDossierGallery({ document }) {
     );
 }
 
-export default ViewDossierGallery;
+ViewCurrentLogGallery.propTypes = {
+    activityLogDocument: PropTypes.object,
+};
+
+
+export default ViewCurrentLogGallery;

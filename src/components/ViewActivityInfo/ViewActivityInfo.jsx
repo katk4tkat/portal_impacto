@@ -6,6 +6,7 @@ import Navbar from "../Navbar/Navbar";
 import ButtonUI from "../UI/ButtonUI";
 import ViewActivityInfoTable from "../ViewActivityInfo/ViewActivityInfoTable.jsx"
 import ViewActivityStatusHistoryTable from "./ViewActivityStatusHistoryTable.jsx";
+import ViewActivityLogTable from "./ViewActivityLogTable.jsx";
 import { getActivityInfoDocuments, getWeekDocuments, getActivityStatusDocuments, getActivityLogDocuments } from "../../utils/firebase.js";
 
 function ViewActivityInfo() {
@@ -55,12 +56,9 @@ function ViewActivityInfo() {
             <Navbar />
             <section id="view-dossier">
                 <div className="container">
-                    <h1 className="my-2 text-center mt-3 mb-3">Información de Actividad</h1>
                     {<ViewActivityInfoTable isLoading={isLoading} weekDocument={weekDocument} activityDocument={activityDocument} />}
-                </div>
-                <div className="container">
-                    <h1 className="my-2 text-center mt-3 mb-3">Estado Impacto Actual</h1>
-                    {<ViewActivityStatusHistoryTable isLoading={isLoading} activityStatusDocument={activityStatusDocument} activityLogDocument={activityLogDocument} />}
+                    {<ViewActivityStatusHistoryTable isLoading={isLoading} activityStatusDocument={activityStatusDocument} />}
+                    {<ViewActivityLogTable isLoading={isLoading} activityLogDocument={activityLogDocument} />}
                 </div>
                 <div className="d-flex justify-content-center mt-5">
                     <ButtonUI
@@ -71,7 +69,7 @@ function ViewActivityInfo() {
                         onClick={handleReturnClick}
                     />
                 </div>
-            </section>
+            </section >
         </>
     );
 }
