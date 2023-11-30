@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db, storage } from "./firebase-config.js";
 import {
@@ -96,10 +97,13 @@ export const createActivityStatusHistoryDocument = async (
   uploadPriorizationObject
 ) => {
   try {
-    const docRef = await addDoc(collection(db, "ActivityStatusHistory", documentId), {
-      ...uploadPriorizationObject,
-      userId: auth.currentUser.uid,
-    });
+    const docRef = await addDoc(
+      collection(db, "ActivityStatusHistory", documentId),
+      {
+        ...uploadPriorizationObject,
+        userId: auth.currentUser.uid,
+      }
+    );
     return docRef;
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -228,17 +232,20 @@ export const createActivityLogDocument = async (documentId, newActivityLog) => {
 
     if (docSnapshot.exists()) {
       const existingData = docSnapshot.data();
-      const existingActivity = existingData.activity || '';
+      const existingActivity = existingData.activity || "";
 
       if (existingActivity === documentId) {
         const history = existingData.history || [];
         const updatedHistory = [
           ...history,
           {
+            activity_id: uuidv4(),
             activity_log_written_by: existingData.activity_log_written_by || "",
-            activity_log_creation_date: existingData.activity_log_creation_date || "",
+            activity_log_creation_date:
+              existingData.activity_log_creation_date || "",
             activity_log_GPS: existingData.activity_log_GPS || "",
-            activity_log_description: existingData.activity_log_description || "",
+            activity_log_description:
+              existingData.activity_log_description || "",
             activity_log_file_names: existingData.activity_log_file_names || "",
           },
         ];
@@ -252,7 +259,6 @@ export const createActivityLogDocument = async (documentId, newActivityLog) => {
         console.error("El documentId y la actividad existente no coinciden.");
       }
     } else {
-
       await setDoc(activityLogRef, {
         ...newActivityLog,
         userId: auth.currentUser.uid,
@@ -261,7 +267,7 @@ export const createActivityLogDocument = async (documentId, newActivityLog) => {
       });
     }
   } catch (error) {
-    console.error('Error al agregar documento:', error);
+    console.error("Error al agregar documento:", error);
     throw error;
   }
 };
@@ -300,7 +306,6 @@ export const getActivityStatusDocuments = async () => {
 export const getActivityLogDocuments = async () => {
   return getDocuments("ActivityLog");
 };
-
 
 export const getImageFromStorage = async (fileName) => {
   try {
