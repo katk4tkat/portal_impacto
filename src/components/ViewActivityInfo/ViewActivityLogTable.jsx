@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Spinner from "../UI/Spinner";
 import ViewCurrentLogGallery from "./ViewCurrentLogGallery";
+import ViewHistoryLogModal from "./ViewHistoryLogModal";
 
 function ViewActivityLogTable({ isLoading, activityLogDocument }) {
   const hasCurrentLog = Boolean(activityLogDocument?.data?.activity_log_GPS);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedLogId, setSelectedLogId] = useState(null);
+
+  const openModal = (activityId) => {
+    setSelectedLogId(activityId);
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setSelectedLogId(null);
+    setIsModalVisible(false);
+  };
 
   if (!activityLogDocument || !activityLogDocument.data) {
     return (
@@ -88,12 +101,10 @@ function ViewActivityLogTable({ isLoading, activityLogDocument }) {
               </tbody>
             </table>
           </div>
-
           <ViewCurrentLogGallery
             isLoading={isLoading}
             activityLogDocument={activityLogDocument}
           />
-
           <div className="mt-4">
             <h2>Historial de Registros:</h2>
             <div className="table-responsive">
@@ -135,6 +146,21 @@ function ViewActivityLogTable({ isLoading, activityLogDocument }) {
                           </td>
                           <td>{log?.activity_log_GPS}</td>
                           <td>{log?.activity_log_written_by}</td>
+                          <td>
+                            <button
+                              className="btn btn-dark"
+                              onClick={() => openModal(log.activity_id)}
+                            >
+                              VER
+                            </button>
+                            {isModalVisible && (
+                              <ViewHistoryLogModal
+                                activityLogDocument={activityLogDocument}
+                                activityId={selectedLogId}
+                                closeModal={closeModal}
+                              />
+                            )}
+                          </td>
                         </tr>
                       ))
                   )}
