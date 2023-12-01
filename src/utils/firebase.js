@@ -311,7 +311,7 @@ export const getImageFromStorage = async (fileName) => {
   try {
     const imageRef = ref(
       storage,
-      "gs://portal-impacto-609ff.appspot.com/ActivityLogFile/" + fileName
+      "gs://portal-impacto-ba606.appspot.com/ActivityLogFile/" + fileName
     );
     const imageUrl = await getDownloadURL(imageRef);
     return imageUrl;
