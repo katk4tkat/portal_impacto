@@ -8,6 +8,7 @@ import UploadActivities from "./components/UploadActivities/UploadActivities";
 import UpdateActivityStatus from "./components/ActivityStatus/UpdateStatus";
 import UploadActivityLog from "./components/UploadActivityLog/UploadActivityLog";
 import ViewActivityInfo from "./components/ViewActivityInfo/ViewActivityInfo";
+import CreateActivity from "./components/CreateActivity/CreateActivity.jsx";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -36,6 +37,10 @@ root.render(
         <Route
           path="/upload-activities"
           element={<PrivateRoute element={<UploadActivities />} />}
+        />
+        <Route
+          path="/create-activity"
+          element={<PrivateRoute element={<CreateActivity />} />}
         />
         <Route
           path="/update-activity-status/:documentId"
