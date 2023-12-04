@@ -13,7 +13,6 @@ import {
   orderBy,
   where,
   limit,
-  documentId,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -93,17 +92,12 @@ export const getActivitiesPaginated = async ({ itemsPerPage }) => {
   }
 };
 
-export const createActivityStatusHistoryDocument = async (
-  uploadPriorizationObject
-) => {
+export const createActivityStatusHistoryDocument = async (newHistoryRecord) => {
   try {
-    const docRef = await addDoc(
-      collection(db, "ActivityStatusHistory", documentId),
-      {
-        ...uploadPriorizationObject,
-        userId: auth.currentUser.uid,
-      }
-    );
+    const docRef = await addDoc(collection(db, "ActivityStatusHistory"), {
+      ...newHistoryRecord,
+      userId: auth.currentUser.uid,
+    });
     return docRef;
   } catch (e) {
     console.error("Error adding document: ", e);
