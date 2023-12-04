@@ -2,11 +2,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import {
-  getActivitiesPaginated,
-  // getStatus,
-  // updateActivityCurrentStatus,
-} from "../../utils/firebase.js";
+import { getActivitiesPaginated } from "../../utils/firebase.js";
 import { removeSpecialCharacters } from "../../utils/removeSpecialCharacters.js";
 import Pagination from "../UI/Pagination";
 import Spinner from "../UI/Spinner";
