@@ -1,12 +1,27 @@
 // eslint-disable-next-line no-unused-vars
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm, Controller } from "react-hook-form";
 import { createWeekDocument, createActivityDocument, createActivityStatusHistoryDocument } from "../../utils/firebase"
+import { isWeekValid } from "../../utils/handleFormErrors"
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../UI/Spinner.jsx";
+
 
 
 function CreateActivityForm() {
 
-    const { control, handleSubmit } = useForm({
+    const [isLoading, setIsLoading] = useState(false);
+    const [isListeningNotice, setIsListeningNotice] = useState(false);
+    const [isListeningJob, setIsListeningJob] = useState(false);
+    const [isListeningStatus, setIsListeningStatus] = useState(false);
+    const [descriptionNoticeInput, setDescriptionNoticeInput] = useState("");
+    const [descriptionJobInput, setDescriptionJobInput] = useState("");
+    const [descriptionStatusInput, setDescriptionStatusInput] = useState("");
+
+    const navigate = useNavigate();
+
+    const { control, reset, handleSubmit } = useForm({
         defaultValues: {
             week: "",
             informed_by: "",
@@ -21,11 +36,163 @@ function CreateActivityForm() {
         },
     });
 
+    useEffect(() => {
+        if (!isSpeechRecognitionSupported()) {
+            toast.error("Speech recognition is not supported in this browser.");
+        }
+    }, []);
+
+    const isSpeechRecognitionSupported = () => {
+        return (
+            "SpeechRecognition" in window ||
+            "webkitSpeechRecognition" in window ||
+            "mozSpeechRecognition" in window ||
+            "msSpeechRecognition" in window
+        );
+    };
+
+    const startListeningNotice = () => {
+        if (!isListeningNotice) {
+            try {
+                const SpeechRecognition =
+                    window.SpeechRecognition ||
+                    window.webkitSpeechRecognition ||
+                    window.mozSpeechRecognition ||
+                    window.msSpeechRecognition;
+
+                const recognition = new SpeechRecognition();
+                recognition.continuous = true;
+
+                recognition.onresult = (event) => {
+                    const text = event.results[0][0].transcript;
+                    setDescriptionNoticeInput(text);
+                    stopListening();
+                    console.log(descriptionNoticeInput);
+                };
+
+                recognition.start();
+                setIsListeningNotice(true);
+            } catch (error) {
+                console.error("Error starting speech recognition:", error);
+                toast.error(`Error starting speech recognition: ${error.message}`);
+            }
+        } else {
+            stopListening();
+        }
+    };
+
+    const startListeningJob = () => {
+        if (!isListeningJob) {
+            try {
+                const SpeechRecognition =
+                    window.SpeechRecognition ||
+                    window.webkitSpeechRecognition ||
+                    window.mozSpeechRecognition ||
+                    window.msSpeechRecognition;
+
+                const recognition = new SpeechRecognition();
+                recognition.continuous = true;
+
+                recognition.onresult = (event) => {
+                    const text = event.results[0][0].transcript;
+                    setDescriptionJobInput(text);
+                    stopListening();
+                    console.log(descriptionJobInput);
+                };
+
+                recognition.start();
+                setIsListeningJob(true);
+            } catch (error) {
+                console.error("Error starting speech recognition:", error);
+                toast.error(`Error starting speech recognition: ${error.message}`);
+            }
+        } else {
+            stopListening();
+        }
+    };
+
+    const startListeningStatus = () => {
+        if (!isListeningStatus) {
+            try {
+                const SpeechRecognition =
+                    window.SpeechRecognition ||
+                    window.webkitSpeechRecognition ||
+                    window.mozSpeechRecognition ||
+                    window.msSpeechRecognition;
+
+                const recognition = new SpeechRecognition();
+                recognition.continuous = true;
+
+                recognition.onresult = (event) => {
+                    const text = event.results[0][0].transcript;
+                    setDescriptionStatusInput(text);
+                    stopListening();
+                    console.log(descriptionStatusInput);
+                };
+
+                recognition.start();
+                setIsListeningStatus(true);
+            } catch (error) {
+                console.error("Error starting speech recognition:", error);
+                toast.error(`Error starting speech recognition: ${error.message}`);
+            }
+        } else {
+            stopListening();
+        }
+    };
+
+    const stopListening = () => {
+        setIsListeningNotice(false);
+        setIsListeningJob(false);
+        setIsListeningStatus(false);
+    };
+    const renderButtonTextJob = isListeningJob ? (
+        <>
+            <i className="bi bi-mic-mute align-middle"></i>
+            &nbsp;DETENER GRABACIÓN POR VOZ
+        </>
+    ) : (
+        <>
+            <i className="bi bi-mic align-middle"></i>
+            &nbsp;INICIAR GRABACIÓN POR VOZ
+        </>
+    );
+
+    const renderButtonTextNotice = isListeningNotice ? (
+        <>
+            <i className="bi bi-mic-mute align-middle"></i>
+            &nbsp;DETENER GRABACIÓN POR VOZ
+        </>
+    ) : (
+        <>
+            <i className="bi bi-mic align-middle"></i>
+            &nbsp;INICIAR GRABACIÓN POR VOZ
+        </>
+    )
+
+    const renderButtonTextStatus = isListeningStatus ? (
+        <>
+            <i className="bi bi-mic-mute align-middle"></i>
+            &nbsp;DETENER GRABACIÓN POR VOZ
+        </>
+    ) : (
+        <>
+            <i className="bi bi-mic align-middle"></i>
+            &nbsp;INICIAR GRABACIÓN POR VOZ
+        </>
+    )
     const onSubmit = async (formData) => {
         try {
             const user = localStorage.getItem("userEmail");
             const { week, informed_by, team, current_status, description, equipo_o_sistema, descripcion_del_aviso, descripcion_del_trabajo, vulnerabilidad } = formData;
 
+            if (!isWeekValid(week)) {
+                toast.error(
+                    "Por favor: completar semana en el formato correspondiente o dejar vacía, si corresponde."
+                );
+                return;
+            }
+            setIsLoading(true);
             const newWeek = {
                 created_at: new Date(),
                 created_by: user,
@@ -69,11 +236,29 @@ function CreateActivityForm() {
 
             await createActivityStatusHistoryDocument(newStatus)
 
+            setIsLoading(false);
+            toast.success("Priorización importada correctamente");
+            reset({
+                week: "",
+                informed_by: "",
+                team: "",
+                current_status: "",
+                description: "",
+                u_tecnica: "",
+                equipo_o_sistema: "",
+                descripcion_del_trabajo: "",
+                descripcion_del_aviso: "",
+                vulnerabilidad: "",
+            });
 
+            setTimeout(() => {
+                navigate("/home");
+            }, 2000);
         } catch (error) {
             console.error("Error:", error);
-            /*   toast.error(`Ha ocurrido un error: ${error.message}`);
-              setIsLoading(false); */
+            toast.error(`Ha ocurrido un error: ${error.message}`);
+            setIsLoading(false);
+
         }
     }
 
@@ -96,7 +281,7 @@ function CreateActivityForm() {
                                             {...field}
                                             type="text"
                                             id="week"
-                                            placeholder="Ejemplo: 2023-W37"
+                                            placeholder="Ejemplo: 2023-37 (AAAA-SS)"
                                             className="form-control mb-3"
                                         />
                                     )}
@@ -124,6 +309,7 @@ function CreateActivityForm() {
                                 <Controller
                                     name="team"
                                     control={control}
+                                    rules={{ required: 'Debe seleccionar equipo' }}
                                     render={({ field }) => (
                                         <select {...field} className="form-control mb-3" id="team">
                                             <option value="" defaultValue>
@@ -140,6 +326,7 @@ function CreateActivityForm() {
                                 <Controller
                                     name="current_status"
                                     control={control}
+                                    rules={{ required: 'Debe seleccionar un estado inicial.' }}
                                     render={({ field }) => (
                                         <select
                                             {...field}
@@ -177,11 +364,12 @@ function CreateActivityForm() {
                                             id="description"
                                             className="form-control"
                                             placeholder="Ingrese descripción del estado."
-                                        /*value= {descriptionInput}
-                                        onChange={(e) => {
-                                            setDescriptionInput(e.target.value);
-                                            field.onChange(e);
-                                        }}*/
+                                            required
+                                            value={descriptionStatusInput}
+                                            onChange={(e) => {
+                                                setDescriptionStatusInput(e.target.value);
+                                                field.onChange(e);
+                                            }}
                                         />
                                     )}
                                 />
@@ -190,12 +378,13 @@ function CreateActivityForm() {
                                 <button
                                     type="button"
                                     className="btn btn-dark mt-2 mb-3"
-                                /* onClick={startListening} */
+                                    onClick={startListeningStatus}
                                 >
-                                    {/* {renderButtonText} */}
+                                    {renderButtonTextStatus}
                                 </button>
                             </div>
                             <h5>DETALLES DE ACTIVIDAD</h5>
+                            <p className='text-muted'>(opcional)</p>
                             <div className="form-group">
                                 <label htmlFor="u_tecnica">Unidad Técnica:</label>
                                 <Controller
@@ -208,7 +397,6 @@ function CreateActivityForm() {
                                             id="u_tecnica"
                                             className="form-control mb-3"
                                             placeholder='Ej: COXI-LIX-LIS-LSR'
-                                            required
                                         />
                                     )}
                                 />
@@ -225,7 +413,6 @@ function CreateActivityForm() {
                                             id="equipo_o_sistema"
                                             className="form-control mb-3"
                                             placeholder='Ej: LINEAS DE SOLUCIÓN DE REFINO'
-                                            required
                                         />
                                     )}
                                 />
@@ -244,11 +431,11 @@ function CreateActivityForm() {
                                             id="descripcion_del_trabajo"
                                             className="form-control"
                                             placeholder="Ingrese descripción del trabajo."
-                                        /*value= {descriptionInput}
-                                        onChange={(e) => {
-                                            setDescriptionInput(e.target.value);
-                                            field.onChange(e);
-                                        }}*/
+                                            value={descriptionJobInput}
+                                            onChange={(e) => {
+                                                setDescriptionJobInput(e.target.value);
+                                                field.onChange(e);
+                                            }}
                                         />
                                     )}
                                 />
@@ -257,9 +444,9 @@ function CreateActivityForm() {
                                 <button
                                     type="button"
                                     className="btn btn-dark mt-2 mb-3"
-                                /* onClick={startListening} */
+                                    onClick={startListeningJob}
                                 >
-                                    {/* {renderButtonText} */}
+                                    {renderButtonTextJob}
                                 </button>
                             </div>
                             <div className="form-group">
@@ -276,11 +463,11 @@ function CreateActivityForm() {
                                             id="descripcion_del_aviso"
                                             className="form-control"
                                             placeholder="Ingrese descripción del aviso."
-                                        /*value= {descriptionInput}
-                                        onChange={(e) => {
-                                            setDescriptionInput(e.target.value);
-                                            field.onChange(e);
-                                        }}*/
+                                            value={descriptionNoticeInput}
+                                            onChange={(e) => {
+                                                setDescriptionNoticeInput(e.target.value);
+                                                field.onChange(e);
+                                            }}
                                         />
                                     )}
                                 />
@@ -289,9 +476,9 @@ function CreateActivityForm() {
                                 <button
                                     type="button"
                                     className="btn btn-dark mt-2 mb-3"
-                                /* onClick={startListening} */
+                                    onClick={startListeningNotice}
                                 >
-                                    {/* {renderButtonText} */}
+                                    {renderButtonTextNotice}
                                 </button>
                             </div>
                             <div className="form-group">
@@ -306,7 +493,6 @@ function CreateActivityForm() {
                                             id="vulnerabilidad"
                                             className="form-control mb-3"
                                             placeholder='Ej: HDPE'
-                                            required
                                         />
                                     )}
                                 />
@@ -315,10 +501,16 @@ function CreateActivityForm() {
                                 <button
                                     type="submit"
                                     className="btn btn-dark btn-block text-center mt-3"
-                                /* disabled={isLoading} */
+                                    disabled={isLoading}
                                 >
-                                    {/* {isLoading ? <Spinner /> : "ACTUALIZAR ESTADO IMPACTO"} */} CREAR ACTIVIDAD
+                                    {isLoading ? <Spinner /> : "CREAR ACTIVIDAD"}
                                 </button>
+                                <ToastContainer
+                                    class="custom-toast"
+                                    position="top-right"
+                                    autoClose={3000}
+                                    hideProgressBar
+                                />
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@ import React from 'react'
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import ButtonUI from '../UI/ButtonUI';
-import CreateActivityForm from "./CreateActivityForm"
+import CreateActivityForm from "../CreateActivity/CreateActivityForm"
 
 function CreateActivity() {
 

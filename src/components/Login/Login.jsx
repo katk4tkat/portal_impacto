@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { loginEmail } from "../../utils/firebase.js";
@@ -16,7 +17,6 @@ function Login() {
   const onSubmit = async (data) => {
     try {
       await loginEmail(data.email, data.password);
-      localStorage.setItem("userEmail", data.email);
       navigate("/home");
     } catch (error) {
       const errorText = loginErrorHandler(error);

@@ -16,16 +16,25 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-export const loginEmail = (email, password) =>
-  signInWithEmailAndPassword(auth, email, password);
+export const loginEmail = async (email, password) => {
+
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+  const idToken = await user.getIdToken();
+  localStorage.setItem('userToken', idToken);
+
+  return user;
+};
 
 export const isUserAuthenticated = () => {
-  return auth.currentUser !== null;
+  const authToken = localStorage.getItem("userToken");
+  return authToken !== null && authToken !== undefined;
 };
 
 export const logout = async () => {
   try {
     await signOut(auth);
+    localStorage.removeItem('userToken');
   } catch (error) {
     console.error("logout", error);
   }

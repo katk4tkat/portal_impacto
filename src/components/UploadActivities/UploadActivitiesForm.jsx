@@ -10,7 +10,7 @@ import {
   createActivityStatusHistoryDocument,
   uploadPriorizationFile,
 } from "../../utils/firebase.js";
-import { isWeekValid } from "./handleFormErrors.js";
+import { isRequiredWeekValid } from "../../utils/handleFormErrors.js";
 import { formatHeader } from "../../utils/formatHeader.js";
 import "./upload-activities-form.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -71,7 +71,7 @@ function UploadActivitiesForm() {
       const impactoStatusDefault = "RECIBIDO-MSMIN";
       const { week, team } = formData;
 
-      if (!team || !isWeekValid(week)) {
+      if (!team || !isRequiredWeekValid(week)) {
         toast.error(
           "Ha ocurrido un error: Debe completar campos de equipo, semana y seleccionar un archivo."
         );
@@ -170,7 +170,7 @@ function UploadActivitiesForm() {
                       {...field}
                       type="text"
                       id="week"
-                      placeholder="Ejemplo: 2023-W37"
+                      placeholder="Ejemplo: 2023-37 (AAAA-SS)"
                       className="form-control mb-3"
                       required
                     />

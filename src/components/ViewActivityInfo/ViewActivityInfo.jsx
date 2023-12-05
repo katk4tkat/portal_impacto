@@ -12,6 +12,7 @@ import {
   getActivityStatusDocuments,
   getActivityLogDocuments,
 } from "../../utils/firebase.js";
+import Spinner from "../UI/Spinner";
 
 function ViewActivityInfo() {
   const { documentId } = useParams();
@@ -71,25 +72,25 @@ function ViewActivityInfo() {
       <Navbar />
       <section id="view-dossier">
         <div className="container">
-          {
-            <ViewActivityInfoTable
-              isLoading={isLoading}
-              weekDocument={weekDocument}
-              activityDocument={activityDocument}
-            />
-          }
-          {
-            <ViewActivityStatusHistoryTable
-              isLoading={isLoading}
-              activityStatusDocument={activityStatusDocument}
-            />
-          }
-          {
-            <ViewActivityLogTable
-              isLoading={isLoading}
-              activityLogDocument={activityLogDocument}
-            />
-          }
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            <>
+              <ViewActivityInfoTable
+                isLoading={isLoading}
+                weekDocument={weekDocument}
+                activityDocument={activityDocument}
+              />
+              <ViewActivityStatusHistoryTable
+                isLoading={isLoading}
+                activityStatusDocument={activityStatusDocument}
+              />
+              <ViewActivityLogTable
+                isLoading={isLoading}
+                activityLogDocument={activityLogDocument}
+              />
+            </>
+          )}
         </div>
         <div className="d-flex justify-content-center mt-5">
           <ButtonUI

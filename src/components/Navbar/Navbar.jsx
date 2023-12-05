@@ -8,7 +8,6 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await logout();
-      localStorage.removeItem("userEmail");
       navigate("/login");
     } catch (error) {
       console.log(error);
