@@ -9,7 +9,6 @@ import UpdateActivityStatus from "./components/ActivityStatus/UpdateStatus";
 import UploadActivityLog from "./components/UploadActivityLog/UploadActivityLog";
 import ViewActivityInfo from "./components/ViewActivityInfo/ViewActivityInfo";
 import CreateActivity from "./components/CreateActivity/CreateActivity.jsx";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const root = createRoot(document.getElementById("root"));

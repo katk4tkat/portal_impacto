@@ -17,11 +17,14 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const loginEmail = async (email, password) => {
-
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
   const user = userCredential.user;
   const idToken = await user.getIdToken();
-  localStorage.setItem('userToken', idToken);
+  localStorage.setItem("userToken", idToken);
 
   return user;
 };
@@ -34,7 +37,7 @@ export const isUserAuthenticated = () => {
 export const logout = async () => {
   try {
     await signOut(auth);
-    localStorage.removeItem('userToken');
+    localStorage.removeItem("userToken");
   } catch (error) {
     console.error("logout", error);
   }
@@ -320,6 +323,21 @@ export const getImageFromStorage = async (fileName) => {
     return imageUrl;
   } catch (error) {
     console.error("Error al obtener la URL de descarga:", error);
+    throw error;
+  }
+};
+export const searchTechnicalUnit = async (searchTerm) => {
+  try {
+    const activityDocs = await getActivityInfoDocuments(); // Obtener los documentos de actividad
+    const filteredUnits = activityDocs.filter((doc) => {
+      // Filtrar documentos según el término de búsqueda (ignorando mayúsculas y minúsculas)
+      const uTecnica = doc.data.u_tecnica || ""; // Asegúrate de que el campo exista en tus documentos
+      const searchTermLowerCase = searchTerm.toLowerCase();
+      return uTecnica.toLowerCase().includes(searchTermLowerCase);
+    });
+    return filteredUnits.map((doc) => doc.data.u_tecnica); // Devolver solo los valores de "u_tecnica"
+  } catch (error) {
+    console.error("Error al buscar unidad técnica:", error);
     throw error;
   }
 };
