@@ -1,11 +1,13 @@
 // eslint-disable-next-line no-unused-vars
-// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { uploadActivityLogFile, createActivityLogDocument } from "../../utils/firebase.js";
+import {
+  uploadActivityLogFile,
+  createActivityLogDocument,
+} from "../../utils/firebase.js";
 import { getCurrentLocation } from "../../utils/getGPS.js";
 import Spinner from "../UI/Spinner.jsx";
 import "react-toastify/dist/ReactToastify.css";

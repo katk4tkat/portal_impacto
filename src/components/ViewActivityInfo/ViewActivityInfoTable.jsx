@@ -1,10 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
 import PropTypes from "prop-types";
-import Spinner from "../UI/Spinner";
 
 function ViewActivityInfoTable({ weekDocument, activityDocument }) {
-
   return (
     <>
       <div className="table-responsive">
@@ -17,18 +15,21 @@ function ViewActivityInfoTable({ weekDocument, activityDocument }) {
                 {weekDocument?.data.team === "impacto_acido"
                   ? "Impacto Ácido"
                   : weekDocument?.data.team === "impacto"
-                    ? "Impacto"
-                    : weekDocument?.data.team}
+                  ? "Impacto"
+                  : weekDocument?.data.team}
               </td>
               <th scope="row">Semana:</th>
               <td> {weekDocument?.data.week_name} </td>
             </tr>
             <tr>
               <th scope="row">Fecha de creación:</th>
-              <td> {weekDocument.data.created_at.toDate().toLocaleString()} </td>
+              <td>{weekDocument.data.created_at.toDate().toLocaleString()} </td>
               <th scope="row">Creado por:</th>
-              <td> {weekDocument.data.created_by}
-              </td>
+              <td> {weekDocument.data.created_by}</td>
+            </tr>
+            <tr>
+              <th scope="row">Informado por:</th>
+              <td colSpan={3}> {activityDocument.data.informed_by}</td>
             </tr>
             <tr>
               <th scope="row">Prioridad:</th>
@@ -48,11 +49,15 @@ function ViewActivityInfoTable({ weekDocument, activityDocument }) {
             </tr>
             <tr>
               <th scope="row">Descripción del Trabajo:</th>
-              <td colSpan={3}>{activityDocument.data?.descripcion_del_trabajo}</td>
+              <td colSpan={3}>
+                {activityDocument.data?.descripcion_del_trabajo}
+              </td>
             </tr>
             <tr>
               <th scope="row">Descripción del Aviso:</th>
-              <td colSpan={3}>{activityDocument.data?.descripcion_del_aviso}</td>
+              <td colSpan={3}>
+                {activityDocument.data?.descripcion_del_aviso}
+              </td>
             </tr>
             <tr>
               <th scope="row">Vulnerabilidad</th>
@@ -60,7 +65,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument }) {
             </tr>
           </tbody>
         </table>
-      </div >
+      </div>
     </>
   );
 }

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import { getImageFromStorage } from "../../utils/firebase.js";
 import PropTypes from "prop-types";
