@@ -1,15 +1,15 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
 import {
   updateActivityStatusHistory,
   updateCurrentStatusInActivity,
 } from "../../utils/firebase.js";
-import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
-import "react-toastify/dist/ReactToastify.css";
 import Spinner from "../UI/Spinner.jsx";
+import "react-toastify/dist/ReactToastify.css";
 
 function UpdateStatusForm({ documentId }) {
   const { control, handleSubmit, reset } = useForm({
@@ -36,12 +36,13 @@ function UpdateStatusForm({ documentId }) {
       const updatedStatus = {
         created_by: user,
         created_at: new Date(),
+        activity: documentId,
         status,
         description,
       };
       setIsLoading(true);
 
-      await updateActivityStatusHistory(documentId, updatedStatus);
+      await updateActivityStatusHistory(updatedStatus);
       await updateCurrentStatusInActivity(documentId, formData.status);
 
       setIsLoading(false);

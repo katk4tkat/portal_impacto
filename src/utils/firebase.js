@@ -116,12 +116,14 @@ export const createActivityStatusHistoryDocument = async (newHistoryRecord) => {
   }
 };
 
-export const getActivityStatusHistory = async () => {
+export const getActivityStatusHistory = async (activityId) => {
   try {
     const q = query(
-      collection(db, "ActivityStatusHistory")
+      collection(db, "ActivityStatusHistory"),
+      where("activity", "==", activityId)
       // orderBy("created_at", "desc")
     );
+
     const querySnapshot = await getDocs(q);
     const documents = [];
 
@@ -135,6 +137,7 @@ export const getActivityStatusHistory = async () => {
         },
       });
     });
+
     return documents;
   } catch (error) {
     console.error("Error al obtener estados: ", error);
@@ -142,59 +145,20 @@ export const getActivityStatusHistory = async () => {
   }
 };
 
-export const updateActivityStatusHistory = async (
-  documentId,
-  updatedStatus
-) => {
+export const updateActivityStatusHistory = async (updatedStatus) => {
   try {
-    const q = query(
-      collection(db, "ActivityStatusHistory"),
-      where("activity", "==", documentId)
-    );
+    const statusCollectionRef = collection(db, "ActivityStatusHistory");
 
-    const querySnapshot = await getDocs(q);
+    const updatedStatusData = {
+      ...updatedStatus,
+      userId: auth.currentUser.uid,
+    };
 
-    if (!querySnapshot.empty) {
-      const statusDocRef = querySnapshot.docs[0].ref;
-      const currentData = querySnapshot.docs[0].data();
+    const docRef = await addDoc(statusCollectionRef, updatedStatusData);
 
-      if (!currentData.status_history) {
-        currentData.status_history = [];
-      }
-
-      currentData.status_history.push({
-        previous_status: currentData.status || "",
-        previous_status_description: currentData.description || "",
-        previous_created_by: currentData.created_by || "",
-        previous_created_at: currentData.created_at || "",
-      });
-
-      const isValidUpdate = Object.keys(updatedStatus).every(
-        (key) => updatedStatus[key] !== undefined
-      );
-
-      if (isValidUpdate) {
-        const payload = {
-          ...updatedStatus,
-          activity: currentData.activity,
-          status_history: currentData.status_history,
-        };
-        console.log(payload);
-
-        try {
-          await setDoc(statusDocRef, payload);
-          console.log("Document updated successfully");
-        } catch (error) {
-          console.error("Error updating the document:", error);
-        }
-      } else {
-        console.error("Error: Update data contains undefined values.");
-      }
-    } else {
-      console.error("Error: Document not found.");
-    }
+    console.log("Document updated successfully with ID: ", docRef.id);
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error updating the document:", error);
   }
 };
 
@@ -317,7 +281,7 @@ export const getImageFromStorage = async (fileName) => {
   try {
     const imageRef = ref(
       storage,
-      "gs://portal-impacto-ba606.appspot.com/ActivityLogFile/" + fileName
+      "gs://portal-impacto-609ff.appspot.com/ActivityLogFile/" + fileName
     );
     const imageUrl = await getDownloadURL(imageRef);
     return imageUrl;

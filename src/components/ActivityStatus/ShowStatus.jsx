@@ -11,12 +11,16 @@ function ShowStatus({ documentId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const documents = await getActivityStatusHistory();
-        console.log(documents);
-        const thisDocument = documents.find(
-          (doc) => doc?.data.activity === documentId
-        );
-        setDocument(thisDocument);
+        const documents = await getActivityStatusHistory(documentId);
+
+        const mostRecentDocument =
+          documents.length > 0
+            ? documents.reduce((prev, current) =>
+                prev.data.created_at > current.data.created_at ? prev : current
+              )
+            : null;
+
+        setDocument(mostRecentDocument);
         setIsLoading(false);
       } catch (error) {
         console.error("Error al obtener datos: ", error);
