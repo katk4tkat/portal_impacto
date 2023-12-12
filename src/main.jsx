@@ -10,6 +10,7 @@ import UploadActivityLog from "./components/UploadActivityLog/UploadActivityLog"
 import ViewActivityInfo from "./components/ViewActivityInfo/ViewActivityInfo";
 import CreateActivity from "./components/CreateActivity/CreateActivity.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
+import ActivityPlanning from "./components/ActivityPlanning/ActivityPlanning.jsx";
 
 const root = createRoot(document.getElementById("root"));
 
@@ -48,6 +49,10 @@ root.render(
         <Route
           path="/upload-activity-log/:documentId"
           element={<PrivateRoute element={<UploadActivityLog />} />}
+        />
+        <Route
+          path="/activity-planning/:documentId"
+          element={<PrivateRoute element={<ActivityPlanning />} />}
         />
         <Route
           path="/view-activity-info/:documentId"
