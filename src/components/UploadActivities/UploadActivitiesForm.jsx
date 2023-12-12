@@ -12,9 +12,9 @@ import {
 } from "../../utils/firebase.js";
 import { isRequiredWeekValid } from "../../utils/handleFormErrors.js";
 import { formatHeader } from "../../utils/formatHeader.js";
+import Spinner from "../UI/Spinner.jsx";
 import "./upload-activities-form.css";
 import "react-toastify/dist/ReactToastify.css";
-import Spinner from "../UI/Spinner.jsx";
 
 function UploadActivitiesForm() {
   const [dataContent, setDataContent] = useState([]);

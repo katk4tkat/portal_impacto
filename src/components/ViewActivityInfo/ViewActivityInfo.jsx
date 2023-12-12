@@ -9,7 +9,7 @@ import ViewActivityLogTable from "./ViewActivityLogTable.jsx";
 import {
   getActivityInfoDocuments,
   getWeekDocuments,
-  getActivityStatusDocuments,
+  getActivityStatusHistory,
   getActivityLogDocuments,
 } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner";
@@ -18,10 +18,12 @@ function ViewActivityInfo() {
   const { documentId } = useParams();
   const [weekDocument, setWeekDocument] = useState({});
   const [activityDocument, setActivityDocument] = useState({});
-  const [activityStatusDocument, setActivityStatusDocument] = useState({});
-  const [activityLogDocument, setActivityLogDocument] = useState({});
 
+  const [activityStatusDocument, setActivityStatusDocument] = useState({});
+
+  const [activityLogDocument, setActivityLogDocument] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,36 +32,37 @@ function ViewActivityInfo() {
         const [
           activityDocuments,
           weekDocuments,
-          activityStatusDocuments,
           activityLogDocuments,
+          activityStatusDocuments,
         ] = await Promise.all([
           getActivityInfoDocuments(),
           getWeekDocuments(),
-          getActivityStatusDocuments(),
           getActivityLogDocuments(),
+          getActivityStatusHistory(documentId),
         ]);
+
         const activityDoc = activityDocuments.find(
           (doc) => doc.id === documentId
         );
         const weekDoc = weekDocuments.find(
           (doc) => doc.id === activityDoc?.data.week_id
         );
-        const activityStatusDoc = activityStatusDocuments.find(
-          (doc) => doc?.data.activity === documentId
-        );
+
         const activityLogDoc = activityLogDocuments.find(
           (doc) => doc.id === documentId
         );
+
         setWeekDocument(weekDoc);
         setActivityDocument(activityDoc);
-        setActivityStatusDocument(activityStatusDoc);
         setActivityLogDocument(activityLogDoc);
+        setActivityStatusDocument(activityStatusDocuments);
 
         setIsLoading(false);
       } catch (error) {
         console.error("Error al obtener documentos: ", error);
       }
     };
+
     fetchData();
   }, [documentId]);
 
