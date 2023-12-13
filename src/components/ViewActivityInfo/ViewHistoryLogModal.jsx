@@ -1,50 +1,30 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
-import { getImageFromStorage } from "../../utils/firebase.js";
 import PropTypes from "prop-types";
+import { getImageFromStorage } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner.jsx";
 
-function ViewHistoryLogModal({ activityLogDocument, activityId, closeModal }) {
-  const [recordFileNames, setRecordFileNames] = useState([]);
-  const [imageUrls, setImageUrls] = useState([]);
-  const [loadingImages, setLoadingImages] = useState(false);
+function ViewHistoryLogModal({ activityLogImage, closeModal }) {
+  const [imageUrl, setImageUrl] = useState("");
+  const [loadingImage, setLoadingImage] = useState(false);
 
   useEffect(() => {
-    console.log(activityId);
-    if (activityLogDocument && activityId) {
-      const log = activityLogDocument.data.history.find(
-        (log) => log.activity_id === activityId
-      );
-
-      if (log) {
-        setRecordFileNames(log.activity_log_file_names || []);
-      } else {
-        console.log(`No log found for activityId: ${activityId}`);
-      }
-    }
-  }, [activityLogDocument, activityId]);
-
-  useEffect(() => {
-    const fetchImageUrls = async () => {
+    const fetchImageUrl = async () => {
       try {
-        setLoadingImages(true);
-        const urls = await Promise.all(
-          recordFileNames.map(
-            async (fileName) => await getImageFromStorage(fileName)
-          )
-        );
-        setImageUrls(urls);
+        setLoadingImage(true);
+        const url = await getImageFromStorage(activityLogImage);
+        setImageUrl(url);
       } catch (error) {
-        console.error("Error fetching image URLs:", error);
+        console.error("Error fetching image URL:", error);
       } finally {
-        setLoadingImages(false);
+        setLoadingImage(false);
       }
     };
 
-    if (recordFileNames.length > 0) {
-      fetchImageUrls();
+    if (activityLogImage) {
+      fetchImageUrl();
     }
-  }, [recordFileNames]);
+  }, [activityLogImage]);
 
   return (
     <div className="container">
@@ -65,26 +45,20 @@ function ViewHistoryLogModal({ activityLogDocument, activityId, closeModal }) {
             </div>
             <div className="modal-body">
               <h1 className="text-center mb-4">GALERÍA DE IMÁGENES</h1>
-              {loadingImages ? (
+              {loadingImage ? (
                 <Spinner />
               ) : (
-                <div className="row d-flex justify-content-center">
-                  {imageUrls.length > 0 ? (
-                    imageUrls.map((url, index) => (
-                      <div key={index} className="col-md-4 mb-4">
-                        <div
-                          className="card"
-                          style={{ width: "15rem", height: "15rem" }}
-                        >
-                          <img
-                            src={url}
-                            alt={`Image ${index}`}
-                            className="card-img-top h-100"
-                            style={{ objectFit: "cover" }}
-                          />
-                        </div>
-                      </div>
-                    ))
+                <div className="d-flex justify-content-center">
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt="Image"
+                      style={{
+                        width: "15rem",
+                        height: "15rem",
+                        objectFit: "cover",
+                      }}
+                    />
                   ) : (
                     <p>Sin imágenes disponibles</p>
                   )}
@@ -99,8 +73,7 @@ function ViewHistoryLogModal({ activityLogDocument, activityId, closeModal }) {
 }
 
 ViewHistoryLogModal.propTypes = {
-  activityLogDocument: PropTypes.object,
-  activityId: PropTypes.string,
+  activityLogImage: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
 };
 
