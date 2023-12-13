@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 function UploadActivityLog({ documentId }) {
   const [currentGPS, setCurrentGPS] = useState("");
   const [descriptionInput, setDescriptionInput] = useState("");
+  const [imageDescriptions, setImageDescriptions] = useState([]);
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,6 +55,13 @@ function UploadActivityLog({ documentId }) {
       console.error("Error getting GPS coordinates:", error);
       toast.error(`Error getting GPS coordinates: ${error.message}`);
     }
+  };
+
+  const handleFileChange = (index, file) => {
+    setValue(`activity_log_files[${index}]`, file);
+    const newDescriptions = [...imageDescriptions];
+    newDescriptions[index] = "";
+    setImageDescriptions(newDescriptions);
   };
 
   const startListening = () => {
@@ -113,33 +121,35 @@ function UploadActivityLog({ documentId }) {
         return;
       }
 
-      const newActivityLog = {
-        activity: documentId,
-        activity_log_written_by: user,
-        activity_log_creation_date: new Date(),
-        activity_log_GPS: currentGPS,
-        activity_log_description: descriptionInput,
-        activity_log_file_names: [],
-      };
-
       setIsLoading(true);
 
       if (data.activity_log_files && data.activity_log_files.length > 0) {
         for (let i = 0; i < data.activity_log_files.length; i++) {
           const file = data.activity_log_files[i];
-          await uploadActivityLogFile([file]);
-          newActivityLog.activity_log_file_names.push(file.name);
+          const uploadedFile = await uploadActivityLogFile([file]);
+
+          const fileDocument = {
+            activity: documentId,
+            activity_log_created_by: user,
+            activity_log_created_at: new Date(),
+            activity_log_GPS: currentGPS,
+            activity_log_description: descriptionInput,
+            activity_log_file_name: file.name,
+            activity_log_file_description: imageDescriptions[i] || "",
+          };
+
+          await createActivityLogDocument(fileDocument);
         }
       }
-      setIsLoading(false);
 
-      await createActivityLogDocument(documentId, newActivityLog);
+      setIsLoading(false);
 
       toast.success("Registro ingresado exitosamente");
       reset({
         activity_log_GPS: "",
         activity_log_description: "",
         activity_log_files: [],
+        activity_log_file_description: "",
       });
       setTimeout(() => {
         navigate("/home");
@@ -150,6 +160,7 @@ function UploadActivityLog({ documentId }) {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
@@ -216,32 +227,44 @@ function UploadActivityLog({ documentId }) {
                     {renderButtonText}
                   </button>
                 </div>
-                <div className="form-group mt-2 mb-3 d-flex flex-column ">
+                <div className="form-group mt-2 mb-3">
                   <label>
                     Imagen/es <span className="text-muted">(opcional)</span>:
                   </label>
                   {fields.map((field, index) => (
-                    <div key={field.id} className="d-flex mb-2">
-                      <Controller
-                        name={`activity_log_files_${index}`}
-                        control={control}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            type="file"
-                            className="form-control"
-                            onChange={(e) => {
-                              setValue(
-                                `activity_log_files[${index}]`,
-                                e.target.files[0]
-                              );
-                            }}
-                          />
-                        )}
-                      />
+                    <div
+                      key={field.id}
+                      className="d-flex align-items-start mb-2"
+                    >
+                      <div className="flex-grow-1 me-2">
+                        <Controller
+                          name={`activity_log_files_${index}`}
+                          control={control}
+                          render={({ field }) => (
+                            <input
+                              {...field}
+                              type="file"
+                              className="form-control"
+                              onChange={(e) =>
+                                handleFileChange(index, e.target.files[0])
+                              }
+                            />
+                          )}
+                        />
+                        <textarea
+                          className="form-control mt-2"
+                          placeholder="Descripción de la imagen"
+                          value={imageDescriptions[index] || ""}
+                          onChange={(e) => {
+                            const newDescriptions = [...imageDescriptions];
+                            newDescriptions[index] = e.target.value;
+                            setImageDescriptions(newDescriptions);
+                          }}
+                        />
+                      </div>
                       <button
                         type="button"
-                        className="btn btn-danger ms-2"
+                        className="btn btn-danger"
                         onClick={() => remove(index)}
                       >
                         <i className="bi bi-x-circle align-middle"></i>

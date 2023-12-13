@@ -195,55 +195,26 @@ export async function uploadPriorizationFile(file, week) {
   const snapshot = await uploadBytes(storageRef, file);
 }
 
-export const createActivityLogDocument = async (documentId, newActivityLog) => {
+export const createActivityLogDocument = async (newActivityLog) => {
   try {
-    const activityLogRef = doc(db, "ActivityLog", documentId);
-    const docSnapshot = await getDoc(activityLogRef);
+    const activityLogRef = collection(db, "ActivityLog");
 
-    if (docSnapshot.exists()) {
-      const existingData = docSnapshot.data();
-      const existingActivity = existingData.activity || "";
+    const uploadNewActivityLog = {
+      ...newActivityLog,
+      userId: auth.currentUser.uid,
+    };
 
-      if (existingActivity === documentId) {
-        const history = existingData.history || [];
-        const updatedHistory = [
-          ...history,
-          {
-            activity_id: uuidv4(),
-            activity_log_written_by: existingData.activity_log_written_by || "",
-            activity_log_creation_date:
-              existingData.activity_log_creation_date || "",
-            activity_log_GPS: existingData.activity_log_GPS || "",
-            activity_log_description:
-              existingData.activity_log_description || "",
-            activity_log_file_names: existingData.activity_log_file_names || "",
-          },
-        ];
+    const docRef = await addDoc(activityLogRef, uploadNewActivityLog);
 
-        await updateDoc(activityLogRef, {
-          ...newActivityLog,
-          userId: auth.currentUser.uid,
-          history: updatedHistory,
-        });
-      } else {
-        console.error("El documentId y la actividad existente no coinciden.");
-      }
-    } else {
-      await setDoc(activityLogRef, {
-        ...newActivityLog,
-        userId: auth.currentUser.uid,
-        activity: documentId,
-        history: [],
-      });
-    }
+    console.log("Document updated successfully with ID: ", docRef.id);
+    return docRef.id; // Devolver el ID del documento creado
   } catch (error) {
-    console.error("Error al agregar documento:", error);
-    throw error;
+    console.error("Error updating the document:", error);
   }
 };
 
 export async function uploadActivityLogFile(recordIMG) {
-  const storageRef = ref(storage, `ActivityLogFile/${recordIMG[0].name}`);
+  const storageRef = ref(storage, `activity_logs/${recordIMG[0].name}`);
   await uploadBytes(storageRef, recordIMG[0]);
 }
 
