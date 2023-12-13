@@ -68,6 +68,7 @@ function UploadActivitiesForm() {
   const onSubmit = async (formData) => {
     try {
       const user = localStorage.getItem("userEmail");
+      const informedByDefault = "MSMIN";
       const impactoStatusDefault = "RECIBIDO-MSMIN";
       const { week, team } = formData;
 
@@ -110,6 +111,7 @@ function UploadActivitiesForm() {
         activity.week_name = week;
         activity.created_by = user;
         activity.created_at = new Date();
+        activity.informed_by = informedByDefault;
         activity.current_status = impactoStatusDefault;
 
         return createActivityDocument(activity);
