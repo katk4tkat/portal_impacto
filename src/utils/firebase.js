@@ -116,11 +116,11 @@ export const createActivityStatusHistoryDocument = async (newHistoryRecord) => {
   }
 };
 
-export const getActivityStatusHistory = async (activityId) => {
+export const getActivityStatusHistory = async (documentId) => {
   try {
     const q = query(
       collection(db, "ActivityStatusHistory"),
-      where("activity", "==", activityId)
+      where("activity", "==", documentId)
       // orderBy("created_at", "desc")
     );
 
@@ -244,15 +244,40 @@ export const getActivityStatusDocuments = async () => {
   return getDocuments("ActivityStatusHistory");
 };
 
-export const getActivityLogDocuments = async () => {
-  return getDocuments("ActivityLog");
+export const getActivityLogDocuments = async (documentId) => {
+  try {
+    const q = query(
+      collection(db, "ActivityLog"),
+      where("activity", "==", documentId)
+      // orderBy("created_at", "desc")
+    );
+
+    const querySnapshot = await getDocs(q);
+    const documents = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: {
+          ...data,
+          activity: data.activity,
+        },
+      });
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error al obtener estados: ", error);
+    throw error;
+  }
 };
 
 export const getImageFromStorage = async (fileName) => {
   try {
     const imageRef = ref(
       storage,
-      "gs://portal-impacto-609ff.appspot.com/ActivityLogFile/" + fileName
+      "gs://portal-impacto-609ff.appspot.com/activity_logs/" + fileName
     );
     const imageUrl = await getDownloadURL(imageRef);
     return imageUrl;

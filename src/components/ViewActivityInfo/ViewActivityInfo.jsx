@@ -18,10 +18,9 @@ function ViewActivityInfo() {
   const { documentId } = useParams();
   const [weekDocument, setWeekDocument] = useState({});
   const [activityDocument, setActivityDocument] = useState({});
-
   const [activityStatusDocument, setActivityStatusDocument] = useState({});
-
   const [activityLogDocument, setActivityLogDocument] = useState({});
+
   const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
@@ -32,13 +31,13 @@ function ViewActivityInfo() {
         const [
           activityDocuments,
           weekDocuments,
-          activityLogDocuments,
           activityStatusDocuments,
+          activityLogDocuments,
         ] = await Promise.all([
           getActivityInfoDocuments(),
           getWeekDocuments(),
-          getActivityLogDocuments(),
           getActivityStatusHistory(documentId),
+          getActivityLogDocuments(documentId),
         ]);
 
         const activityDoc = activityDocuments.find(
@@ -48,14 +47,10 @@ function ViewActivityInfo() {
           (doc) => doc.id === activityDoc?.data.week_id
         );
 
-        const activityLogDoc = activityLogDocuments.find(
-          (doc) => doc.id === documentId
-        );
-
         setWeekDocument(weekDoc);
         setActivityDocument(activityDoc);
-        setActivityLogDocument(activityLogDoc);
         setActivityStatusDocument(activityStatusDocuments);
+        setActivityLogDocument(activityLogDocuments);
 
         setIsLoading(false);
       } catch (error) {
