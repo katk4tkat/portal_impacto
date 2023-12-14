@@ -6,6 +6,7 @@ import ViewHistoryLogModal from "./ViewHistoryLogModal";
 function ViewActivityLogTable({ activityLogDocument }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedLogId, setSelectedLogId] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   const sortedDocuments = activityLogDocument.sort(
     (a, b) =>
@@ -23,35 +24,7 @@ function ViewActivityLogTable({ activityLogDocument }) {
     setIsModalVisible(false);
   };
 
-  if (!sortedDocuments || sortedDocuments.length === 0) {
-    return (
-      <>
-        <div className="table-responsive">
-          <h1 className="my-2 text-center mt-3 mb-3">Registro Actual</h1>
-          <table className="table table-hover table-bordered">
-            <tbody>
-              <tr>
-                <td colSpan="2">Sin registros disponibles</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="mt-4">
-          <h2>Historial de Registros:</h2>
-          <div className="table-responsive">
-            <table className="table table-hover table-bordered">
-              <tbody>
-                <tr>
-                  <td colSpan="2">Sin historial de registros disponible</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </>
-    );
-  }
-
+  const MAX_DESCRIPTION_LENGTH = 50;
   return (
     <>
       <div className="mt-4">
@@ -76,8 +49,46 @@ function ViewActivityLogTable({ activityLogDocument }) {
                       ?.toDate()
                       .toLocaleString()}
                   </td>
-                  <td>
-                    {log?.data.activity_log_description || "Sin descripción."}
+                  <td className="position-relative" style={{ width: "300px" }}>
+                    {log?.data.activity_log_description &&
+                    log?.data.activity_log_description.length >
+                      MAX_DESCRIPTION_LENGTH ? (
+                      <div className="d-flex">
+                        <div className="flex-grow-1">
+                          {log.data.activity_log_description.slice(
+                            0,
+                            MAX_DESCRIPTION_LENGTH
+                          )}
+                        </div>
+                        <a
+                          className="btns d-flex align-items-center justify-content-center ms-2"
+                          role="button"
+                          onClick={() => setCollapsed(!collapsed)}
+                          data-bs-toggle="collapse"
+                          href={`#collapseDescription${index}`}
+                          aria-expanded={!collapsed}
+                          aria-controls={`collapseDescription${index}`}
+                          style={{ height: "30px" }}
+                        >
+                          <i
+                            className={`bi bi-caret-${
+                              collapsed ? "up-fill" : "down-fill"
+                            }`}
+                            style={{ transition: "transform 0.3s ease-in-out" }}
+                          ></i>
+                        </a>
+                      </div>
+                    ) : (
+                      log?.data.activity_log_description || "Sin descripción."
+                    )}
+                    <div
+                      className="collapse"
+                      id={`collapseDescription${index}`}
+                    >
+                      {log.data.activity_log_description.slice(
+                        MAX_DESCRIPTION_LENGTH
+                      )}
+                    </div>
                   </td>
                   <td>{log?.data.activity_log_GPS}</td>
                   <td>{log?.data.activity_log_created_by}</td>
@@ -93,6 +104,9 @@ function ViewActivityLogTable({ activityLogDocument }) {
                       <ViewHistoryLogModal
                         activityLogDocument={log}
                         activityLogImage={log?.data.activity_log_file_name}
+                        activityLogImageDescription={
+                          log?.data.activity_log_file_description
+                        }
                         closeModal={closeModal}
                       />
                     )}
