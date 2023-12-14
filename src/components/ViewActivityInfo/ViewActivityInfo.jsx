@@ -75,6 +75,7 @@ function ViewActivityInfo() {
           ) : (
             <>
               <ViewActivityInfoTable
+                documentId={documentId}
                 isLoading={isLoading}
                 weekDocument={weekDocument}
                 activityDocument={activityDocument}
