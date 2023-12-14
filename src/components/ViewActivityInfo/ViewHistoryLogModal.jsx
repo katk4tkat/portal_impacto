@@ -1,12 +1,17 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { getImageFromStorage } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner.jsx";
 
-function ViewHistoryLogModal({ activityLogImage, closeModal }) {
+function ViewHistoryLogModal({
+  activityLogImage,
+  activityLogImageDescription,
+  closeModal,
+}) {
   const [imageUrl, setImageUrl] = useState("");
   const [loadingImage, setLoadingImage] = useState(false);
+  const downloadLinkRef = useRef(null);
 
   useEffect(() => {
     const fetchImageUrl = async () => {
@@ -26,6 +31,10 @@ function ViewHistoryLogModal({ activityLogImage, closeModal }) {
     }
   }, [activityLogImage]);
 
+  const handleDownloadClick = () => {
+    downloadLinkRef.current.click();
+  };
+
   return (
     <div className="container">
       <div
@@ -43,26 +52,44 @@ function ViewHistoryLogModal({ activityLogImage, closeModal }) {
                 onClick={closeModal}
               ></button>
             </div>
-            <div className="modal-body">
-              <h1 className="text-center mb-4">GALERÍA DE IMÁGENES</h1>
+            <div className="modal-body d-flex flex-column justify-content-center align-items-center">
+              <h1 className="text-center mb-4">IMAGEN</h1>
               {loadingImage ? (
                 <Spinner />
               ) : (
-                <div className="d-flex justify-content-center">
+                <>
                   {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt="Image"
-                      style={{
-                        width: "15rem",
-                        height: "15rem",
-                        objectFit: "cover",
-                      }}
-                    />
+                    <>
+                      <img
+                        src={imageUrl}
+                        alt="Image"
+                        style={{
+                          width: "15rem",
+                          height: "15rem",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <p className="mt-2">{activityLogImageDescription}</p>
+                      <a
+                        ref={downloadLinkRef}
+                        href={imageUrl}
+                        download="nombre-de-la-imagen.jpg"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ display: "none" }}
+                      ></a>
+                      <button
+                        type="button"
+                        className="btn btn-dark"
+                        onClick={handleDownloadClick}
+                      >
+                        VER IMAGEN EN TAMAÑO COMPLETO
+                      </button>
+                    </>
                   ) : (
                     <p>Sin imágenes disponibles</p>
                   )}
-                </div>
+                </>
               )}
             </div>
           </div>
@@ -74,6 +101,7 @@ function ViewHistoryLogModal({ activityLogImage, closeModal }) {
 
 ViewHistoryLogModal.propTypes = {
   activityLogImage: PropTypes.string,
+  activityLogImageDescription: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
 };
 
