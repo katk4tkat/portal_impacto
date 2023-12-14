@@ -54,20 +54,18 @@ function ViewActivityStatusHistoryTable({ activityStatusDocument }) {
             </thead>
             <tbody>
               {sortedDocuments.length > 1 ? (
-                sortedDocuments
-                  .slice(1) // Excluye el documento más reciente
-                  .map((log, index) => (
-                    <tr key={index}>
-                      <td>{log.data.created_at.toDate().toLocaleString()}</td>
-                      <td>{log.data.status}</td>
-                      <td>
-                        {log.data.description
-                          ? log.data.description
-                          : "Sin descripción."}
-                      </td>
-                      <td>{log.data.created_by}</td>
-                    </tr>
-                  ))
+                sortedDocuments.slice(1).map((log, index) => (
+                  <tr key={index}>
+                    <td>{log.data.created_at.toDate().toLocaleString()}</td>
+                    <td>{log.data.status}</td>
+                    <td>
+                      {log.data.description
+                        ? log.data.description
+                        : "Sin descripción."}
+                    </td>
+                    <td>{log.data.created_by}</td>
+                  </tr>
+                ))
               ) : (
                 <tr>
                   <td colSpan="4">No hay historial de estados disponible.</td>
