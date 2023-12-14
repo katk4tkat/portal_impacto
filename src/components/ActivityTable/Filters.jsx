@@ -8,13 +8,13 @@ function Filters({ handleFilterChange }) {
       <form className="row gx-3 gy-1 align-items-center">
         <div className="col-sm-1">
           <label className="visually-hidden" htmlFor="week-input">
-            Sem
+            Semana
           </label>
           <input
             type="text"
             className="form-control"
             id="week-input"
-            placeholder="Sem"
+            placeholder="Semana"
             onChange={(e) => handleFilterChange("week_name", e.target.value)}
           />
         </div>
