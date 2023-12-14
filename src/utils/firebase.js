@@ -301,3 +301,14 @@ export const searchTechnicalUnit = async (searchTerm) => {
     throw error;
   }
 };
+export const createHistoryLogDocument = async (historyData) => {
+  try {
+    const docRef = await addDoc(collection(db, "HistoryLog"), {
+      ...historyData,
+      userId: auth.currentUser.uid,
+    });
+    return docRef;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
