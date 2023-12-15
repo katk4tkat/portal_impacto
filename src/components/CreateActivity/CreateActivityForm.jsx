@@ -252,7 +252,6 @@ function CreateActivityForm() {
       };
 
       const activityRef = await createActivityDocument(newActivity);
-      console.log(activityRef.id);
 
       const newStatus = {
         created_at: new Date(),
