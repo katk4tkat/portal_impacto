@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { createHistoryLogDocument } from "../../utils/firebase";
+import {
+  createHistoryLogDocument,
+  updateFieldInActivity,
+  getCurrentActivityInfo,
+} from "../../utils/firebase";
 
 function EditModal({
   content,
@@ -10,32 +14,48 @@ function EditModal({
   fieldName,
 }) {
   const [editedContent, setEditedContent] = useState(content);
+  const [inputChangeDescription, setInputChangeDescription] = useState("");
 
-  const handleSave = (newContent) => {
+  const handleSave = async (newContent) => {
     const user = localStorage.getItem("userEmail");
+    try {
+      const previousActivityInfoResult = await getCurrentActivityInfo(
+        documentId
+      );
+      console.log("previousActivityInfoResult:", previousActivityInfoResult);
 
-    const newData = {};
+      if (previousActivityInfoResult && previousActivityInfoResult.data) {
+        const historyData = {
+          activity: documentId,
+          modified_table_name: "Activity",
+          modified_field: fieldName,
+          modified_at: new Date(),
+          modified_by: user,
+          from: previousActivityInfoResult.data[fieldName],
+          to: newContent,
+          modified_value_description: inputChangeDescription,
+          status: "",
+        };
 
-    const historyData = {
-      // ID del log.
-      activity: documentId,
-      modified_table_name: "",
-      modified_field: fieldName,
-      modified_at: new Date(),
-      modified_by: user,
-      input_change_description: "",
-      previous_activity_info: {},
-      current_activity_info: newData,
-      status: "",
-    };
+        createHistoryLogDocument(historyData);
 
-    createHistoryLogDocument(historyData);
-    console.log(newContent);
-    setIsModalVisible(false);
+        await updateFieldInActivity(documentId, fieldName, newContent);
+
+        setIsModalVisible(false);
+      } else {
+        console.error("Datos no disponibles o estructura incorrecta");
+      }
+    } catch (error) {
+      console.error("Error al manejar el guardado: ", error);
+    }
   };
 
   const handleInputChange = (e) => {
     setEditedContent(e.target.value);
+  };
+
+  const handleInputChangeDescription = (e) => {
+    setInputChangeDescription(e.target.value);
   };
 
   const handleSaveChanges = () => {
@@ -54,7 +74,7 @@ function EditModal({
         <div className="modal-content">
           <div className="modal-header">
             <h1 className="modal-title fs-5" id="exampleModalLabel">
-              Edit Content
+              EDITAR CONTENIDO
             </h1>
             <button
               type="button"
@@ -66,7 +86,7 @@ function EditModal({
           </div>
           <div className="modal-body">
             <label htmlFor="editedContent" className="form-label">
-              Edited Content:
+              Contenido:
             </label>
             <input
               type="text"
@@ -74,6 +94,16 @@ function EditModal({
               id="editedContent"
               value={editedContent}
               onChange={handleInputChange}
+            />
+            <label htmlFor="inputChangeDescription" className="form-label">
+              Descripción del cambio:
+            </label>
+            <textarea
+              className="form-control"
+              id="inputChangeDescription"
+              rows="3"
+              value={inputChangeDescription}
+              onChange={handleInputChangeDescription}
             />
           </div>
           <div className="modal-footer">
@@ -100,7 +130,6 @@ function EditModal({
 }
 EditModal.propTypes = {
   documentId: PropTypes.string,
-  content: PropTypes.string,
   setIsModalVisible: PropTypes.func,
   onClose: PropTypes.func,
   fieldName: PropTypes.string,
