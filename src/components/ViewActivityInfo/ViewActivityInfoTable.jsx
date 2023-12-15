@@ -22,24 +22,26 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
           <tbody>
             <tr>
               <th scope="row">Empresa:</th>
-              <td>
+              <td className="d-flex justify-content-between">
                 {weekDocument?.data.team === "impacto_acido"
                   ? "Impacto Ácido"
                   : weekDocument?.data.team === "impacto"
                   ? "Impacto"
                   : weekDocument?.data.team}
-                <span
+                <button
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
-                  onClick={() => handleEditClick(activityDocument.data.team)}
+                  onClick={() =>
+                    handleEditClick(activityDocument.data.team, "team")
+                  }
                 >
                   <i className="bi bi-pencil" />
-                </span>
+                </button>
               </td>
               <th scope="row">Semana:</th>
-              <td>
+              <td className="d-flex justify-content-between">
                 {weekDocument?.data.week_name}
-                <span
+                <button
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   onClick={() =>
@@ -50,7 +52,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                   }
                 >
                   <i className="bi bi-pencil" />
-                </span>
+                </button>
               </td>
             </tr>
             <tr>
@@ -61,122 +63,159 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
             </tr>
             <tr>
               <th scope="row">Informado por:</th>
-              <td colSpan={3} className="d-flex justify-content-between">
-                {activityDocument.data.informed_by}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(activityDocument.data.informed_by)
-                  }
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+              <td colSpan={3}>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data.informed_by}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(
+                        activityDocument.data.informed_by,
+                        "informed_by"
+                      )
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
             <tr>
               <th scope="row">Prioridad:</th>
               <td colSpan={3}>
-                {activityDocument.data?.prioridad}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(activityDocument.data.prioridad)
-                  }
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data?.prioridad}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(
+                        activityDocument.data.prioridad,
+                        "prioridad"
+                      )
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
             <tr>
               <th scope="row">N° Aviso:</th>
               <td colSpan={3}>
-                {activityDocument.data?.n_aviso}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() => handleEditClick(activityDocument.data.n_aviso)}
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data?.n_aviso}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(activityDocument.data.n_aviso, "n_aviso")
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
             <tr>
               <th scope="row">Equipo o Sistema: </th>
               <td colSpan={3}>
-                {activityDocument.data?.equipo_o_sistema}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(activityDocument.data.equipo_o_sistema)
-                  }
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data?.equipo_o_sistema}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(
+                        activityDocument.data.equipo_o_sistema,
+                        "equipo_o_sistema"
+                      )
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
             <tr>
               <th scope="row">Unidad Técnica:</th>
               <td colSpan={3}>
-                {activityDocument.data?.u_tecnica}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(activityDocument.data.u_tecnica)
-                  }
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data?.u_tecnica}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(
+                        activityDocument.data.u_tecnica,
+                        "u_tecnica"
+                      )
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
             <tr>
               <th scope="row">Descripción del Trabajo:</th>
               <td colSpan={3}>
-                {activityDocument.data?.descripcion_del_trabajo}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(
-                      activityDocument.data.descripcion_del_trabajo
-                    )
-                  }
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data?.descripcion_del_trabajo}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(
+                        activityDocument.data.descripcion_del_trabajo,
+                        "descripcion_del_trabajo"
+                      )
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
             <tr>
               <th scope="row">Descripción del Aviso:</th>
               <td colSpan={3}>
-                {activityDocument.data?.descripcion_del_aviso}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(activityDocument.data.descripcion_del_aviso)
-                  }
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data?.descripcion_del_aviso}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(
+                        activityDocument.data.descripcion_del_aviso,
+                        "descripcion_del_aviso"
+                      )
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
             <tr>
               <th scope="row">Vulnerabilidad</th>
               <td colSpan={3}>
-                {activityDocument.data?.vulnerabilidad_1}
-                <span
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(activityDocument.data.vulnerabilidad_1)
-                  }
-                >
-                  <i className="bi bi-pencil" />
-                </span>
+                <div className="d-flex justify-content-between">
+                  {activityDocument.data?.vulnerabilidad_1}
+                  <button
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                    onClick={() =>
+                      handleEditClick(
+                        activityDocument.data.vulnerabilidad_1,
+                        "vulnerabilidad_1"
+                      )
+                    }
+                  >
+                    <i className="bi bi-pencil" />
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
