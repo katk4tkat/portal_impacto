@@ -312,3 +312,51 @@ export const createHistoryLogDocument = async (historyData) => {
     console.error("Error adding document: ", e);
   }
 };
+
+export const getCurrentActivityInfo = async (documentId) => {
+  try {
+    const activityDocRef = doc(db, "Activity", documentId);
+    const activityDocSnapshot = await getDoc(activityDocRef);
+
+    if (activityDocSnapshot.exists()) {
+      const currentData = activityDocSnapshot.data();
+      const document = {
+        data: { ...currentData },
+      };
+      return document;
+    }
+  } catch (error) {
+    console.error("Error al obtener el documento: ", error);
+    throw error;
+  }
+};
+
+export const updateFieldInActivity = async (
+  documentId,
+  fieldName,
+  newValue
+) => {
+  try {
+    const activityDocRef = doc(db, "Activity", documentId);
+    const activityDocSnapshot = await getDoc(activityDocRef);
+
+    if (activityDocSnapshot.exists()) {
+      const currentData = activityDocSnapshot.data();
+      const updatedActivity = {
+        ...currentData,
+        [fieldName]: newValue,
+      };
+      await updateDoc(activityDocRef, updatedActivity);
+
+      console.log(
+        "Campo 'current_status' actualizado en la colección 'Activity'"
+      );
+    } else {
+      console.error(
+        "Error: Documento no encontrado en la colección 'Activity'"
+      );
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
