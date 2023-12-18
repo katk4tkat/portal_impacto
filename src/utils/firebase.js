@@ -360,3 +360,15 @@ export const updateFieldInActivity = async (
     console.error("Error:", error);
   }
 };
+
+export const createActivityPlanningDocument = async (newActivityPlanning) => {
+  try {
+    const docRef = await addDoc(collection(db, "ActivityPlanning"), {
+      ...newActivityPlanning,
+      userId: auth.currentUser.uid,
+    });
+    return docRef;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
