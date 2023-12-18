@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getDossierDocuments } from "../../utils/firebase.js";
-import Navbar from "../Navbar/Navbar";
-import ViewDossierTable from "./ViewDossierTable";
-import ViewDossierGallery from "./ViewDossierGallery";
-import ButtonUI from "../UI/ButtonUI";
+import Navbar from "../Navbar/Navbar.jsx";
+import ViewDossierTable from "./ViewActivityPlanningTable.jsx";
+import ViewDossierGallery from "../ViewDossierRespaldo/ViewDossierGallery.jsx";
+import ButtonUI from "../UI/ButtonUI.jsx";
 
 function ViewDossier() {
   const { documentId } = useParams();
