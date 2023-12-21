@@ -42,77 +42,82 @@ function ViewActivityLogTable({ activityLogDocument }) {
               </tr>
             </thead>
             <tbody>
-              {sortedDocuments.map((log, index) => (
-                <tr key={index}>
-                  <td>
-                    {log?.data.activity_log_created_at
-                      ?.toDate()
-                      .toLocaleString()}
-                  </td>
-                  <td className="position-relative" style={{ width: "300px" }}>
-                    {log?.data.activity_log_description &&
-                    log?.data.activity_log_description.length >
-                      MAX_DESCRIPTION_LENGTH ? (
-                      <div className="d-flex">
-                        <div className="flex-grow-1">
-                          {log.data.activity_log_description.slice(
-                            0,
-                            MAX_DESCRIPTION_LENGTH
-                          )}
+              {sortedDocuments.length > 1 ? (
+                sortedDocuments.map((log, index) => (
+                  <tr key={index}>
+                    <td>
+                      {log?.data.activity_log_created_at
+                        ?.toDate()
+                        .toLocaleString()}
+                    </td>
+                    <td className="position-relative" style={{ width: "300px" }}>
+                      {log?.data.activity_log_description &&
+                        log?.data.activity_log_description.length >
+                        MAX_DESCRIPTION_LENGTH ? (
+                        <div className="d-flex">
+                          <div className="flex-grow-1">
+                            {log.data.activity_log_description.slice(
+                              0,
+                              MAX_DESCRIPTION_LENGTH
+                            )}
+                          </div>
+                          <a
+                            className="btns d-flex align-items-center justify-content-center ms-2"
+                            role="button"
+                            onClick={() => setCollapsed(!collapsed)}
+                            data-bs-toggle="collapse"
+                            href={`#collapseDescription${index}`}
+                            aria-expanded={!collapsed}
+                            aria-controls={`collapseDescription${index}`}
+                            style={{ height: "30px" }}
+                          >
+                            <i
+                              className={`bi bi-caret-${collapsed ? "up-fill" : "down-fill"
+                                }`}
+                              style={{ transition: "transform 0.3s ease-in-out" }}
+                            ></i>
+                          </a>
                         </div>
-                        <a
-                          className="btns d-flex align-items-center justify-content-center ms-2"
-                          role="button"
-                          onClick={() => setCollapsed(!collapsed)}
-                          data-bs-toggle="collapse"
-                          href={`#collapseDescription${index}`}
-                          aria-expanded={!collapsed}
-                          aria-controls={`collapseDescription${index}`}
-                          style={{ height: "30px" }}
-                        >
-                          <i
-                            className={`bi bi-caret-${
-                              collapsed ? "up-fill" : "down-fill"
-                            }`}
-                            style={{ transition: "transform 0.3s ease-in-out" }}
-                          ></i>
-                        </a>
-                      </div>
-                    ) : (
-                      log?.data.activity_log_description || "Sin descripción."
-                    )}
-                    <div
-                      className="collapse"
-                      id={`collapseDescription${index}`}
-                    >
-                      {log.data.activity_log_description.slice(
-                        MAX_DESCRIPTION_LENGTH
+                      ) : (
+                        log?.data.activity_log_description || "Sin descripción."
                       )}
-                    </div>
-                  </td>
-                  <td>{log?.data.activity_log_GPS}</td>
-                  <td>{log?.data.activity_log_created_by}</td>
-                  <td>{log?.data.activity_log_file_description}</td>
-                  <td>
-                    <button
-                      className="btn btn-dark"
-                      onClick={() => openModal(log.id)}
-                    >
-                      VER
-                    </button>
-                    {isModalVisible && selectedLogId === log.id && (
-                      <ViewHistoryLogModal
-                        activityLogDocument={log}
-                        activityLogImage={log?.data.activity_log_file_name}
-                        activityLogImageDescription={
-                          log?.data.activity_log_file_description
-                        }
-                        closeModal={closeModal}
-                      />
-                    )}
-                  </td>
+                      <div
+                        className="collapse"
+                        id={`collapseDescription${index}`}
+                      >
+                        {log.data.activity_log_description.slice(
+                          MAX_DESCRIPTION_LENGTH
+                        )}
+                      </div>
+                    </td>
+                    <td>{log?.data.activity_log_GPS}</td>
+                    <td>{log?.data.activity_log_created_by}</td>
+                    <td>{log?.data.activity_log_file_description}</td>
+                    <td>
+                      <button
+                        className="btn btn-dark"
+                        onClick={() => openModal(log.id)}
+                      >
+                        VER
+                      </button>
+                      {isModalVisible && selectedLogId === log.id && (
+                        <ViewHistoryLogModal
+                          activityLogDocument={log}
+                          activityLogImage={log?.data.activity_log_file_name}
+                          activityLogImageDescription={
+                            log?.data.activity_log_file_description
+                          }
+                          closeModal={closeModal}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4">No hay historial de registros disponible.</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
