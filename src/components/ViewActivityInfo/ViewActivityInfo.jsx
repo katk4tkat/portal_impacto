@@ -5,12 +5,14 @@ import Navbar from "../Navbar/Navbar";
 import ButtonUI from "../UI/ButtonUI";
 import ViewActivityInfoTable from "../ViewActivityInfo/ViewActivityInfoTable.jsx";
 import ViewActivityStatusHistoryTable from "./ViewActivityStatusHistoryTable.jsx";
+import ViewActivityPlanningTable from "./ViewActivityPlanningTable.jsx"
 import ViewActivityLogTable from "./ViewActivityLogTable.jsx";
 import {
   getActivityInfoDocuments,
   getWeekDocuments,
   getActivityStatusHistory,
   getActivityLogDocuments,
+  getActityPlanningDocuments,
 } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner";
 
@@ -20,6 +22,7 @@ function ViewActivityInfo() {
   const [activityDocument, setActivityDocument] = useState({});
   const [activityStatusDocument, setActivityStatusDocument] = useState({});
   const [activityLogDocument, setActivityLogDocument] = useState({});
+  const [activityPlanningDocument, setActivityPlanningDocument] = useState({});
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,11 +36,13 @@ function ViewActivityInfo() {
           weekDocuments,
           activityStatusDocuments,
           activityLogDocuments,
+          activityPlanningDocuments,
         ] = await Promise.all([
           getActivityInfoDocuments(),
           getWeekDocuments(),
           getActivityStatusHistory(documentId),
           getActivityLogDocuments(documentId),
+          getActityPlanningDocuments(documentId),
         ]);
 
         const activityDoc = activityDocuments.find(
@@ -51,6 +56,7 @@ function ViewActivityInfo() {
         setActivityDocument(activityDoc);
         setActivityStatusDocument(activityStatusDocuments);
         setActivityLogDocument(activityLogDocuments);
+        setActivityPlanningDocument(activityPlanningDocuments);
 
         setIsLoading(false);
       } catch (error) {
@@ -87,6 +93,10 @@ function ViewActivityInfo() {
               <ViewActivityLogTable
                 isLoading={isLoading}
                 activityLogDocument={activityLogDocument}
+              />
+              <ViewActivityPlanningTable
+                isLoading={isLoading}
+                activityPlanningDocument={activityPlanningDocument}
               />
             </>
           )}
