@@ -26,21 +26,26 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                 {weekDocument?.data.team === "impacto_acido"
                   ? "Impacto Ácido"
                   : weekDocument?.data.team === "impacto"
-                  ? "Impacto"
-                  : weekDocument?.data.team}
+                    ? "Impacto"
+                    : weekDocument?.data.team}
                 <button
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
-                  onClick={() =>
-                    handleEditClick(activityDocument.data.team, "team")
-                  }
+                  onClick={() => handleEditClick(
+                    weekDocument.data.team === "impacto_acido"
+                      ? "Impacto Ácido"
+                      : weekDocument.data.team === "impacto"
+                        ? "Impacto"
+                        : weekDocument.data.team,
+                    "team"
+                  )}
                 >
                   <i className="bi bi-pencil" />
                 </button>
               </td>
               <th scope="row">Semana:</th>
               <td className="d-flex justify-content-between">
-                {weekDocument?.data.week_name}
+                {activityDocument?.data.week_name}
                 <button
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
