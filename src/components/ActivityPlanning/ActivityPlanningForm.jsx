@@ -24,6 +24,8 @@ function ActivityPlanningForm({ documentId }) {
             OT: "",
             program_start: "",
             real_program_start: "",
+            program_end: "",
+            real_program_end: "",
             program_duration: "",
             real_program_duration: "",
             program_scope: "",
@@ -140,6 +142,8 @@ function ActivityPlanningForm({ documentId }) {
                 OT,
                 program_start,
                 real_program_start,
+                program_end,
+                real_program_end,
                 program_duration,
                 real_program_duration,
                 program_scope,
@@ -164,6 +168,8 @@ function ActivityPlanningForm({ documentId }) {
                 OT: OT,
                 program_start: program_start,
                 real_program_start: real_program_start,
+                program_end: program_end,
+                real_program_end: real_program_end,
                 program_duration: program_duration,
                 real_program_duration: real_program_duration,
                 program_scope: program_scope,
@@ -188,6 +194,8 @@ function ActivityPlanningForm({ documentId }) {
                 OT: "",
                 program_start: "",
                 real_program_start: "",
+                program_end: "",
+                real_program_end: "",
                 program_duration: "",
                 real_program_duration: "",
                 program_scope: "",
@@ -298,6 +306,40 @@ function ActivityPlanningForm({ documentId }) {
                                             {...field}
                                             type="text"
                                             id="real_program_start"
+                                            placeholder="01/02/2000"
+                                            className="form-control mb-3"
+                                            required
+                                        />
+                                    )}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="program_end">Fin Programa:</label>
+                                <Controller
+                                    name="program_end"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <input
+                                            {...field}
+                                            type="text"
+                                            id="program_end"
+                                            placeholder="01/01/2000"
+                                            className="form-control mb-3"
+                                            required
+                                        />
+                                    )}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="real_program_end">Fin Real:</label>
+                                <Controller
+                                    name="real_program_end"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <input
+                                            {...field}
+                                            type="text"
+                                            id="real_program_end"
                                             placeholder="01/02/2000"
                                             className="form-control mb-3"
                                             required
