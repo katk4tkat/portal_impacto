@@ -273,6 +273,35 @@ export const getActivityLogDocuments = async (documentId) => {
   }
 };
 
+export const getActityPlanningDocuments = async (documentId) => {
+  try {
+    const q = query(
+      collection(db, "ActivityPlanning"),
+      where("activity", "==", documentId)
+      // orderBy("created_at", "desc")
+    );
+
+    const querySnapshot = await getDocs(q);
+    const documents = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: {
+          ...data,
+          activity: data.activity,
+        },
+      });
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error al obtener estados: ", error);
+    throw error;
+  }
+};
+
 export const getImageFromStorage = async (fileName) => {
   try {
     const imageRef = ref(
@@ -301,9 +330,9 @@ export const searchTechnicalUnit = async (searchTerm) => {
     throw error;
   }
 };
-export const createHistoryLogDocument = async (historyData) => {
+export const createActivityHistoryLogDocument = async (historyData) => {
   try {
-    const docRef = await addDoc(collection(db, "HistoryLog"), {
+    const docRef = await addDoc(collection(db, "ActivityHistoryLog"), {
       ...historyData,
       userId: auth.currentUser.uid,
     });
