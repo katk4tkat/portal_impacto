@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import {
-  createHistoryLogDocument,
+  createActivityHistoryLogDocument,
   updateFieldInActivity,
   getCurrentActivityInfo,
 } from "../../utils/firebase";
@@ -15,6 +15,7 @@ function EditModal({
 }) {
   const [editedContent, setEditedContent] = useState(content);
   const [inputChangeDescription, setInputChangeDescription] = useState("");
+  const [inputChangeUser, setInputChangeUser] = useState("")
 
   const handleSave = async (newContent) => {
     const user = localStorage.getItem("userEmail");
@@ -31,13 +32,13 @@ function EditModal({
           modified_field: fieldName,
           modified_at: new Date(),
           modified_by: user,
-          from: previousActivityInfoResult.data[fieldName],
-          to: newContent,
+          edited_by: inputChangeUser,
+          old_value: previousActivityInfoResult.data[fieldName],
           modified_value_description: inputChangeDescription,
           status: "",
         };
 
-        createHistoryLogDocument(historyData);
+        createActivityHistoryLogDocument(historyData);
 
         await updateFieldInActivity(documentId, fieldName, newContent);
 
@@ -56,6 +57,10 @@ function EditModal({
 
   const handleInputChangeDescription = (e) => {
     setInputChangeDescription(e.target.value);
+  };
+
+  const handleInputChangeUser = (e) => {
+    setInputChangeUser(e.target.value);
   };
 
   const handleSaveChanges = () => {
@@ -94,6 +99,17 @@ function EditModal({
               id="editedContent"
               value={editedContent}
               onChange={handleInputChange}
+            />
+            <label htmlFor="editedBy" className="form-label">
+              Editado por:
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="editedBy"
+              value={inputChangeUser}
+              placeholder="Nombre + Apellido"
+              onChange={handleInputChangeUser}
             />
             <label htmlFor="inputChangeDescription" className="form-label">
               Descripción del cambio:
