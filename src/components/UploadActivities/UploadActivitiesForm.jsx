@@ -139,7 +139,7 @@ function UploadActivitiesForm() {
       // Set state data & done
       setDataContent(activities);
 
-      toast.success("Priorización importada correctamente");
+      toast.success("Actividad creada exitosamente");
       reset({
         week: "",
         team: "",
