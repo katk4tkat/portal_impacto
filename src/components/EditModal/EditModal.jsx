@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useForm, Controller } from "react-hook-form";
+import { ToastContainer, toast } from "react-toastify";
 import {
   createActivityHistoryLogDocument,
   updateFieldInActivity,
   getCurrentActivityInfo,
 } from "../../utils/firebase";
+import Spinner from "../UI/Spinner.jsx";
 
 function EditModal({
   content,
@@ -13,17 +16,28 @@ function EditModal({
   documentId,
   fieldName,
 }) {
-  const [editedContent, setEditedContent] = useState(content);
-  const [inputChangeDescription, setInputChangeDescription] = useState("");
-  const [inputChangeUser, setInputChangeUser] = useState("")
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      changeContent: content,
+      editedBy: "",
+      changeDescription: "",
+    },
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSave = async (newContent) => {
-    const user = localStorage.getItem("userEmail");
+  const onSubmit = async (formData) => {
     try {
+      const user = localStorage.getItem("userEmail");
+      const { changeContent, editedBy, changeDescription } = formData;
+
+      if (!changeContent || !editedBy || !changeDescription) {
+        toast.error("Debes completar todos los campos.");
+        return;
+      }
+
       const previousActivityInfoResult = await getCurrentActivityInfo(
         documentId
       );
-      console.log("previousActivityInfoResult:", previousActivityInfoResult);
 
       if (previousActivityInfoResult && previousActivityInfoResult.data) {
         const historyData = {
@@ -32,118 +46,139 @@ function EditModal({
           modified_field: fieldName,
           modified_at: new Date(),
           modified_by: user,
-          edited_by: inputChangeUser,
+          edited_by: editedBy,
           old_value: previousActivityInfoResult.data[fieldName],
-          modified_value_description: inputChangeDescription,
+          new_value: changeContent,
+          modified_value_description: changeDescription,
           status: "",
         };
+        setIsLoading(true);
 
         createActivityHistoryLogDocument(historyData);
+        await updateFieldInActivity(documentId, fieldName, changeContent);
 
-        await updateFieldInActivity(documentId, fieldName, newContent);
+        setIsLoading(false);
 
+        toast.success("Cambios exitosamente guardados!");
         setIsModalVisible(false);
-      } else {
-        console.error("Datos no disponibles o estructura incorrecta");
       }
     } catch (error) {
       console.error("Error al manejar el guardado: ", error);
+      toast.error("Error al manejar el guardado");
+      setIsLoading(false);
     }
-  };
-
-  const handleInputChange = (e) => {
-    setEditedContent(e.target.value);
-  };
-
-  const handleInputChangeDescription = (e) => {
-    setInputChangeDescription(e.target.value);
-  };
-
-  const handleInputChangeUser = (e) => {
-    setInputChangeUser(e.target.value);
-  };
-
-  const handleSaveChanges = () => {
-    handleSave(editedContent);
   };
 
   return (
     <div
-      className="modal fade"
+      className="modal"
       id="exampleModal"
       tabIndex="-1"
+      role="dialog"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog" role="document">
         <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="exampleModalLabel">
-              EDITAR CONTENIDO
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              onClick={onClose}
-            ></button>
-          </div>
-          <div className="modal-body">
-            <label htmlFor="editedContent" className="form-label">
-              Contenido:
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="editedContent"
-              value={editedContent}
-              onChange={handleInputChange}
-            />
-            <label htmlFor="editedBy" className="form-label">
-              Editado por:
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="editedBy"
-              value={inputChangeUser}
-              placeholder="Nombre + Apellido"
-              onChange={handleInputChangeUser}
-            />
-            <label htmlFor="inputChangeDescription" className="form-label">
-              Descripción del cambio:
-            </label>
-            <textarea
-              className="form-control"
-              id="inputChangeDescription"
-              rows="3"
-              value={inputChangeDescription}
-              onChange={handleInputChangeDescription}
-            />
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              data-bs-dismiss="modal"
-              onClick={onClose}
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSaveChanges}
-            >
-              Save changes
-            </button>
-          </div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                EDITAR CONTENIDO
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={onClose}
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label htmlFor="changeContent" className="form-label">
+                  Contenido:
+                </label>
+                <Controller
+                  name="changeContent"
+                  control={control}
+                  rules={{ required: "Este campo es requerido" }}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      id="changeContent"
+                      type="text"
+                      className="form-control"
+                    />
+                  )}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="editedBy" className="form-label">
+                  Modificado por:
+                </label>
+                <Controller
+                  name="editedBy"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      {...field}
+                      type="text"
+                      className="form-control"
+                      id="editedBy"
+                      placeholder="Nombre + Apellido"
+                    />
+                  )}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="changeDescription" className="form-label">
+                  Descripción del cambio:
+                </label>
+                <Controller
+                  name="changeDescription"
+                  control={control}
+                  render={({ field }) => (
+                    <textarea
+                      {...field}
+                      className="form-control"
+                      id="changeDescription"
+                      rows="3"
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                onClick={onClose}
+              >
+                Cerrar
+              </button>
+              <button
+                type="submit"
+                className="btn btn-dark"
+                disabled={isLoading}
+              >
+                {isLoading ? <Spinner /> : "Guardar cambios"}
+              </button>
+            </div>
+          </form>
         </div>
+
+        <ToastContainer
+          className="custom-toast"
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar
+        />
       </div>
     </div>
   );
 }
+
 EditModal.propTypes = {
   documentId: PropTypes.string,
   setIsModalVisible: PropTypes.func,
