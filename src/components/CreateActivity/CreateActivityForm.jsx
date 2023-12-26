@@ -6,12 +6,13 @@ import {
   createWeekDocument,
   createActivityDocument,
   createActivityStatusHistoryDocument,
-  searchTechnicalUnit,
 } from "../../utils/firebase";
+
 import { isWeekValid } from "../../utils/handleFormErrors";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../UI/Spinner.jsx";
+import { loadOptions } from "../../utils/loadOptions.js";
 
 function CreateActivityForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,20 +46,6 @@ function CreateActivityForm() {
       toast.error("Speech recognition is not supported in this browser.");
     }
   }, []);
-
-  const loadOptions = async (inputValue) => {
-    try {
-      const units = await searchTechnicalUnit(inputValue);
-      const uniqueUnits = [...new Set(units)];
-      return uniqueUnits.map((suggestion) => ({
-        value: suggestion,
-        label: suggestion,
-      }));
-    } catch (error) {
-      console.error("Error al buscar sugerencias de unidad técnica:", error);
-      return [];
-    }
-  };
 
   const isSpeechRecognitionSupported = () => {
     return (
@@ -416,12 +403,12 @@ function CreateActivityForm() {
                   isClearable
                   isSearchable
                   cacheOptions
+                  defaultOptions
                   loadOptions={loadOptions}
                   value={techUnitSelectedOption}
                   placeholder="Ej: COXI-LIX-LIS-LSR"
                   onChange={(selectedOption) => {
                     setTechUnitSelectedOption(selectedOption);
-                    console.log(techUnitSelectedOption);
                   }}
                 />
               </div>
