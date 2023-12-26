@@ -12,14 +12,14 @@ import Spinner from "../UI/Spinner.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 function UpdateStatusForm({ documentId }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       status: "",
       description: "",
     },
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const onSubmit = async (formData) => {
     try {
