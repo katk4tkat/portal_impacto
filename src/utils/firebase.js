@@ -6,7 +6,6 @@ import {
   addDoc,
   getDoc,
   getDocs,
-  setDoc,
   doc,
   updateDoc,
   query,
@@ -79,6 +78,60 @@ export const createActivityDocument = async (activityData) => {
   }
 };
 
+export const createActivityStatusHistoryDocument = async (newHistoryRecord) => {
+  try {
+    const docRef = await addDoc(collection(db, "ActivityStatusHistory"), {
+      ...newHistoryRecord,
+      userId: auth.currentUser.uid,
+    });
+    return docRef;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
+
+export const createActivityPlanningDocument = async (newActivityPlanning) => {
+  try {
+    const docRef = await addDoc(collection(db, "ActivityPlanning"), {
+      ...newActivityPlanning,
+      userId: auth.currentUser.uid,
+    });
+    return docRef;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
+
+export const createActivityLogDocument = async (newActivityLog) => {
+  try {
+    const activityLogRef = collection(db, "ActivityLog");
+
+    const uploadNewActivityLog = {
+      ...newActivityLog,
+      userId: auth.currentUser.uid,
+    };
+
+    const docRef = await addDoc(activityLogRef, uploadNewActivityLog);
+
+    console.log("Document updated successfully with ID: ", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error updating the document:", error);
+  }
+};
+
+export const createActivityHistoryLogDocument = async (historyData) => {
+  try {
+    const docRef = await addDoc(collection(db, "ActivityHistoryLog"), {
+      ...historyData,
+      userId: auth.currentUser.uid,
+    });
+    return docRef;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
+
 export const getActivitiesPaginated = async ({ itemsPerPage }) => {
   try {
     const q = query(
@@ -101,18 +154,6 @@ export const getActivitiesPaginated = async ({ itemsPerPage }) => {
   } catch (error) {
     console.error("Error al obtener actividades: ", error);
     throw error;
-  }
-};
-
-export const createActivityStatusHistoryDocument = async (newHistoryRecord) => {
-  try {
-    const docRef = await addDoc(collection(db, "ActivityStatusHistory"), {
-      ...newHistoryRecord,
-      userId: auth.currentUser.uid,
-    });
-    return docRef;
-  } catch (e) {
-    console.error("Error adding document: ", e);
   }
 };
 
@@ -195,24 +236,6 @@ export async function uploadPriorizationFile(file, week) {
   const snapshot = await uploadBytes(storageRef, file);
 }
 
-export const createActivityLogDocument = async (newActivityLog) => {
-  try {
-    const activityLogRef = collection(db, "ActivityLog");
-
-    const uploadNewActivityLog = {
-      ...newActivityLog,
-      userId: auth.currentUser.uid,
-    };
-
-    const docRef = await addDoc(activityLogRef, uploadNewActivityLog);
-
-    console.log("Document updated successfully with ID: ", docRef.id);
-    return docRef.id; // Devolver el ID del documento creado
-  } catch (error) {
-    console.error("Error updating the document:", error);
-  }
-};
-
 export async function uploadActivityLogFile(recordIMG) {
   const storageRef = ref(storage, `activity_logs/${recordIMG[0].name}`);
   await uploadBytes(storageRef, recordIMG[0]);
@@ -273,10 +296,39 @@ export const getActivityLogDocuments = async (documentId) => {
   }
 };
 
-export const getActityPlanningDocuments = async (documentId) => {
+export const getActivityPlanningDocuments = async (documentId) => {
   try {
     const q = query(
       collection(db, "ActivityPlanning"),
+      where("activity", "==", documentId)
+      // orderBy("created_at", "desc")
+    );
+
+    const querySnapshot = await getDocs(q);
+    const documents = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: {
+          ...data,
+          activity: data.activity,
+        },
+      });
+    });
+
+    return documents;
+  } catch (error) {
+    console.error("Error al obtener estados: ", error);
+    throw error;
+  }
+};
+
+export const getActivityHistoryLogDocuments = async (documentId) => {
+  try {
+    const q = query(
+      collection(db, "ActivityHistoryLog"),
       where("activity", "==", documentId)
       // orderBy("created_at", "desc")
     );
@@ -317,28 +369,16 @@ export const getImageFromStorage = async (fileName) => {
 };
 export const searchTechnicalUnit = async (searchTerm) => {
   try {
-    const activityDocs = await getActivityInfoDocuments(); // Obtener los documentos de actividad
+    const activityDocs = await getActivityInfoDocuments();
     const filteredUnits = activityDocs.filter((doc) => {
-      // Filtrar documentos según el término de búsqueda (ignorando mayúsculas y minúsculas)
-      const uTecnica = doc.data.u_tecnica || ""; // Asegúrate de que el campo exista en tus documentos
+      const uTecnica = doc.data.u_tecnica || "";
       const searchTermLowerCase = searchTerm.toLowerCase();
       return uTecnica.toLowerCase().includes(searchTermLowerCase);
     });
-    return filteredUnits.map((doc) => doc.data.u_tecnica); // Devolver solo los valores de "u_tecnica"
+    return filteredUnits.map((doc) => doc.data.u_tecnica);
   } catch (error) {
     console.error("Error al buscar unidad técnica:", error);
     throw error;
-  }
-};
-export const createActivityHistoryLogDocument = async (historyData) => {
-  try {
-    const docRef = await addDoc(collection(db, "ActivityHistoryLog"), {
-      ...historyData,
-      userId: auth.currentUser.uid,
-    });
-    return docRef;
-  } catch (e) {
-    console.error("Error adding document: ", e);
   }
 };
 
@@ -387,17 +427,5 @@ export const updateFieldInActivity = async (
     }
   } catch (error) {
     console.error("Error:", error);
-  }
-};
-
-export const createActivityPlanningDocument = async (newActivityPlanning) => {
-  try {
-    const docRef = await addDoc(collection(db, "ActivityPlanning"), {
-      ...newActivityPlanning,
-      userId: auth.currentUser.uid,
-    });
-    return docRef;
-  } catch (e) {
-    console.error("Error adding document: ", e);
   }
 };

@@ -5,14 +5,16 @@ import Navbar from "../Navbar/Navbar";
 import ButtonUI from "../UI/ButtonUI";
 import ViewActivityInfoTable from "../ViewActivityInfo/ViewActivityInfoTable.jsx";
 import ViewActivityStatusHistoryTable from "./ViewActivityStatusHistoryTable.jsx";
-import ViewActivityPlanningTable from "./ViewActivityPlanningTable.jsx"
+import ViewActivityPlanningTable from "./ViewActivityPlanningTable.jsx";
 import ViewActivityLogTable from "./ViewActivityLogTable.jsx";
+import ViewActivityHistoryLogTable from "./ViewActivityHistoryLogTable.jsx";
 import {
   getActivityInfoDocuments,
   getWeekDocuments,
   getActivityStatusHistory,
   getActivityLogDocuments,
-  getActityPlanningDocuments,
+  getActivityPlanningDocuments,
+  getActivityHistoryLogDocuments,
 } from "../../utils/firebase.js";
 import Spinner from "../UI/Spinner";
 
@@ -23,6 +25,9 @@ function ViewActivityInfo() {
   const [activityStatusDocument, setActivityStatusDocument] = useState({});
   const [activityLogDocument, setActivityLogDocument] = useState({});
   const [activityPlanningDocument, setActivityPlanningDocument] = useState({});
+  const [activityHistoryLogDocument, setActivityHistoryLogDocument] = useState(
+    {}
+  );
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -37,12 +42,14 @@ function ViewActivityInfo() {
           activityStatusDocuments,
           activityLogDocuments,
           activityPlanningDocuments,
+          activityHistoryLogDocuments,
         ] = await Promise.all([
           getActivityInfoDocuments(),
           getWeekDocuments(),
           getActivityStatusHistory(documentId),
           getActivityLogDocuments(documentId),
-          getActityPlanningDocuments(documentId),
+          getActivityPlanningDocuments(documentId),
+          getActivityHistoryLogDocuments(documentId),
         ]);
 
         const activityDoc = activityDocuments.find(
@@ -57,6 +64,7 @@ function ViewActivityInfo() {
         setActivityStatusDocument(activityStatusDocuments);
         setActivityLogDocument(activityLogDocuments);
         setActivityPlanningDocument(activityPlanningDocuments);
+        setActivityHistoryLogDocument(activityHistoryLogDocuments);
 
         setIsLoading(false);
       } catch (error) {
@@ -97,6 +105,10 @@ function ViewActivityInfo() {
               <ViewActivityPlanningTable
                 isLoading={isLoading}
                 activityPlanningDocument={activityPlanningDocument}
+              />
+              <ViewActivityHistoryLogTable
+                isLoading={isLoading}
+                activityHistoryLogDocument={activityHistoryLogDocument}
               />
             </>
           )}
