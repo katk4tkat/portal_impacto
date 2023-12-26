@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AsyncCreatableSelect from "react-select/async-creatable";
 import PropTypes from "prop-types";
 import { useForm, Controller } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,6 +8,9 @@ import {
   updateFieldInActivity,
   getCurrentActivityInfo,
 } from "../../utils/firebase";
+import { loadOptions } from "../../utils/loadOptions";
+
+import { isRequiredWeekValid } from "../../utils/handleFormErrors.js";
 import Spinner from "../UI/Spinner.jsx";
 
 function EditModal({
@@ -16,7 +20,7 @@ function EditModal({
   documentId,
   fieldName,
 }) {
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, setError, clearErrors, formState } = useForm({
     defaultValues: {
       changeContent: content,
       editedBy: "",
@@ -24,6 +28,10 @@ function EditModal({
     },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState({
+    label: content,
+    value: content,
+  });
 
   const onSubmit = async (formData) => {
     try {
@@ -33,6 +41,21 @@ function EditModal({
       if (!changeContent || !editedBy || !changeDescription) {
         toast.error("Debes completar todos los campos.");
         return;
+      }
+
+      if (fieldName === "week_name") {
+        const changeContent = formData.changeContent;
+
+        if (!isRequiredWeekValid(changeContent)) {
+          setError("changeContent", {
+            type: "manual",
+            message:
+              "El formato de la semana no es válido. Debe ser año-semana ('AAAA-SS').",
+          });
+          return;
+        } else {
+          clearErrors("changeContent");
+        }
       }
 
       const previousActivityInfoResult = await getCurrentActivityInfo(
@@ -103,12 +126,33 @@ function EditModal({
                   control={control}
                   rules={{ required: "Este campo es requerido" }}
                   render={({ field }) => (
-                    <input
-                      {...field}
-                      id="changeContent"
-                      type="text"
-                      className="form-control"
-                    />
+                    <>
+                      {fieldName === "u_tecnica" ? (
+                        <AsyncCreatableSelect
+                          isClearable
+                          isSearchable
+                          cacheOptions
+                          defaultOptions
+                          loadOptions={loadOptions}
+                          value={selectedOption}
+                          onChange={(newValue) => setSelectedOption(newValue)}
+                        />
+                      ) : (
+                        <>
+                          <input
+                            {...field}
+                            id="changeContent"
+                            type="text"
+                            className="form-control"
+                          />
+                          {formState.errors.changeContent && (
+                            <p className="text-danger">
+                              {formState.errors.changeContent.message}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </>
                   )}
                 />
               </div>
