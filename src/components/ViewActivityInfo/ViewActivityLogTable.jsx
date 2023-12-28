@@ -42,7 +42,7 @@ function ViewActivityLogTable({ activityLogDocument }) {
               </tr>
             </thead>
             <tbody>
-              {sortedDocuments.length > 1 ? (
+              {sortedDocuments.length >= 1 ? (
                 sortedDocuments.map((log, index) => (
                   <tr key={index}>
                     <td>

@@ -26,7 +26,7 @@ function ViewActivityHistoryLogTable({ activityHistoryLogDocument }) {
               </tr>
             </thead>
             <tbody>
-              {sortedDocuments.length > 1 ? (
+              {sortedDocuments.length >= 1 ? (
                 sortedDocuments.map((log, index) => (
                   <tr key={index}>
                     <td>{log.data.modified_at.toDate().toLocaleString()}</td>
