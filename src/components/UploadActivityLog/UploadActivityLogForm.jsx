@@ -7,10 +7,12 @@ import { ToastContainer, toast } from "react-toastify";
 import {
   uploadActivityLogFile,
   createActivityLogDocument,
+  getImageFromStorage,
 } from "../../utils/firebase.js";
 import { getCurrentLocation } from "../../utils/getGPS.js";
 import Spinner from "../UI/Spinner.jsx";
 import "react-toastify/dist/ReactToastify.css";
+import { generateWhatsAppLink } from "../../utils/generateWhatsAppLink.js";
 
 function UploadActivityLog({ documentId }) {
   const [currentGPS, setCurrentGPS] = useState("");
@@ -123,6 +125,7 @@ function UploadActivityLog({ documentId }) {
 
       setIsLoading(true);
 
+      const fileURLs = [];
       if (data.activity_log_files && data.activity_log_files.length > 0) {
         for (let i = 0; i < data.activity_log_files.length; i++) {
           const file = data.activity_log_files[i];
@@ -137,14 +140,20 @@ function UploadActivityLog({ documentId }) {
             activity_log_file_name: file.name,
             activity_log_file_description: imageDescriptions[i] || "",
           };
-
           await createActivityLogDocument(fileDocument);
+
+          const imageUrl = await getImageFromStorage(file.name);
+          fileURLs.push(imageUrl);
         }
       }
 
+      const date = new Date().toLocaleString();
+      const whatsappLink = generateWhatsAppLink(date, imageDescriptions, fileURLs);
+      window.open(whatsappLink, "_blank");
+
       setIsLoading(false);
 
-      toast.success("Registro ingresado exitosamente");
+      toast.success("Registros ingresados exitosamente");
       reset({
         activity_log_GPS: "",
         activity_log_description: "",
@@ -282,6 +291,21 @@ function UploadActivityLog({ documentId }) {
                     </button>
                   </div>
                 </div>
+              </div>
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckChecked"
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor="flexSwitchCheckChecked"
+                >
+                  <i className="bi bi-whatsapp"></i>
+                  &nbsp; Enviar por WhatsApp
+                </label>
               </div>
               <div className="form-group d-flex text-center justify-content-center">
                 <button
