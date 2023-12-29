@@ -1,14 +1,10 @@
-export function generateWhatsAppLink(date, description, fileURLs) {
-    const encodedFileURLs = fileURLs.map((url) => encodeURIComponent(url));
-    const links = encodedFileURLs.join("%0a%0a");
-    const descriptions = description.join("%0a%0a");
+export function generateWhatsAppLink(date, descriptions, fileURLs) {
+    let text = `*Registro de actividad:*\n*Fecha:*\n${date}\n\n`;
 
-    let text = `*Registro de actividad:* 
-*Fecha:*\n ${date}
-*Descripción*: ${descriptions}
-*Links de descarga:* \n`;
+    descriptions.forEach((desc, index) => {
+        text += `*Descripción:*\n${desc}\n*Link de descarga:*\n${fileURLs[index]}\n`;
+    });
 
     const encodedText = encodeURIComponent(text);
-
-    return `whatsapp://send?text=${encodedText}%0a${links}`;
+    return `whatsapp://send?text=${encodedText}`;
 }
