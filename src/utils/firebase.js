@@ -129,6 +129,7 @@ export const createActivityHistoryLogDocument = async (historyData) => {
     return docRef;
   } catch (e) {
     console.error("Error adding document: ", e);
+    throw e;
   }
 };
 
@@ -427,5 +428,6 @@ export const updateFieldInActivity = async (
     }
   } catch (error) {
     console.error("Error:", error);
+    throw error;
   }
 };
