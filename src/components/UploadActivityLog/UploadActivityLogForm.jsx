@@ -20,6 +20,7 @@ function UploadActivityLog({ documentId }) {
   const [imageDescriptions, setImageDescriptions] = useState([]);
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [sendWhatsApp, setSendWhatsApp] = useState(false);
 
   const navigate = useNavigate();
 
@@ -112,6 +113,10 @@ function UploadActivityLog({ documentId }) {
     </>
   );
 
+  const handleWhatsAppSwitch = () => {
+    setSendWhatsApp(!sendWhatsApp);
+  };
+
   const onSubmit = async (data) => {
     try {
       const user = localStorage.getItem("userEmail");
@@ -147,9 +152,11 @@ function UploadActivityLog({ documentId }) {
         }
       }
 
-      const date = new Date().toLocaleString();
-      const whatsappLink = generateWhatsAppLink(date, imageDescriptions, fileURLs);
-      window.open(whatsappLink, "_blank");
+      if (sendWhatsApp && fileURLs.length > 0) {
+        const date = new Date().toLocaleString();
+        const whatsappLink = generateWhatsAppLink(date, imageDescriptions, fileURLs);
+        window.open(whatsappLink, "_blank");
+      }
 
       setIsLoading(false);
 
@@ -298,6 +305,7 @@ function UploadActivityLog({ documentId }) {
                   type="checkbox"
                   role="switch"
                   id="flexSwitchCheckChecked"
+                  onChange={handleWhatsAppSwitch}
                 />
                 <label
                   className="form-check-label"
