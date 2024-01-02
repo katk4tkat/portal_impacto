@@ -4,22 +4,22 @@ import PropTypes from "prop-types";
 import Spinner from "../UI/Spinner";
 
 function ViewActivityPlanningTable({ isLoading, activityPlanningDocument }) {
-
-  console.log(activityPlanningDocument)
-
-  const document = activityPlanningDocument && activityPlanningDocument.length > 0 ? activityPlanningDocument[0].data : {};
-
-
-  console.log(document);
+  const document =
+    activityPlanningDocument && activityPlanningDocument.length > 0
+      ? activityPlanningDocument[0].data
+      : {};
 
   return (
     <>
-      {activityPlanningDocument && Object.keys(activityPlanningDocument).length !== 0 ? (
+      {activityPlanningDocument &&
+      Object.keys(activityPlanningDocument).length !== 0 ? (
         isLoading ? (
           <Spinner />
         ) : (
           <div className="table-responsive">
-            <h1 className="my-2 text-center mt-3 mb-3">Planificación de la Actividad</h1>
+            <h1 className="my-2 text-center mt-3 mb-3">
+              Planificación de la Actividad
+            </h1>
             <table className="table table-hover table-bordered">
               <tbody>
                 <tr>
@@ -56,7 +56,9 @@ function ViewActivityPlanningTable({ isLoading, activityPlanningDocument }) {
                 </tr>
                 <tr>
                   <th scope="row">Especificaciones técnicas relevantes</th>
-                  <td colSpan={3}>{document.relevant_technical_specifications}</td>
+                  <td colSpan={3}>
+                    {document.relevant_technical_specifications}
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">Paso a paso general</th>
@@ -92,7 +94,9 @@ function ViewActivityPlanningTable({ isLoading, activityPlanningDocument }) {
         )
       ) : (
         <div className="table-responsive">
-          <h1 className="my-2 text-center mt-3 mb-3">Planificación de la Actividad</h1>
+          <h1 className="my-2 text-center mt-3 mb-3">
+            Planificación de la Actividad
+          </h1>
           <table className="table table-hover table-bordered"></table>
           <p>Sin planificaciones disponibles</p>
         </div>
@@ -100,7 +104,6 @@ function ViewActivityPlanningTable({ isLoading, activityPlanningDocument }) {
     </>
   );
 }
-
 
 ViewActivityPlanningTable.propTypes = {
   isLoading: PropTypes.bool,

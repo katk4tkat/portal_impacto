@@ -3,11 +3,9 @@ import PropTypes from "prop-types";
 import { modifiedFieldTranslations } from "../../utils/translations";
 
 function ViewActivityHistoryLogTable({ activityHistoryLogDocument }) {
-  console.log(activityHistoryLogDocument);
   const sortedDocuments = activityHistoryLogDocument.sort(
     (a, b) => b.data.modified_at.toMillis() - a.data.modified_at.toMillis()
   );
-  console.log(sortedDocuments);
 
   return (
     <>
