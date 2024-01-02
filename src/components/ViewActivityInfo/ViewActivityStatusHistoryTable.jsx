@@ -53,7 +53,7 @@ function ViewActivityStatusHistoryTable({ activityStatusDocument }) {
               </tr>
             </thead>
             <tbody>
-              {sortedDocuments.length >= 1 ? (
+              {sortedDocuments.length > 1 ? (
                 sortedDocuments.slice(1).map((log, index) => (
                   <tr key={index}>
                     <td>{log.data.created_at.toDate().toLocaleString()}</td>
