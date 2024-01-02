@@ -95,7 +95,7 @@ function Table({ filters }) {
                 <th scope="col">Descripción del aviso</th>
                 <th scope="col">Estado Impacto</th>
                 <th scope="col">Estado Final</th>
-                <th scope="col" colSpan="4" className="text-center">
+                <th scope="col" colSpan="5" className="text-center">
                   Acciones
                 </th>
               </tr>
@@ -124,7 +124,10 @@ function Table({ filters }) {
                       <Link to={`/activity-planning/${item.id}`}>P.A.</Link>
                     </td>
                     <td>
-                      <Link to={`/view-activity-info/${item.id}`}>V.D.</Link>
+                      <Link to={`/view-activity-info/${item.id}`}>V.A.</Link>
+                    </td>
+                    <td>
+                      <Link to={`/view-activity-dossier/${item.id}`}>V.D.</Link>
                     </td>
                   </tr>
                 );
