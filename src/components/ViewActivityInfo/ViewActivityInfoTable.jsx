@@ -1,17 +1,22 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import EditModal from "../EditModal/EditModal";
-
 function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [editedFieldName, setEditedFieldName] = useState("");
   const [editedContent, setEditedContent] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const handleEditClick = (content, fieldName) => {
+  const modalRef = useRef();
+
+  const handleEdit = (content, fieldName) => {
     setEditedContent(content);
     setEditedFieldName(fieldName);
     setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -32,7 +37,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   onClick={() =>
-                    handleEditClick(
+                    handleEdit(
                       weekDocument.data.team === "impacto_acido"
                         ? "Impacto Ácido"
                         : weekDocument.data.team === "impacto"
@@ -52,10 +57,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                   onClick={() =>
-                    handleEditClick(
-                      activityDocument.data.week_name,
-                      "week_name"
-                    )
+                    handleEdit(activityDocument.data.week_name, "week_name")
                   }
                 >
                   <i className="bi bi-pencil" />
@@ -77,7 +79,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(
+                      handleEdit(
                         activityDocument.data.informed_by,
                         "informed_by"
                       )
@@ -97,10 +99,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(
-                        activityDocument.data.prioridad,
-                        "prioridad"
-                      )
+                      handleEdit(activityDocument.data.prioridad, "prioridad")
                     }
                   >
                     <i className="bi bi-pencil" />
@@ -117,7 +116,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(activityDocument.data.n_aviso, "n_aviso")
+                      handleEdit(activityDocument.data.n_aviso, "n_aviso")
                     }
                   >
                     <i className="bi bi-pencil" />
@@ -134,7 +133,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(
+                      handleEdit(
                         activityDocument.data.equipo_o_sistema,
                         "equipo_o_sistema"
                       )
@@ -154,10 +153,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(
-                        activityDocument.data.u_tecnica,
-                        "u_tecnica"
-                      )
+                      handleEdit(activityDocument.data.u_tecnica, "u_tecnica")
                     }
                   >
                     <i className="bi bi-pencil" />
@@ -174,7 +170,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(
+                      handleEdit(
                         activityDocument.data.descripcion_del_trabajo,
                         "descripcion_del_trabajo"
                       )
@@ -194,7 +190,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(
+                      handleEdit(
                         activityDocument.data.descripcion_del_aviso,
                         "descripcion_del_aviso"
                       )
@@ -214,7 +210,7 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     onClick={() =>
-                      handleEditClick(
+                      handleEdit(
                         activityDocument.data.vulnerabilidad_1,
                         "vulnerabilidad_1"
                       )
@@ -228,15 +224,14 @@ function ViewActivityInfoTable({ weekDocument, activityDocument, documentId }) {
           </tbody>
         </table>
       </div>
-      {isModalVisible && (
-        <EditModal
-          fieldName={editedFieldName}
-          content={editedContent}
-          documentId={documentId}
-          setIsModalVisible={setIsModalVisible}
-          onClose={() => setIsModalVisible(false)}
-        />
-      )}
+      <EditModal
+        fieldName={editedFieldName}
+        content={editedContent}
+        documentId={documentId}
+        modalRef={modalRef}
+        isVisible={isModalVisible}
+        closeModal={closeModal}
+      />
     </>
   );
 }

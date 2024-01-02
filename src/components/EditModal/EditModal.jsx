@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncCreatableSelect from "react-select/async-creatable";
 import PropTypes from "prop-types";
 import { useForm, Controller } from "react-hook-form";
@@ -14,80 +14,104 @@ import { isRequiredWeekValid } from "../../utils/handleFormErrors.js";
 import Spinner from "../UI/Spinner.jsx";
 
 function EditModal({
-  content,
-  setIsModalVisible,
-  onClose,
-  documentId,
   fieldName,
+  content,
+  documentId,
+  modalRef,
+  isVisible,
+  closeModal,
 }) {
-  const { control, handleSubmit, setError, clearErrors, formState } = useForm({
-    defaultValues: {
-      changeContent: content,
-      editedBy: "",
-      changeDescription: "",
-    },
-  });
   const [isLoading, setIsLoading] = useState(false);
+
+  const { control, handleSubmit, setError, clearErrors, formState, reset } =
+    useForm({
+      defaultValues: {
+        changeContent: content,
+        editedBy: "",
+        changeDescription: "",
+      },
+    });
+
   const [selectedOption, setSelectedOption] = useState({
     label: content,
     value: content,
   });
 
+  useEffect(() => {
+    if (isVisible && modalRef.current) {
+      // Muestra el modal usando jQuery (Bootstrap)
+      window.$(modalRef.current).modal("show");
+    } else if (!isVisible && modalRef.current) {
+      // Oculta el modal usando jQuery (Bootstrap)
+      window.$(modalRef.current).modal("hide");
+    }
+  }, [isVisible, modalRef]);
+
   const onSubmit = async (formData) => {
     try {
-      const user = localStorage.getItem("userEmail");
       const { changeContent, editedBy, changeDescription } = formData;
 
-      if (!changeContent || !editedBy || !changeDescription) {
-        toast.error("Debes completar todos los campos.");
+      // Validations
+      if (!changeContent) throw new Error("El contenido no puede estar vacío.");
+      if (!editedBy) throw new Error("El campo 'Modificado por' es requerido.");
+      if (!changeDescription) {
+        throw new Error("El campo 'Descripción del cambio' es requerido.");
+      }
+
+      clearErrors("changeContent");
+      if (fieldName === "week_name" && !isRequiredWeekValid(changeContent)) {
+        setError("changeContent", {
+          type: "manual",
+          message:
+            "El formato de la semana no es válido. Debe ser año-semana ('AAAA-SS').",
+        });
         return;
       }
 
-      if (fieldName === "week_name") {
-        const changeContent = formData.changeContent;
-
-        if (!isRequiredWeekValid(changeContent)) {
-          setError("changeContent", {
-            type: "manual",
-            message:
-              "El formato de la semana no es válido. Debe ser año-semana ('AAAA-SS').",
-          });
-          return;
-        } else {
-          clearErrors("changeContent");
-        }
-      }
-
+      // Fetch previous activity info
       const previousActivityInfoResult = await getCurrentActivityInfo(
         documentId
       );
-
-      if (previousActivityInfoResult && previousActivityInfoResult.data) {
-        const historyData = {
-          activity: documentId,
-          modified_table_name: "Activity",
-          modified_field: fieldName,
-          modified_at: new Date(),
-          modified_by: user,
-          edited_by: editedBy,
-          old_value: previousActivityInfoResult.data[fieldName],
-          new_value: changeContent,
-          modified_value_description: changeDescription,
-          status: "",
-        };
-        setIsLoading(true);
-
-        createActivityHistoryLogDocument(historyData);
-        await updateFieldInActivity(documentId, fieldName, changeContent);
-
-        setIsLoading(false);
-
-        toast.success("Cambios exitosamente guardados!");
-        setIsModalVisible(false);
+      if (!previousActivityInfoResult) {
+        throw new Error("Actividad no encontrada.");
       }
+
+      // Prepare Payload
+      const user = localStorage.getItem("userEmail");
+      const historyData = {
+        activity: documentId,
+        modified_table_name: "Activity",
+        modified_field: fieldName,
+        modified_at: new Date(),
+        modified_by: user,
+        edited_by: editedBy,
+        old_value: previousActivityInfoResult.data[fieldName],
+        new_value: changeContent,
+        modified_value_description: changeDescription,
+        status: "",
+      };
+
+      // Update activity info
+      setIsLoading(true);
+      await createActivityHistoryLogDocument(historyData);
+      await updateFieldInActivity(documentId, fieldName, changeContent);
+      setIsLoading(false);
+
+      // Return
+      toast.success("Cambios exitosamente guardados!");
+      reset({
+        changeContent: "",
+        editedBy: "",
+        changeDescription: "",
+      });
+
+      setTimeout(() => {
+        closeModal();
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error("Error al manejar el guardado: ", error);
-      toast.error("Error al manejar el guardado");
+      toast.error(`Error al manejar el guardado ${error.message}`);
       setIsLoading(false);
     }
   };
@@ -100,6 +124,7 @@ function EditModal({
       role="dialog"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
+      ref={modalRef}
     >
       <div className="modal-dialog" role="document">
         <div className="modal-content">
@@ -113,7 +138,7 @@ function EditModal({
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={onClose}
+                data-bs-toggle="modal"
               ></button>
             </div>
             <div className="modal-body">
@@ -135,6 +160,7 @@ function EditModal({
                           defaultOptions
                           loadOptions={loadOptions}
                           value={selectedOption}
+                          placeholder={content}
                           onChange={(newValue) => setSelectedOption(newValue)}
                         />
                       ) : (
@@ -144,6 +170,7 @@ function EditModal({
                             id="changeContent"
                             type="text"
                             className="form-control"
+                            placeholder={content}
                           />
                           {formState.errors.changeContent && (
                             <p className="text-danger">
@@ -163,14 +190,22 @@ function EditModal({
                 <Controller
                   name="editedBy"
                   control={control}
+                  rules={{ required: "Este campo es requerido" }}
                   render={({ field }) => (
-                    <input
-                      {...field}
-                      type="text"
-                      className="form-control"
-                      id="editedBy"
-                      placeholder="Nombre + Apellido"
-                    />
+                    <>
+                      <input
+                        {...field}
+                        type="text"
+                        className="form-control"
+                        id="editedBy"
+                        placeholder="Nombre Apellido"
+                      />
+                      {formState.errors.editedBy && (
+                        <p className="text-danger">
+                          {formState.errors.editedBy.message}
+                        </p>
+                      )}
+                    </>
                   )}
                 />
               </div>
@@ -181,13 +216,21 @@ function EditModal({
                 <Controller
                   name="changeDescription"
                   control={control}
+                  rules={{ required: "Este campo es requerido" }}
                   render={({ field }) => (
-                    <textarea
-                      {...field}
-                      className="form-control"
-                      id="changeDescription"
-                      rows="3"
-                    />
+                    <>
+                      <textarea
+                        {...field}
+                        className="form-control"
+                        id="changeDescription"
+                        rows="3"
+                      />
+                      {formState.errors.changeDescription && (
+                        <p className="text-danger">
+                          {formState.errors.changeDescription.message}
+                        </p>
+                      )}
+                    </>
                   )}
                 />
               </div>
@@ -197,7 +240,7 @@ function EditModal({
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
-                onClick={onClose}
+                data-bs-toggle="modal"
               >
                 Cerrar
               </button>
