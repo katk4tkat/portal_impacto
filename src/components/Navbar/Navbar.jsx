@@ -15,6 +15,22 @@ function Navbar() {
     }
   };
 
+  const handleAdmin = async () => {
+    try {
+      navigate("/admin");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleHome = async () => {
+    try {
+      navigate("/home");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <nav
       className="navbar navbar-expand-md navbar-dark"
@@ -38,6 +54,24 @@ function Navbar() {
           id="navbarNav"
         >
           <ul className="navbar-nav">
+            <li className="nav-item">
+              <button
+                type="button"
+                className="btn text-white"
+                onClick={handleHome}
+              >
+                INICIO
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                type="button"
+                className="btn text-white"
+                onClick={handleAdmin}
+              >
+                ADMINISTRACIÓN
+              </button>
+            </li>
             <li className="nav-item">
               <button
                 type="button"
