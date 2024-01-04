@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db, storage } from "./firebase-config.js";
 import {
   collection,
@@ -14,6 +14,19 @@ import {
   limit,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
+export const createUser = async (email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    return user;
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.error("Error creating user:", errorCode, errorMessage);
+    throw error;
+  }
+};
 
 export const loginEmail = async (email, password) => {
   const userCredential = await signInWithEmailAndPassword(
@@ -42,17 +55,16 @@ export const logout = async () => {
   }
 };
 
-// export const createUserDocument = async (userId, userEmail) => {
-//   try {
-//     const docRef = await addDoc(collection(db, "User"), {
-//       id: userId,
-//       username: userEmail,
-//     });
-//     console.log("Document written with ID: ", docRef.id);
-//   } catch (e) {
-//     console.error("Error adding document: ", e);
-//   }
-// };
+export const createUserDocument = async (newUser) => {
+  try {
+    const docRef = await addDoc(collection(db, "Users"), {
+      ...newUser
+    });
+    console.log("Document written with ID: ", docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
+};
 
 export const createWeekDocument = async (weekData) => {
   try {
@@ -151,6 +163,31 @@ export const getActivitiesPaginated = async ({ itemsPerPage }) => {
       });
     });
 
+    return documents;
+  } catch (error) {
+    console.error("Error al obtener actividades: ", error);
+    throw error;
+  }
+};
+
+export const getUsersPaginated = async ({ itemsPerPage }) => {
+  try {
+    const q = query(
+      collection(db, "Users"),
+      /* orderBy("role", "desc"), */
+      limit(itemsPerPage)
+    );
+    const querySnapshot = await getDocs(q);
+    const documents = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      documents.push({
+        id: doc.id,
+        data: data,
+      });
+    });
+    console.log(documents)
     return documents;
   } catch (error) {
     console.error("Error al obtener actividades: ", error);
