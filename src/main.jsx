@@ -12,6 +12,8 @@ import CreateActivity from "./components/CreateActivity/CreateActivity.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ActivityPlanning from "./components/ActivityPlanning/ActivityPlanning.jsx";
 import ViewActivityDossier from "./components/ViewActivityDossier/ViewActivityDossier.jsx";
+import Admin from "./components/Admin/Admin.jsx";
+import CreateUser from "./components/Admin/CreateUser.jsx"
 
 const root = createRoot(document.getElementById("root"));
 
@@ -62,6 +64,14 @@ root.render(
         <Route
           path="/view-activity-dossier/:documentId"
           element={<PrivateRoute element={<ViewActivityDossier />} />}
+        />
+        <Route
+          path="/admin"
+          element={<PrivateRoute element={<Admin />} />}
+        />
+        <Route
+          path="/create-user"
+          element={<PrivateRoute element={<CreateUser />} />}
         />
         <Route path="/login" element={<Login />} />
       </Routes>
