@@ -1,5 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { auth, db, storage } from "./firebase-config.js";
 import {
   collection,
@@ -17,7 +21,11 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const createUser = async (email, password) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
     return user;
   } catch (error) {
@@ -58,7 +66,7 @@ export const logout = async () => {
 export const createUserDocument = async (newUser) => {
   try {
     const docRef = await addDoc(collection(db, "Users"), {
-      ...newUser
+      ...newUser,
     });
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
@@ -187,7 +195,7 @@ export const getUsersPaginated = async ({ itemsPerPage }) => {
         data: data,
       });
     });
-    console.log(documents)
+    console.log(documents);
     return documents;
   } catch (error) {
     console.error("Error al obtener actividades: ", error);
@@ -396,7 +404,7 @@ export const getImageFromStorage = async (fileName) => {
   try {
     const imageRef = ref(
       storage,
-      "gs://portal-impacto-609ff.appspot.com/activity_logs/" + fileName
+      "gs://portal-impacto-ba606.appspot.com/activity_logs" + fileName
     );
     const imageUrl = await getDownloadURL(imageRef);
     return imageUrl;
