@@ -42,7 +42,6 @@ function ShowStatus({ documentId }) {
               <dt>Estado:</dt>
               <dd>{document?.data?.status}</dd>
             </dl>
-
             <dt>Descripción:</dt>
             <dd>{document?.data?.description}</dd>
           </div>
