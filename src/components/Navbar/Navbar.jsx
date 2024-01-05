@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../utils/firebase.js";
@@ -6,10 +5,9 @@ import { logout } from "../../utils/firebase.js";
 function Navbar() {
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
+  const handleHome = async () => {
     try {
-      await logout();
-      navigate("/login");
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
@@ -23,9 +21,10 @@ function Navbar() {
     }
   };
 
-  const handleHome = async () => {
+  const handleLogout = async () => {
     try {
-      navigate("/home");
+      await logout();
+      navigate("/login");
     } catch (error) {
       console.log(error);
     }
@@ -79,10 +78,7 @@ function Navbar() {
                 onClick={handleLogout}
               >
                 CERRAR SESIÓN
-                <i
-                  className="bi bi-box-arrow-right"
-                  style={{ fontSize: "24px", marginLeft: "8px" }}
-                ></i>
+                <i className="bi bi-box-arrow-right ms-2"></i>
               </button>
             </li>
           </ul>
