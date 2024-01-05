@@ -254,7 +254,13 @@ function ActivityPlanningForm({ documentId }) {
                       {...field}
                       type="text"
                       id="team"
-                      placeholder={weekDocument.team}
+                      placeholder={
+                        weekDocument?.team === "impacto_acido"
+                          ? "Impacto Ácido"
+                          : weekDocument?.team === "impacto"
+                          ? "Impacto"
+                          : weekDocument?.team
+                      }
                       className="form-control mb-3"
                       disabled
                     />
